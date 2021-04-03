@@ -72,35 +72,35 @@ app.post("/api/signUp", function (req, res, next) {
     let dataNascita = req.body.dataNascita;
     let password = req.body.password;
 
-    bcrypt.hash(password, saltRounds, (err, hash) => {
-        if(err)
-            error(req, res, new ERRORS.HASH({}));
-            else{
-                con.connect(function (err) {
-                    if (err) {
-                        console.log("Errore di connessione al DB");
-                        error(req, res, new ERRORS.DB_CONNECTION({}));
-                    } else {
-        
-                        //controllo univocità mail 
-                        let queryMail = "SELECT idUtente FROM utenti WHERE mail='" + mail + "'";
-                        con.query(queryMail, function (errCtrMail, resultMail) {
-                            if (errCtrMail) {
-                                console.log(errCtrMail);
-                                error(req, res, new ERRORS.QUERY_EXECUTE({}));
-                            } else {
-        
-                                if(resultMail.length==0){
+        con.connect(function (err) {
+            if (err) {
+                console.log("Errore di connessione al DB");
+                error(req, res, new ERRORS.DB_CONNECTION({}));
+            } else {
 
-                                    //controllo univocità username 
-                                    let queryUser = "SELECT idUtente FROM utenti WHERE username='" + user + "'";
-                                    con.query(queryUser, function (errCtrUser, resultUser) {
-                                        if (errCtrUser) {
-                                            console.log(errCtrUser);
-                                            error(req, res, new ERRORS.QUERY_EXECUTE({}));
-                                        } else {
-                                            if(resultUser.length==0)
-                                            {
+                //controllo univocità mail
+                let queryMail = "SELECT idUtente FROM utenti WHERE mail='" + mail + "'";
+                con.query(queryMail, function (errCtrMail, resultMail) {
+                    if (errCtrMail) {
+                        console.log(errCtrMail);
+                        error(req, res, new ERRORS.QUERY_EXECUTE({}));
+                    } else {
+
+                        if(resultMail.length==0){
+
+                            //controllo univocità username
+                            let queryUser = "SELECT idUtente FROM utenti WHERE username='" + user + "'";
+                            con.query(queryUser, function (errCtrUser, resultUser) {
+                                if (errCtrUser) {
+                                    console.log(errCtrUser);
+                                    error(req, res, new ERRORS.QUERY_EXECUTE({}));
+                                } else {
+                                    if(resultUser.length==0)
+                                    {
+                                        bcrypt.hash(password, saltRounds, (err, hash) => {
+                                            if(err)
+                                                error(req, res, new ERRORS.HASH({}));
+                                            else {
                                                 //una volta assicurati che non vi sono altri utenti con quell' user e password, si procede alla registrazione
                                                 let queryString = "INSERT INTO utenti(username, password, nome, cognome, mail, foto, posizione, sesso, descrizione, dataNascita) VALUES ('" + user + "','" + hash + "','" + nome + "','" + cognome + "','" + mail + "','" + foto + "','" + posizione + "','" + sesso + "','" + descrizione + "'," + dataNascita + ")";
                                                 con.query(queryString, function (errQuery, result) {
@@ -110,18 +110,20 @@ app.post("/api/signUp", function (req, res, next) {
                                                     } else
                                                         res.send("Signed up!");
                                                 });
-                                            }else
-                                                res.send("Username non disponibile, scegline un altro");
-                                        }
-                                    });
-                                }else
-                                    res.send("Ti sei già registrato con questa mail");
-                            }
-                        });
+                                            }
+                                        });
+                                    }else
+                                        res.send("Username non disponibile, scegline un altro");
+                                }
+                            });
+                        }else
+                            res.send("Ti sei già registrato con questa mail");
                     }
                 });
             }
-    });
+        });
+
+
 });
 
 app.post("/api/login", function (req, res) {
