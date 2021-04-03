@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Mar 13, 2021 alle 08:48
+-- Creato il: Apr 03, 2021 alle 11:20
 -- Versione del server: 10.4.14-MariaDB
 -- Versione PHP: 7.4.11
 
@@ -88,7 +88,7 @@ CREATE TABLE `utenti` (
   `nome` varchar(30) NOT NULL,
   `cognome` varchar(30) NOT NULL,
   `mail` varchar(30) NOT NULL,
-  `foto` blob NOT NULL,
+  `foto` varchar(100) NOT NULL,
   `posizione` varchar(200) NOT NULL,
   `sesso` char(1) NOT NULL,
   `descrizione` varchar(300) NOT NULL
