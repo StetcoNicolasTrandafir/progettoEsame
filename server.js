@@ -79,7 +79,7 @@ function controllaToken(req, res) {
     };
     // lettura token
     if (req.headers["token"] == undefined) {
-        error(req,res,new ERRORS.TOKEN_DOESNT_EXIST({}));
+        error(req, res, new ERRORS.TOKEN_DOESNT_EXIST({}));
     } else {
         const token = req.headers["token"].split(' ')[1];
         console.log(token + " - " + typeof (token));
@@ -199,6 +199,11 @@ app.post("/api/signUp", function (req, res, next) {
 });
 
 app.post("/api/login", function (req, res) {
+
+
+
+
+
     con = mySql.createConnection({
         host: "localhost",
         user: "root",
@@ -209,35 +214,53 @@ app.post("/api/login", function (req, res) {
     let mail = req.body.mail;
     let password = req.body.password;
 
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    console.log("TEST => " + re.test(String(mail).toLowerCase()));
+    let queryString;
+    if (re.test(String(mail).toLowerCase())) {
+        queryString = "SELECT * FROM utenti WHERE mail='" + mail + "'";
+    } else {
+        queryString = "SELECT * FROM utenti WHERE username='" + mail + "'";
+    }
     bcrypt.hash(password, saltRounds, (err, hash) => {
         con.connect(function (err) {
             if (err) {
                 console.log("Errore di connessione al DB");
                 error(req, res, new ERRORS.DB_CONNECTION({}));
             } else {
-                let queryString = "SELECT * FROM utenti WHERE mail='" + mail + "'";
+
                 con.query(queryString, function (errQuery, result) {
                     if (errQuery) {
                         console.log(errQuery);
                         error(req, res, new ERRORS.QUERY_EXECUTE({}));
                     } else {
-
-                        // result[0] perchè si da per scontata l'univocità della mail
-                        bcrypt.compare(password, result[0].password, function (errCompare, resultCompare) {
-                            if (errCompare)
-                                error(req, res, new ERRORS.HASH({}));
-                            else {
-                                let token = createToken({
-                                    "_id": result[0].idUtente,
-                                    "user": result[0].username
-                                });
-                                console.log("token " + token);
-                                res.send({
-                                    "token": token,
-                                    "result": result
-                                });
-                            }
-                        });
+                        if (result.length == 0) {
+                            res.send("user errato");
+                        } else {
+                            // result[0] perchè si da per scontata l'univocità della mail
+                            console.log("PASSWORD => "+password+" || PASSWORD DB => "+result[0].password);
+                            bcrypt.compare(password, result[0].password, function (errCompare, resultCompare) {
+                                if (errCompare)
+                                    error(req, res, new ERRORS.HASH({}));
+                                else {
+                                    console.log("resultCompare => "+resultCompare);
+                                    if(!resultCompare){
+                                        res.send("password errata");
+                                    }else{
+                                        let token = createToken({
+                                            "_id": result[0].idUtente,
+                                            "user": result[0].username
+                                        });
+                                        console.log("token " + token);
+                                        res.send({
+                                            "token": token,
+                                            "result": result
+                                        });
+                                    }
+                                    
+                                }
+                            });
+                        }
                     }
                 });
             }
