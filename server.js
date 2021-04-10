@@ -3,14 +3,20 @@ const bcrypt = require('bcrypt');
 const https = require('https');
 const ERRORS = require('errors');
 const bodyParser = require('body-parser');
+const jwt = require("jsonwebtoken");
 const fs = require('fs');
 const mySql = require('mysql');
+
 const app = express();
 
 const port = 1337;
 let con;
 let saltRounds = 10;
- 
+
+const TIMEOUT = 30;
+
+const privateKey = fs.readFileSync("keys/private.key", "utf8");
+
 // code 601 - query execution error
 ERRORS.create({
     code: 601,
@@ -30,6 +36,18 @@ ERRORS.create({
     defaultMessage: 'An error occured crypting your data'
 });
 
+ERRORS.create({
+    code: 603,
+    name: 'TOKEN_EXPIRED',
+    defaultMessage: 'Token is expired'
+});
+
+ERRORS.create({
+    code: 604,
+    name: 'TOKEN_DOESNT_EXIST',
+    defaultMessage: 'Token doesnt exist'
+});
+
 
 
 app.listen(port, function () {
@@ -41,6 +59,62 @@ app.use("/", bodyParser.json());
 app.use("/", bodyParser.urlencoded({
     extended: true
 }));
+
+function createToken(obj) {
+    let token = jwt.sign({
+            '_id': obj._id,
+            'user': obj.user,
+            'iat': obj.iat || Math.floor(Date.now() / 1000),
+            'exp': obj.exp || Math.floor(Date.now() / 1000 + TIMEOUT)
+        },
+        privateKey
+    );
+    return token;
+}
+
+function controllaToken(req, res) {
+    let ctrlToken = {
+        allow: false,
+        payload: {}
+    };
+    // lettura token
+    if (req.headers["token"] == undefined) {
+        error(req,res,new ERRORS.TOKEN_DOESNT_EXIST({}));
+    } else {
+        const token = req.headers["token"].split(' ')[1];
+        console.log(token + " - " + typeof (token));
+        if (token != "null") {
+            jwt.verify(token, privateKey, function (err, data) {
+                ctrlToken.allow = true;
+                if (!err) {
+                    //ctrlToken.allow=true;
+                    ctrlToken.payload = data;
+                } else {
+                    ctrlToken.payload = {
+                        "err_iat": true,
+                        "message": "Token scaduto"
+                    };
+                }
+            });
+        }
+        return ctrlToken;
+    }
+}
+
+
+
+app.post("/api/controlloToken", function (req, res, next) {
+    let ctrlToken = controllaToken(req, res);
+    if (ctrlToken.allow && !ctrlToken.payload.err_iat) {
+        res.send({
+            "data": "TOKEN OK",
+            token: ctrlToken.payload
+        });
+    } else {
+        error(req, res, new ERRORS.TOKEN_EXPIRED({}));
+    }
+});
+
 
 app.post("/api/signUp", function (req, res, next) {
     con = mySql.createConnection({
@@ -90,13 +164,23 @@ app.post("/api/signUp", function (req, res, next) {
                                             error(req, res, new ERRORS.HASH({}));
                                         else {
                                             //una volta assicurati che non vi sono altri utenti con quell' user e password, si procede alla registrazione
-                                            let queryString = "INSERT INTO utenti(username, password, nome, cognome, mail, foto, posizione, sesso, descrizione, dataNascita) VALUES ('" + user + "','" + hash + "','" + nome + "','" + cognome + "','" + mail + "','" + foto + "','" + posizione + "','" + sesso + "','" + descrizione + "'," + dataNascita + ")";
+                                            let queryString = "INSERT INTO utenti(username, password, nome, cognome, mail, foto, posizione, sesso, descrizione, dataNascita) VALUES ('" + user + "','" + hash + "','" + nome + "','" + cognome + "','" + mail + "','" + foto + "','" + posizione + "','" + sesso + "','" + descrizione + "',STR_TO_DATE('" + dataNascita + "', '%d-%m-%Y'))";
                                             con.query(queryString, function (errQuery, result) {
                                                 if (errQuery) {
                                                     console.log(errQuery);
                                                     error(req, res, new ERRORS.QUERY_EXECUTE({}));
-                                                } else
-                                                    res.send("Signed up!");
+                                                } else {
+                                                    let token = createToken({
+                                                        "_id": result.insertId,
+                                                        "user": user
+                                                    });
+                                                    console.log("token " + token);
+                                                    //console.log(result.insertId);
+                                                    res.send({
+                                                        "token": token,
+                                                        "result": "Signed up!"
+                                                    });
+                                                }
                                             });
                                         }
                                     });
@@ -129,22 +213,29 @@ app.post("/api/login", function (req, res) {
         con.connect(function (err) {
             if (err) {
                 console.log("Errore di connessione al DB");
-                res.send("Errore di connessione al DB");
+                error(req, res, new ERRORS.DB_CONNECTION({}));
             } else {
                 let queryString = "SELECT * FROM utenti WHERE mail='" + mail + "'";
                 con.query(queryString, function (errQuery, result) {
                     if (errQuery) {
                         console.log(errQuery);
-                        res.send("Errore nella query: " + errQuery)
+                        error(req, res, new ERRORS.QUERY_EXECUTE({}));
                     } else {
 
                         // result[0] perchè si da per scontata l'univocità della mail
                         bcrypt.compare(password, result[0].password, function (errCompare, resultCompare) {
                             if (errCompare)
-                                res.send("Errore compare hash");
+                                error(req, res, new ERRORS.HASH({}));
                             else {
-                                console.log("loggato");
-                                res.send(result);
+                                let token = createToken({
+                                    "_id": result[0].idUtente,
+                                    "user": result[0].username
+                                });
+                                console.log("token " + token);
+                                res.send({
+                                    "token": token,
+                                    "result": result
+                                });
                             }
                         });
                     }
@@ -157,51 +248,88 @@ app.post("/api/login", function (req, res) {
 
 
 app.post("/api/insertQuestion", function (req, res) {
-    con = mySql.createConnection({
-        host: "localhost",
-        user: "root",
-        password: "",
-        database: "social"
-    });
 
-    let autore = req.body.autore;
-    let testo = req.body.testo;
-    let categoria = req.body.categoria;
-    let disponibile = 'T';
+    let ctrlToken = controllaToken(req, res);
+    if (ctrlToken.allow) {
+        if (!ctrlToken.payload.err_iat) {
 
-    let queryString = "INSERT INTO domande(testoDomanda, data,categoria,disponibile, autore) VALUES ('" + testo + "',NOW()," + categoria + ",'" + disponibile + "'," + autore + ")";
-    con.query(queryString, function (errQuery, result) {
-        if (errQuery) {
-            //console.log(errQuery);
-            error(req, res, new ERRORS.QUERY_EXECUTE({}));
-        } else
-            res.send("Domanda inserita con successo");
-    });
+            con = mySql.createConnection({
+                host: "localhost",
+                user: "root",
+                password: "",
+                database: "social"
+            });
+
+            let autore = ctrlToken.payload._id;
+            let testo = req.body.testo;
+            let categoria = req.body.categoria;
+            let disponibile = 'T';
+
+            let queryString = "INSERT INTO domande(testoDomanda, data,categoria,disponibile, autore) VALUES ('" + testo + "',NOW()," + categoria + ",'" + disponibile + "'," + autore + ")";
+            con.query(queryString, function (errQuery, result) {
+                if (errQuery) {
+                    //console.log(errQuery);
+                    error(req, res, new ERRORS.QUERY_EXECUTE({}));
+                } else {
+                    let token = createToken({
+                        "_id": ctrlToken.payload._id,
+                        "user": ctrlToken.payload.user
+                    });
+                    res.send({
+                        data: "Domanda inserita con successo",
+                        token: token
+                    });
+                }
+            });
+        } else {
+            error(req, res, new ERRORS.TOKEN_EXPIRED({}));
+        }
+    } else {
+        error(req, res, new ERRORS.TOKEN_DOESNT_EXIST({}));
+    }
 });
 
 
 
 app.post("/api/insertAnswer", function (req, res) {
-    con = mySql.createConnection({
-        host: "localhost",
-        user: "root",
-        password: "",
-        database: "social"
-    });
+    let ctrlToken = controllaToken(req, res);
+    if (ctrlToken.allow) {
+        if (!ctrlToken.payload.err_iat) {
 
-    let utente = req.body.utente;
-    let testo = req.body.testo;
-    let domanda = req.body.domanda;
+            con = mySql.createConnection({
+                host: "localhost",
+                user: "root",
+                password: "",
+                database: "social"
+            });
+
+            let utente = ctrlToken.payload._id;
+            let testo = req.body.testo;
+            let domanda = req.body.domanda;
 
 
-    let queryString = "INSERT INTO risposte(testoRisposta, data, domanda, utente) VALUES ('" + testo + "',NOW()," + domanda + "," + utente + ")";
-    con.query(queryString, function (errQuery, result) {
-        if (errQuery) {
-            //console.log(errQuery);
-            error(req, res, new ERRORS.QUERY_EXECUTE({}));
-        } else
-            res.send("Risposta inserita con successo");
-    });
+            let queryString = "INSERT INTO risposte(testoRisposta, data, domanda, utente) VALUES ('" + testo + "',NOW()," + domanda + "," + utente + ")";
+            con.query(queryString, function (errQuery, result) {
+                if (errQuery) {
+                    //console.log(errQuery);
+                    error(req, res, new ERRORS.QUERY_EXECUTE({}));
+                } else {
+                    let token = createToken({
+                        "_id": ctrlToken.payload._id,
+                        "user": ctrlToken.payload.user
+                    });
+                    res.send({
+                        data: "Risposta inserita con successo",
+                        token: token
+                    });
+                }
+            });
+        } else {
+            error(req, res, new ERRORS.TOKEN_EXPIRED({}));
+        }
+    } else {
+        error(req, res, new ERRORS.TOKEN_DOESNT_EXIST({}));
+    }
 });
 
 
