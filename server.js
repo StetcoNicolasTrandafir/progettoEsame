@@ -13,7 +13,7 @@ const port = 1337;
 let con;
 let saltRounds = 10;
 
-const TIMEOUT = 30;
+const TIMEOUT = 600;
 
 const privateKey = fs.readFileSync("keys/private.key", "utf8");
 
@@ -443,6 +443,87 @@ app.post("/api/getAnswerByQuestion", function (req, res) {
 });
 
 
+
+app.post("/api/getMessagesByReceiver", function (req, res) {
+    let ctrlToken = controllaToken(req, res);
+    if (ctrlToken.allow) {
+        if (!ctrlToken.payload.err_iat) {
+
+            con = mySql.createConnection({
+                host: "localhost",
+                user: "root",
+                password: "",
+                database: "social"
+            });
+
+            let utente = ctrlToken.payload._id;
+            let destinatario= req.body.destinatario;
+
+            let queryString = "SELECT * FROM messaggi WHERE (mittente= "+utente+" AND destinatario = "+destinatario+") OR (mittente= "+destinatario+" AND destinatario = "+utente+") ORDER BY data ASC";
+            con.query(queryString, function (errQuery, result) {
+                if (errQuery) {
+                    //console.log(errQuery);
+                    error(req, res, new ERRORS.QUERY_EXECUTE({}));
+                } else {
+                    let token = createToken({
+                        "_id": ctrlToken.payload._id,
+                        "user": ctrlToken.payload.user
+                    });
+                    res.send({
+                        data: result,
+                        token: token
+                    });
+                }
+            });
+        } else {
+            error(req, res, new ERRORS.TOKEN_EXPIRED({}));
+        }
+    } else {
+        error(req, res, new ERRORS.TOKEN_DOESNT_EXIST({}));
+    }
+});
+
+
+
+app.post("/api/sendMessage", function (req, res) {
+    let ctrlToken = controllaToken(req, res);
+    if (ctrlToken.allow) {
+        if (!ctrlToken.payload.err_iat) {
+
+            con = mySql.createConnection({
+                host: "localhost",
+                user: "root",
+                password: "",
+                database: "social"
+            });
+
+            let utente = ctrlToken.payload._id;
+            let destinatario= req.body.destinatario;
+            let testo= req.body.testo;
+
+            let queryString = "INSERT INTO messaggi(testoMessaggio, data,mittente,destinatario) VALUES ('" + testo + "',NOW()," + utente + "," +destinatario + ")";
+            con.query(queryString, function (errQuery, result) {
+                if (errQuery) {
+                    //console.log(errQuery);
+                    error(req, res, new ERRORS.QUERY_EXECUTE({}));
+                } else {
+                    let token = createToken({
+                        "_id": ctrlToken.payload._id,
+                        "user": ctrlToken.payload.user
+                    });
+                    res.send({
+                        data: "Messagio inviato",
+                        token: token
+                    });
+                }
+            });
+        } else {
+            error(req, res, new ERRORS.TOKEN_EXPIRED({}));
+        }
+    } else {
+        error(req, res, new ERRORS.TOKEN_DOESNT_EXIST({}));
+    }
+});
 
 function error(req, res, err) {
     res.status(err.code).send(err.message);
