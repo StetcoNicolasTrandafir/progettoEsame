@@ -142,8 +142,8 @@ app.post("/api/signUp", function (req, res, next) {
         } else {
 
             //controllo univocità mail
-            let queryMail = "SELECT idUtente FROM utenti WHERE mail='" + mail + "'";
-            con.query(queryMail, function (errCtrMail, resultMail) {
+            let queryMail = "SELECT idUtente FROM utenti WHERE mail=?";
+            con.query(queryMail, [mail],function (errCtrMail, resultMail) {
                 if (errCtrMail) {
                     console.log(errCtrMail);
                     error(req, res, new ERRORS.QUERY_EXECUTE({}));
@@ -152,8 +152,8 @@ app.post("/api/signUp", function (req, res, next) {
                     if (resultMail.length == 0) {
 
                         //controllo univocità username
-                        let queryUser = "SELECT idUtente FROM utenti WHERE username='" + user + "'";
-                        con.query(queryUser, function (errCtrUser, resultUser) {
+                        let queryUser = "SELECT idUtente FROM utenti WHERE username=?";
+                        con.query(queryUser,[user], function (errCtrUser, resultUser) {
                             if (errCtrUser) {
                                 console.log(errCtrUser);
                                 error(req, res, new ERRORS.QUERY_EXECUTE({}));
@@ -164,8 +164,8 @@ app.post("/api/signUp", function (req, res, next) {
                                             error(req, res, new ERRORS.HASH({}));
                                         else {
                                             //una volta assicurati che non vi sono altri utenti con quell' user e password, si procede alla registrazione
-                                            let queryString = "INSERT INTO utenti(username, password, nome, cognome, mail, foto, posizione, sesso, descrizione, dataNascita) VALUES ('" + user + "','" + hash + "','" + nome + "','" + cognome + "','" + mail + "','" + foto + "','" + posizione + "','" + sesso + "','" + descrizione + "',STR_TO_DATE('" + dataNascita + "', '%d-%m-%Y'))";
-                                            con.query(queryString, function (errQuery, result) {
+                                            let queryString = "INSERT INTO utenti(username, password, nome, cognome, mail, foto, posizione, sesso, descrizione, dataNascita) VALUES (?,?,?,?,?,?,?,?,?,STR_TO_DATE(?, '%d-%m-%Y'))";
+                                            con.query(queryString, [user,hash,nome,cognome,mail,foto,posizione,sesso,descrizione,dataNascita],function (errQuery, result) {
                                                 if (errQuery) {
                                                     console.log(errQuery);
                                                     error(req, res, new ERRORS.QUERY_EXECUTE({}));
@@ -200,10 +200,6 @@ app.post("/api/signUp", function (req, res, next) {
 
 app.post("/api/login", function (req, res) {
 
-
-
-
-
     con = mySql.createConnection({
         host: "localhost",
         user: "root",
@@ -218,9 +214,12 @@ app.post("/api/login", function (req, res) {
     console.log("TEST => " + re.test(String(mail).toLowerCase()));
     let queryString;
     if (re.test(String(mail).toLowerCase())) {
-        queryString = "SELECT * FROM utenti WHERE mail='" + mail + "'";
+        //queryString = "SELECT * FROM utenti WHERE mail='" + mail + "'";
+        queryString = "SELECT * FROM utenti WHERE mail=?";
+
     } else {
-        queryString = "SELECT * FROM utenti WHERE username='" + mail + "'";
+        //queryString = "SELECT * FROM utenti WHERE username='" + mail + "'";
+        queryString = "SELECT * FROM utenti WHERE username=?";
     }
     bcrypt.hash(password, saltRounds, (err, hash) => {
         con.connect(function (err) {
@@ -229,7 +228,7 @@ app.post("/api/login", function (req, res) {
                 error(req, res, new ERRORS.DB_CONNECTION({}));
             } else {
 
-                con.query(queryString, function (errQuery, result) {
+                con.query(queryString,[mail], function (errQuery, result) {
                     if (errQuery) {
                         console.log(errQuery);
                         error(req, res, new ERRORS.QUERY_EXECUTE({}));
@@ -288,8 +287,8 @@ app.post("/api/insertQuestion", function (req, res) {
             let categoria = req.body.categoria;
             let disponibile = 'T';
 
-            let queryString = "INSERT INTO domande(testoDomanda, data,categoria,disponibile, autore) VALUES ('" + testo + "',NOW()," + categoria + ",'" + disponibile + "'," + autore + ")";
-            con.query(queryString, function (errQuery, result) {
+            let queryString = "INSERT INTO domande(testoDomanda, data,categoria,disponibile, autore) VALUES (?,NOW(),?,?,?)";
+            con.query(queryString,[testo,categoria,disponibile,autore], function (errQuery, result) {
                 if (errQuery) {
                     //console.log(errQuery);
                     error(req, res, new ERRORS.QUERY_EXECUTE({}));
@@ -331,8 +330,8 @@ app.post("/api/insertAnswer", function (req, res) {
             let domanda = req.body.domanda;
 
 
-            let queryString = "INSERT INTO risposte(testoRisposta, data, domanda, utente) VALUES ('" + testo + "',NOW()," + domanda + "," + utente + ")";
-            con.query(queryString, function (errQuery, result) {
+            let queryString = "INSERT INTO risposte(testoRisposta, data, domanda, utente) VALUES (?,NOW(),?,?)";
+            con.query(queryString,[testo,domanda,utente], function (errQuery, result) {
                 if (errQuery) {
                     //console.log(errQuery);
                     error(req, res, new ERRORS.QUERY_EXECUTE({}));
@@ -367,8 +366,8 @@ app.post("/api/getQuestionByUser", function (req, res) {
 
     let autore = req.body.autore;
 
-    let queryString = "SELECT * FROM domande WHERE autore= " + autore + " ";
-    con.query(queryString, function (errQuery, result) {
+    let queryString = "SELECT * FROM domande WHERE autore= ? ";
+    con.query(queryString,[autore], function (errQuery, result) {
         if (errQuery) {
             console.log(errQuery);
             error(req, res, new ERRORS.QUERY_EXECUTE({}));
@@ -389,8 +388,8 @@ app.post("/api/getQuestionsByCategory", function (req, res) {
 
     let categoria = req.body.categoria;
 
-    let queryString = "SELECT * FROM domande WHERE categoria= " + categoria + " ";
-    con.query(queryString, function (errQuery, result) {
+    let queryString = "SELECT * FROM domande WHERE categoria= ? ";
+    con.query(queryString,[categoria], function (errQuery, result) {
         if (errQuery) {
             console.log(errQuery);
             error(req, res, new ERRORS.QUERY_EXECUTE({}));
@@ -410,8 +409,8 @@ app.post("/api/getAnswerByUser", function (req, res) {
 
     let utente = req.body.utente;
 
-    let queryString = "SELECT * FROM risposte WHERE utente= " + utente + " ";
-    con.query(queryString, function (errQuery, result) {
+    let queryString = "SELECT * FROM risposte WHERE utente= ? ";
+    con.query(queryString,[utente], function (errQuery, result) {
         if (errQuery) {
             console.log(errQuery);
             error(req, res, new ERRORS.QUERY_EXECUTE({}));
@@ -432,8 +431,8 @@ app.post("/api/getAnswerByQuestion", function (req, res) {
 
     let domanda = req.body.domanda;
 
-    let queryString = "SELECT * FROM risposte WHERE domanda= " + domanda + " ";
-    con.query(queryString, function (errQuery, result) {
+    let queryString = "SELECT * FROM risposte WHERE domanda= ? ";
+    con.query(queryString,[domanda], function (errQuery, result) {
         if (errQuery) {
             console.log(errQuery);
             error(req, res, new ERRORS.QUERY_EXECUTE({}));
@@ -459,8 +458,8 @@ app.post("/api/getMessagesByReceiver", function (req, res) {
             let utente = ctrlToken.payload._id;
             let destinatario= req.body.destinatario;
 
-            let queryString = "SELECT * FROM messaggi WHERE (mittente= "+utente+" AND destinatario = "+destinatario+") OR (mittente= "+destinatario+" AND destinatario = "+utente+") ORDER BY data ASC";
-            con.query(queryString, function (errQuery, result) {
+            let queryString = "SELECT * FROM messaggi WHERE (mittente= ? AND destinatario = ?) OR (mittente=? AND destinatario = ?) ORDER BY data ASC";
+            con.query(queryString,[utente,destinatario,destinatario,utente], function (errQuery, result) {
                 if (errQuery) {
                     //console.log(errQuery);
                     error(req, res, new ERRORS.QUERY_EXECUTE({}));
@@ -501,8 +500,8 @@ app.post("/api/sendMessage", function (req, res) {
             let destinatario= req.body.destinatario;
             let testo= req.body.testo;
 
-            let queryString = "INSERT INTO messaggi(testoMessaggio, data,mittente,destinatario) VALUES ('" + testo + "',NOW()," + utente + "," +destinatario + ")";
-            con.query(queryString, function (errQuery, result) {
+            let queryString = "INSERT INTO messaggi(testoMessaggio, data,mittente,destinatario) VALUES (?,NOW(),?,?)";
+            con.query(queryString,[testo,utente,destinatario], function (errQuery, result) {
                 if (errQuery) {
                     //console.log(errQuery);
                     error(req, res, new ERRORS.QUERY_EXECUTE({}));
