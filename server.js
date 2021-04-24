@@ -199,7 +199,11 @@ app.post("/api/signUp", function (req, res, next) {
 });
 
 app.post("/api/login", function (req, res) {
-
+   
+//Permetto l'accesso a tutti i tipi di client con *
+res.setHeader("Access-Control-Allow-Origin", "*");
+//Permetto l'accesso a tutti i tipi di richieste
+res.setHeader("Access-Control-Allow-Methods","GET, POST, OPTIONS, PUT, PATCH, DELETE");
     con = mySql.createConnection({
         host: "localhost",
         user: "root",
@@ -251,6 +255,7 @@ app.post("/api/login", function (req, res) {
                                             "user": result[0].username
                                         });
                                         console.log("token " + token);
+                                        
                                         res.send({
                                             "token": token,
                                             "result": result
