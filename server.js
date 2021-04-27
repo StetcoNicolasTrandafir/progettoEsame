@@ -60,6 +60,14 @@ app.use("/", bodyParser.urlencoded({
     extended: true
 }));
 
+app.use("/", function(req, res, next){
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+
+    next();
+});
+
 function createToken(obj) {
     let token = jwt.sign({
             '_id': obj._id,
@@ -209,11 +217,7 @@ res.setHeader("Access-Control-Allow-Methods","GET, POST, OPTIONS, PUT, PATCH, DE
 
 app.post("/api/login", function (req, res) {
 
-   
-//Permetto l'accesso a tutti i tipi di client con *
-res.setHeader("Access-Control-Allow-Origin", "*");
-//Permetto l'accesso a tutti i tipi di richieste
-res.setHeader("Access-Control-Allow-Methods","GET, POST, OPTIONS, PUT, PATCH, DELETE");
+
     con = mySql.createConnection({
         host: "localhost",
         user: "root",
@@ -222,7 +226,10 @@ res.setHeader("Access-Control-Allow-Methods","GET, POST, OPTIONS, PUT, PATCH, DE
     });
 
     let mail = req.body.mail;
+    
     let password = req.body.password;
+    console.log(req.body);
+    console.log("MAil: "+mail+" pwd: "+password);
 
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     console.log("TEST MAIL=> " + re.test(String(mail).toLowerCase()));
