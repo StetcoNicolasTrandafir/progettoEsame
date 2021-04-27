@@ -186,18 +186,23 @@ app.post("/api/signUp", function (req, res, next) {
                                                     //console.log(result.insertId);
                                                     res.send({
                                                         "token": token,
-                                                        "result": "Signed up!"
+                                                        "data": "Signed up!"
                                                     });
                                                 }
                                             });
                                         }
                                     });
                                 } else
-                                    res.send("Username non disponibile, scegline un altro");
+                                    res.send({
+                                        data:"Username non disponibile, scegline un altro"
+                                    });
                             }
                         });
                     } else
-                        res.send("Ti sei già registrato con questa mail");
+                        res.send(
+                            {
+                                data:"Ti sei già registrato con questa mail"
+                            });
                 }
             });
         }
@@ -212,7 +217,9 @@ app.get("/api/prova", function(req, res){
 res.setHeader("Access-Control-Allow-Origin", "*");
 //Permetto l'accesso a tutti i tipi di richieste
 res.setHeader("Access-Control-Allow-Methods","GET, POST, OPTIONS, PUT, PATCH, DELETE");
-    res.json("chiamata riuscita");
+    res.send({
+        data:"Chiamata riuscita"
+    });
 });
 
 app.post("/api/login", function (req, res) {
@@ -258,7 +265,9 @@ app.post("/api/login", function (req, res) {
                     } else {
                         if (result.length == 0) {
                             console.log("user errato");
-                            res.send("user errato");
+                            res.send({
+                                data:"User errato"
+                            });
                         } else {
                             console.log("gino");
                             // result[0] perchè si da per scontata l'univocità della mail
@@ -269,7 +278,9 @@ app.post("/api/login", function (req, res) {
                                 else {
                                     console.log("resultCompare => "+resultCompare);
                                     if(!resultCompare){
-                                        res.send("password errata");
+                                        res.send({
+                                            data:"Password errata"
+                                        });
                                     }else{
                                         let token = createToken({
                                             "_id": result[0].idUtente,
@@ -283,7 +294,7 @@ app.post("/api/login", function (req, res) {
 
                                         res.send({
                                             "token": token,
-                                            "result": result
+                                            "data": result
                                         });
                                     }
                                 }
@@ -295,7 +306,6 @@ app.post("/api/login", function (req, res) {
         });
     });
 });
-
 
 
 app.post("/api/insertQuestion", function (req, res) {

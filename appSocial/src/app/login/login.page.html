@@ -5,16 +5,30 @@
 </ion-header>
 
 <ion-content>
-  <ion-item>
-    <ion-label position="floating" >Username/E-mail</ion-label>
-    <ion-input [(ngModel)]="user"></ion-input>
-  </ion-item>
-  <ion-item>
-    <ion-label position="floating">Password</ion-label>
-    <ion-input type="password" [(ngModel)]="password"></ion-input>
-  </ion-item>
-  <ion-label position="stacked">{{errore}}</ion-label>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Login</ion-card-title>
+    </ion-card-header>
 
 
-  <ion-button color="primary" (click)="login()">Primary</ion-button>
+    <ion-item>
+      <ion-label position="floating" >Username/E-mail</ion-label>
+      <ion-input [(ngModel)]="user"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Password</ion-label>
+      <ion-input type="password" [(ngModel)]="password"></ion-input>
+    </ion-item>
+    <ion-label position="stacked" style="color: red;">{{errore}}</ion-label>
+    <br>
+
+    <section>
+      <ion-button color="primary" (click)="login()" expand="block">Login</ion-button>
+    </section>
+  </ion-card>
+
+
+
+
+
 </ion-content>

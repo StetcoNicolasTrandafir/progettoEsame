@@ -22,10 +22,22 @@ export class LoginPage implements OnInit {
     else{
       //this.errore="bravissimo";
       console.log(this.user, this.password);
-      const headers = new HttpHeaders().set('Content-Type', 'application/json');
+
+
+      const headers = new HttpHeaders().set('Content-Type','application/json');
+
+
       this.sendPostRequest("/api/login", JSON.stringify({mail:this.user,password:this.password}), headers).subscribe(
         (data: any) => {
           console.log(data);
+          if(typeof(data.data)!="string"){
+            this.errore="Login effettuato";
+            localStorage.setItem("token","Beaer "+data.token);
+          }
+          else
+            this.errore="Credenziali errate";
+
+
         },
         (error: any) => {
           console.log(error);
@@ -35,6 +47,7 @@ export class LoginPage implements OnInit {
   }
   public sendPostRequest(servizio: string, datiBody:any, header:any) {
     console.log(header);
+    //TODO aggiungere il token all'header nelle chiamate
     return this.http.post(this.ENDPOINT_SERVER + servizio, datiBody, {headers: header});
   }
 }
