@@ -27,8 +27,9 @@ export class LoginPage implements OnInit {
     else{
 
       this.errore="bravissimo";
-      this.sendPostRequest("/api/login",{mail:this.user,password:this.password}).subscribe(
+      this.sendPostRequest("/api/login", JSON.stringify({mail:this.user,password:this.password})).subscribe(
         (data: any) => {
+
           console.log(data);
         },
         (error: any) => {
@@ -38,6 +39,7 @@ export class LoginPage implements OnInit {
     }
   }
   public sendPostRequest(servizio: string, datiBody:any) {
+
     return this.http.post(this.ENDPOINT_SERVER + servizio, datiBody);
   }
 }

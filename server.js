@@ -198,7 +198,17 @@ app.post("/api/signUp", function (req, res, next) {
 
 });
 
+
+app.get("/api/prova", function(req, res){    
+//Permetto l'accesso a tutti i tipi di client con *
+res.setHeader("Access-Control-Allow-Origin", "*");
+//Permetto l'accesso a tutti i tipi di richieste
+res.setHeader("Access-Control-Allow-Methods","GET, POST, OPTIONS, PUT, PATCH, DELETE");
+    res.json("chiamata riuscita");
+});
+
 app.post("/api/login", function (req, res) {
+
    
 //Permetto l'accesso a tutti i tipi di client con *
 res.setHeader("Access-Control-Allow-Origin", "*");
@@ -215,7 +225,7 @@ res.setHeader("Access-Control-Allow-Methods","GET, POST, OPTIONS, PUT, PATCH, DE
     let password = req.body.password;
 
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    console.log("TEST => " + re.test(String(mail).toLowerCase()));
+    console.log("TEST MAIL=> " + re.test(String(mail).toLowerCase()));
     let queryString;
     if (re.test(String(mail).toLowerCase())) {
         //queryString = "SELECT * FROM utenti WHERE mail='" + mail + "'";
@@ -225,6 +235,7 @@ res.setHeader("Access-Control-Allow-Methods","GET, POST, OPTIONS, PUT, PATCH, DE
         //queryString = "SELECT * FROM utenti WHERE username='" + mail + "'";
         queryString = "SELECT * FROM utenti WHERE username=?";
     }
+
     bcrypt.hash(password, saltRounds, (err, hash) => {
         con.connect(function (err) {
             if (err) {
@@ -232,14 +243,17 @@ res.setHeader("Access-Control-Allow-Methods","GET, POST, OPTIONS, PUT, PATCH, DE
                 error(req, res, new ERRORS.DB_CONNECTION({}));
             } else {
 
+                
                 con.query(queryString,[mail], function (errQuery, result) {
                     if (errQuery) {
                         console.log(errQuery);
                         error(req, res, new ERRORS.QUERY_EXECUTE({}));
                     } else {
                         if (result.length == 0) {
+                            console.log("user errato");
                             res.send("user errato");
                         } else {
+                            console.log("gino");
                             // result[0] perchè si da per scontata l'univocità della mail
                             console.log("PASSWORD => "+password+" || PASSWORD DB => "+result[0].password);
                             bcrypt.compare(password, result[0].password, function (errCompare, resultCompare) {
@@ -256,12 +270,15 @@ res.setHeader("Access-Control-Allow-Methods","GET, POST, OPTIONS, PUT, PATCH, DE
                                         });
                                         console.log("token " + token);
                                         
+                                        res.setHeader("Access-Control-Allow-Origin", "*");
+                                        //Permetto l'accesso a tutti i tipi di richieste
+                                        res.setHeader("Access-Control-Allow-Methods","GET, POST, OPTIONS, PUT, PATCH, DELETE");
+
                                         res.send({
                                             "token": token,
                                             "result": result
                                         });
                                     }
-                                    
                                 }
                             });
                         }
