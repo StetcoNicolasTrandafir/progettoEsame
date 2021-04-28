@@ -411,7 +411,7 @@ app.post("/api/getQuestionByUser", function (req, res) {
             console.log(errQuery);
             error(req, res, new ERRORS.QUERY_EXECUTE({}));
         } else
-            res.send(result);
+            res.send({data:result});
     });
 });
 
@@ -433,7 +433,7 @@ app.post("/api/getQuestionsByCategory", function (req, res) {
             console.log(errQuery);
             error(req, res, new ERRORS.QUERY_EXECUTE({}));
         } else
-            res.send(result);
+            res.send({data:result});
     });
 });
 
@@ -454,7 +454,7 @@ app.post("/api/getAnswerByUser", function (req, res) {
             console.log(errQuery);
             error(req, res, new ERRORS.QUERY_EXECUTE({}));
         } else
-            res.send(result);
+            res.send({data:result});
     });
 });
 
@@ -476,7 +476,7 @@ app.post("/api/getAnswerByQuestion", function (req, res) {
             console.log(errQuery);
             error(req, res, new ERRORS.QUERY_EXECUTE({}));
         } else
-            res.send(result);
+            res.send({data:result});
     });
 });
 
