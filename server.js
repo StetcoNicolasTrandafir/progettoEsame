@@ -13,7 +13,7 @@ const port = 1337;
 let con;
 let saltRounds = 10;
 
-const TIMEOUT = 600;
+const TIMEOUT = 3;
 
 const privateKey = fs.readFileSync("keys/private.key", "utf8");
 
@@ -63,7 +63,7 @@ app.use("/", bodyParser.urlencoded({
 app.use("/", function(req, res, next){
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With,token');
 
     next();
 });
@@ -90,6 +90,7 @@ function controllaToken(req, res) {
         error(req, res, new ERRORS.TOKEN_DOESNT_EXIST({}));
     } else {
         const token = req.headers["token"].split(' ')[1];
+        //console.log("TOKEN => "+token);
         console.log(token + " - " + typeof (token));
         if (token != "null") {
             jwt.verify(token, privateKey, function (err, data) {
@@ -105,14 +106,17 @@ function controllaToken(req, res) {
                 }
             });
         }
-        return ctrlToken;
+        
     }
+    return ctrlToken;
 }
 
 
 
 app.post("/api/controlloToken", function (req, res, next) {
+    console.log(req.headers);
     let ctrlToken = controllaToken(req, res);
+    console.log(ctrlToken);
     if (ctrlToken.allow && !ctrlToken.payload.err_iat) {
         res.send({
             "data": "TOKEN OK",
@@ -212,11 +216,13 @@ app.post("/api/signUp", function (req, res, next) {
 });
 
 
-app.get("/api/prova", function(req, res){    
+app.post("/api/prova", function(req, res){    
 //Permetto l'accesso a tutti i tipi di client con *
 res.setHeader("Access-Control-Allow-Origin", "*");
 //Permetto l'accesso a tutti i tipi di richieste
 res.setHeader("Access-Control-Allow-Methods","GET, POST, OPTIONS, PUT, PATCH, DELETE");
+console.log("Chiamata risucita");
+console.log(req.headers);
     res.send({
         data:"Chiamata riuscita"
     });
@@ -288,9 +294,9 @@ app.post("/api/login", function (req, res) {
                                         });
                                         console.log("token " + token);
                                         
-                                        res.setHeader("Access-Control-Allow-Origin", "*");
+                                        //res.setHeader("Access-Control-Allow-Origin", "*");
                                         //Permetto l'accesso a tutti i tipi di richieste
-                                        res.setHeader("Access-Control-Allow-Methods","GET, POST, OPTIONS, PUT, PATCH, DELETE");
+                                        //res.setHeader("Access-Control-Allow-Methods","GET, POST, OPTIONS, PUT, PATCH, DELETE");
 
                                         res.send({
                                             "token": token,
@@ -565,4 +571,8 @@ app.post("/api/sendMessage", function (req, res) {
 
 function error(req, res, err) {
     res.status(err.code).send(err.message);
+    /*res.send({
+        data:err.message,
+        code:err.code
+    });*/
 }

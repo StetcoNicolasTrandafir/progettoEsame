@@ -5,6 +5,24 @@
 </ion-header>
 
 <ion-content>
-  <h5>Latitudine: {{latitudine}}</h5>
-  <h5>Longitudine: {{longitudine}}</h5>
+  <ion-card>
+    <ion-card-header>
+
+      <ion-card-title class="ion-text-center">Login</ion-card-title>
+    </ion-card-header>
+    <ion-item>
+      <ion-label position="floating" >Username/E-mail</ion-label>
+      <ion-input [(ngModel)]="user"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Password</ion-label>
+      <ion-input type="password" [(ngModel)]="password"></ion-input>
+    </ion-item>
+    <ion-label position="stacked" style="color: red;">{{errore}}</ion-label>
+    <br>
+
+    <section>
+      <ion-button color="primary" (click)="login()" expand="block">Login</ion-button>
+    </section>
+  </ion-card>
 </ion-content>
