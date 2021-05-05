@@ -36,6 +36,8 @@ export class SignupPage implements OnInit {
       this.errore="Inserire uno username";
     }else if(this.username.length>=30||this.username.length<=5){
       this.errore="Lo username deve essere lungo dai 5 ai 30 caratteri";
+    }else if(this.username.includes(' ')){
+      this.errore="Lo username non deve contenere spazi vuoti";
     }else if(this.password==""){
       this.errore="Inserire una password";
     }else if(this.password!=this.confermaPassword){
@@ -69,20 +71,21 @@ export class SignupPage implements OnInit {
         password:this.password,
         posizione:String(this.latitudine)+";"+String(this.longitudine)
       }
-      this.http.sendPOSTRequest("/api/signup",param).subscribe(
-        (data)=>{
-          if(data.code==50){
-            this.errore=data.data;
-          }else{
-            localStorage.setItem('token',data.token);
-            this.router.navigateByUrl('');
-          }
+        this.http.sendPOSTRequest("/api/signup", param).subscribe(
+          (data) => {
+            if (data.code == 50) {
+              this.errore = data.data;
+            } else {
+              localStorage.setItem('token', data.token);
+              this.router.navigateByUrl('');
+            }
 
-      },
-        (error)=>{
-          console.log(error);
-        }
-      );
+          },
+          (error) => {
+            console.log(error);
+          }
+        );
+
     }
   }
 
