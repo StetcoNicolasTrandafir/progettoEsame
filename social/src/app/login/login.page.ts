@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import {Capacitor,Plugins} from '@capacitor/core';
 import {HttpService} from "../service/http.service";
 import {Router} from "@angular/router";
 
@@ -21,19 +20,7 @@ export class LoginPage implements OnInit {
 
   }
 
-  getPosition(){
-      if(!Capacitor.isPluginAvailable('Geolocation')){
-        alert("No plugin");
-      }else{
-        Plugins.Geolocation.getCurrentPosition().then(geoposition=>{
-          this.latitudine = geoposition.coords.latitude;
-          this.longitudine = geoposition.coords.longitude;
-        })
-        .catch(err=>{
-          alert("Errore");
-        });
-      }
-    }
+
 
   login() {
     if(this.user==""){
@@ -56,5 +43,9 @@ export class LoginPage implements OnInit {
         }
       );
     }
+  }
+
+  signup() {
+    this.router.navigateByUrl('signup');
   }
 }

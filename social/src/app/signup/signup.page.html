@@ -1,0 +1,69 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Registrazione</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-card-header>
+
+      <ion-card-title class="ion-text-center">Registrazione</ion-card-title>
+    </ion-card-header>
+    <ion-item>
+      <ion-label position="floating" >Username</ion-label>
+      <ion-input [(ngModel)]="username"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Password</ion-label>
+      <ion-input type="password" [(ngModel)]="password"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Conferma Password</ion-label>
+      <ion-input type="password" [(ngModel)]="confermaPassword"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Nome</ion-label>
+      <ion-input [(ngModel)]="nome"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Cognome</ion-label>
+      <ion-input [(ngModel)]="cognome"></ion-input>
+    </ion-item>
+    <br/>
+
+    <ion-radio-group [(ngModel)]="sesso">
+      <ion-item>
+        <ion-label>Uomo</ion-label>
+        <ion-radio slot="start" color="primary" value="M"></ion-radio>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Donna</ion-label>
+        <ion-radio slot="start" color="danger" value="F"></ion-radio>
+      </ion-item>
+
+    </ion-radio-group>
+    <br/>
+    <ion-item>
+      <!--<ion-label>Data di nascita</ion-label>-->
+      <ion-datetime placeholder="Select Date" [(ngModel)]="dataNascita"></ion-datetime>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Mail</ion-label>
+      <ion-input [(ngModel)]="mail"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Descrizione</ion-label>
+      <ion-textarea [(ngModel)]="descrizione"></ion-textarea>
+    </ion-item>
+    <ion-label position="stacked" style="color: red;">{{errore}}</ion-label>
+    <br>
+    <section>
+      <ion-button color="primary" (click)="signup()" expand="block">Registrati</ion-button>
+    </section>
+    <section>
+      <ion-button color="primary" fill="outline" (click)="login()" expand="block">Login</ion-button>
+    </section>
+  </ion-card>
+</ion-content>

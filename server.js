@@ -198,6 +198,7 @@ app.post("/api/signUp", function (req, res, next) {
                                     });
                                 } else
                                     res.send({
+                                        code:50,
                                         data:"Username non disponibile, scegline un altro"
                                     });
                             }
@@ -205,6 +206,7 @@ app.post("/api/signUp", function (req, res, next) {
                     } else
                         res.send(
                             {
+                                code:50,
                                 data:"Ti sei già registrato con questa mail"
                             });
                 }
