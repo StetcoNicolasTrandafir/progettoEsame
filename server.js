@@ -114,7 +114,7 @@ function controllaToken(req, res) {
 
 
 app.post("/api/controlloToken", function (req, res, next) {
-    console.log(req.headers);
+    //console.log(req.headers);
     let ctrlToken = controllaToken(req, res);
     console.log(ctrlToken);
     if (ctrlToken.allow && !ctrlToken.payload.err_iat) {
