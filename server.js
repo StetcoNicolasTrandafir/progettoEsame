@@ -15,7 +15,7 @@ const port = 1337;
 let con;
 let saltRounds = 10;
 
-const TIMEOUT = 3;
+const TIMEOUT = 6000;
 
 const privateKey = fs.readFileSync("keys/private.key", "utf8");
 
@@ -62,7 +62,7 @@ app.use("/", bodyParser.urlencoded({
     extended: true
 }));
 app.use(fileupload());
-app.use("/", function(req, res, next){
+app.use("/", function (req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With,token');
@@ -108,7 +108,7 @@ function controllaToken(req, res) {
                 }
             });
         }
-        
+
     }
     return ctrlToken;
 }
@@ -157,7 +157,7 @@ app.post("/api/signUp", function (req, res, next) {
 
             //controllo univocità mail
             let queryMail = "SELECT idUtente FROM utenti WHERE mail=?";
-            con.query(queryMail, [mail],function (errCtrMail, resultMail) {
+            con.query(queryMail, [mail], function (errCtrMail, resultMail) {
                 if (errCtrMail) {
                     console.log(errCtrMail);
                     error(req, res, new ERRORS.QUERY_EXECUTE({}));
@@ -167,7 +167,7 @@ app.post("/api/signUp", function (req, res, next) {
 
                         //controllo univocità username
                         let queryUser = "SELECT idUtente FROM utenti WHERE username=?";
-                        con.query(queryUser,[user], function (errCtrUser, resultUser) {
+                        con.query(queryUser, [user], function (errCtrUser, resultUser) {
                             if (errCtrUser) {
                                 console.log(errCtrUser);
                                 error(req, res, new ERRORS.QUERY_EXECUTE({}));
@@ -179,7 +179,7 @@ app.post("/api/signUp", function (req, res, next) {
                                         else {
                                             //una volta assicurati che non vi sono altri utenti con quell' user e password, si procede alla registrazione
                                             let queryString = "INSERT INTO utenti(username, password, nome, cognome, mail, foto, posizione, sesso, descrizione, dataNascita) VALUES (?,?,?,?,?,?,?,?,?,STR_TO_DATE(?, '%d-%m-%Y'))";
-                                            con.query(queryString, [user,hash,nome,cognome,mail,foto,posizione,sesso,descrizione,dataNascita],function (errQuery, result) {
+                                            con.query(queryString, [user, hash, nome, cognome, mail, foto, posizione, sesso, descrizione, dataNascita], function (errQuery, result) {
                                                 if (errQuery) {
                                                     console.log(errQuery);
                                                     error(req, res, new ERRORS.QUERY_EXECUTE({}));
@@ -200,17 +200,16 @@ app.post("/api/signUp", function (req, res, next) {
                                     });
                                 } else
                                     res.send({
-                                        code:50,
-                                        data:"Username non disponibile, scegline un altro"
+                                        code: 50,
+                                        data: "Username non disponibile, scegline un altro"
                                     });
                             }
                         });
                     } else
-                        res.send(
-                            {
-                                code:50,
-                                data:"Ti sei già registrato con questa mail"
-                            });
+                        res.send({
+                            code: 50,
+                            data: "Ti sei già registrato con questa mail"
+                        });
                 }
             });
         }
@@ -220,15 +219,15 @@ app.post("/api/signUp", function (req, res, next) {
 });
 
 
-app.post("/api/prova", function(req, res){    
-//Permetto l'accesso a tutti i tipi di client con *
-res.setHeader("Access-Control-Allow-Origin", "*");
-//Permetto l'accesso a tutti i tipi di richieste
-res.setHeader("Access-Control-Allow-Methods","GET, POST, OPTIONS, PUT, PATCH, DELETE");
-console.log("Chiamata risucita");
-console.log(req.headers);
+app.post("/api/prova", function (req, res) {
+    //Permetto l'accesso a tutti i tipi di client con *
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    //Permetto l'accesso a tutti i tipi di richieste
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+    console.log("Chiamata risucita");
+    console.log(req.headers);
     res.send({
-        data:"Chiamata riuscita"
+        data: "Chiamata riuscita"
     });
 });
 
@@ -243,10 +242,10 @@ app.post("/api/login", function (req, res) {
     });
 
     let mail = req.body.mail;
-    
+
     let password = req.body.password;
     console.log(req.body);
-    console.log("MAil: "+mail+" pwd: "+password);
+    console.log("MAil: " + mail + " pwd: " + password);
 
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     console.log("TEST MAIL=> " + re.test(String(mail).toLowerCase()));
@@ -267,8 +266,8 @@ app.post("/api/login", function (req, res) {
                 error(req, res, new ERRORS.DB_CONNECTION({}));
             } else {
 
-                
-                con.query(queryString,[mail], function (errQuery, result) {
+
+                con.query(queryString, [mail], function (errQuery, result) {
                     if (errQuery) {
                         console.log(errQuery);
                         error(req, res, new ERRORS.QUERY_EXECUTE({}));
@@ -276,28 +275,28 @@ app.post("/api/login", function (req, res) {
                         if (result.length == 0) {
                             console.log("user errato");
                             res.send({
-                                data:"User errato"
+                                data: "User errato"
                             });
                         } else {
                             console.log("gino");
                             // result[0] perchè si da per scontata l'univocità della mail
-                            console.log("PASSWORD => "+password+" || PASSWORD DB => "+result[0].password);
+                            console.log("PASSWORD => " + password + " || PASSWORD DB => " + result[0].password);
                             bcrypt.compare(password, result[0].password, function (errCompare, resultCompare) {
                                 if (errCompare)
                                     error(req, res, new ERRORS.HASH({}));
                                 else {
-                                    console.log("resultCompare => "+resultCompare);
-                                    if(!resultCompare){
+                                    console.log("resultCompare => " + resultCompare);
+                                    if (!resultCompare) {
                                         res.send({
-                                            data:"Password errata"
+                                            data: "Password errata"
                                         });
-                                    }else{
+                                    } else {
                                         let token = createToken({
                                             "_id": result[0].idUtente,
                                             "user": result[0].username
                                         });
                                         console.log("token " + token);
-                                        
+
                                         //res.setHeader("Access-Control-Allow-Origin", "*");
                                         //Permetto l'accesso a tutti i tipi di richieste
                                         //res.setHeader("Access-Control-Allow-Methods","GET, POST, OPTIONS, PUT, PATCH, DELETE");
@@ -337,7 +336,7 @@ app.post("/api/insertQuestion", function (req, res) {
             let disponibile = 'T';
 
             let queryString = "INSERT INTO domande(testoDomanda, data,categoria,disponibile, autore) VALUES (?,NOW(),?,?,?)";
-            con.query(queryString,[testo,categoria,disponibile,autore], function (errQuery, result) {
+            con.query(queryString, [testo, categoria, disponibile, autore], function (errQuery, result) {
                 if (errQuery) {
                     //console.log(errQuery);
                     error(req, res, new ERRORS.QUERY_EXECUTE({}));
@@ -380,7 +379,7 @@ app.post("/api/insertAnswer", function (req, res) {
 
 
             let queryString = "INSERT INTO risposte(testoRisposta, data, domanda, utente) VALUES (?,NOW(),?,?)";
-            con.query(queryString,[testo,domanda,utente], function (errQuery, result) {
+            con.query(queryString, [testo, domanda, utente], function (errQuery, result) {
                 if (errQuery) {
                     //console.log(errQuery);
                     error(req, res, new ERRORS.QUERY_EXECUTE({}));
@@ -415,13 +414,40 @@ app.post("/api/getQuestionByUser", function (req, res) {
 
     let autore = req.body.autore;
 
-    let queryString = "SELECT * FROM domande WHERE autore= ? ";
-    con.query(queryString,[autore], function (errQuery, result) {
+    let queryString = "SELECT * FROM domande WHERE autore= ?  NOT IN (SELECT idCategoria FROM blacklist WHERE idUtente= ?)";
+    con.query(queryString, [autore, autore], function (errQuery, result) {
         if (errQuery) {
             console.log(errQuery);
             error(req, res, new ERRORS.QUERY_EXECUTE({}));
         } else
-            res.send({data:result});
+            res.send({
+                data: result
+            });
+    });
+});
+
+
+app.post("/api/getQuestions", function (req, res) {
+    let ctrlToken = controllaToken(req, res);
+
+
+    con = mySql.createConnection({
+        host: "localhost",
+        user: "root",
+        password: "",
+        database: "social"
+    });
+
+    let utente = ctrlToken.payload._id;
+    let queryString = "SELECT * FROM domande WHERE categoria NOT IN (SELECT idCategoria FROM blacklist WHERE idUtente= ?)";
+    con.query(queryString, [utente,utente], function (errQuery, result) {
+        if (errQuery) {
+            console.log(errQuery);
+            error(req, res, new ERRORS.QUERY_EXECUTE({}));
+        } else
+            res.send({
+                data: result
+            });
     });
 });
 
@@ -435,15 +461,22 @@ app.post("/api/getQuestionsByCategory", function (req, res) {
         database: "social"
     });
 
-    let categoria = req.body.categoria;
+    let categorie = req.body.categorie;
+    console.log(categorie);
 
-    let queryString = "SELECT * FROM domande WHERE categoria= ? ";
-    con.query(queryString,[categoria], function (errQuery, result) {
+
+    let queryString = "SELECT * FROM domande WHERE categoria IN (SELECT idCategoria FROM categorie WHERE nomeCategoria IN (?))";
+
+    console.log(queryString);
+
+    con.query(queryString, [categorie], function (errQuery, result) {
         if (errQuery) {
             console.log(errQuery);
             error(req, res, new ERRORS.QUERY_EXECUTE({}));
         } else
-            res.send({data:result});
+            res.send({
+                data: result
+            });
     });
 });
 
@@ -459,12 +492,14 @@ app.post("/api/getAnswerByUser", function (req, res) {
     let utente = req.body.utente;
 
     let queryString = "SELECT * FROM risposte WHERE utente= ? ";
-    con.query(queryString,[utente], function (errQuery, result) {
+    con.query(queryString, [utente], function (errQuery, result) {
         if (errQuery) {
             console.log(errQuery);
             error(req, res, new ERRORS.QUERY_EXECUTE({}));
         } else
-            res.send({data:result});
+            res.send({
+                data: result
+            });
     });
 });
 
@@ -481,12 +516,14 @@ app.post("/api/getAnswerByQuestion", function (req, res) {
     let domanda = req.body.domanda;
 
     let queryString = "SELECT * FROM risposte WHERE domanda= ? ";
-    con.query(queryString,[domanda], function (errQuery, result) {
+    con.query(queryString, [domanda], function (errQuery, result) {
         if (errQuery) {
             console.log(errQuery);
             error(req, res, new ERRORS.QUERY_EXECUTE({}));
         } else
-            res.send({data:result});
+            res.send({
+                data: result
+            });
     });
 });
 
@@ -505,10 +542,10 @@ app.post("/api/getMessagesByReceiver", function (req, res) {
             });
 
             let utente = ctrlToken.payload._id;
-            let destinatario= req.body.destinatario;
+            let destinatario = req.body.destinatario;
 
             let queryString = "SELECT * FROM messaggi WHERE (mittente= ? AND destinatario = ?) OR (mittente=? AND destinatario = ?) ORDER BY data ASC";
-            con.query(queryString,[utente,destinatario,destinatario,utente], function (errQuery, result) {
+            con.query(queryString, [utente, destinatario, destinatario, utente], function (errQuery, result) {
                 if (errQuery) {
                     //console.log(errQuery);
                     error(req, res, new ERRORS.QUERY_EXECUTE({}));
@@ -546,11 +583,11 @@ app.post("/api/sendMessage", function (req, res) {
             });
 
             let utente = ctrlToken.payload._id;
-            let destinatario= req.body.destinatario;
-            let testo= req.body.testo;
+            let destinatario = req.body.destinatario;
+            let testo = req.body.testo;
 
             let queryString = "INSERT INTO messaggi(testoMessaggio, data,mittente,destinatario) VALUES (?,NOW(),?,?)";
-            con.query(queryString,[testo,utente,destinatario], function (errQuery, result) {
+            con.query(queryString, [testo, utente, destinatario], function (errQuery, result) {
                 if (errQuery) {
                     //console.log(errQuery);
                     error(req, res, new ERRORS.QUERY_EXECUTE({}));
@@ -575,14 +612,16 @@ app.post("/api/sendMessage", function (req, res) {
 
 app.post("/api/processUpFile", function (req, res, next) {
     let f = req.files.myFile;
-    console.log("F=> "+f.name);
+    console.log("F=> " + f.name);
     let output = __dirname + '/img/' + f.name;
-    f.mv(output,function(err){
-        if(err){
+    f.mv(output, function (err) {
+        if (err) {
             res.send(err);
-        }else{
+        } else {
             console.log("File moved to: " + output);
-            res.send({data:"fileUploaded"});
+            res.send({
+                data: "fileUploaded"
+            });
         }
     })
 })
