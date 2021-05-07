@@ -74,8 +74,8 @@ function createToken(obj) {
     let token = jwt.sign({
             '_id': obj._id,
             'user': obj.user,
-            'iat': obj.iat || Math.floor(Date.now() / 1000),
-            'exp': obj.exp || Math.floor(Date.now() / 1000 + TIMEOUT)
+            'iat': Math.floor(Date.now() / 1000),
+            'exp': Math.floor(Date.now() / 1000 + TIMEOUT)
         },
         privateKey
     );
@@ -108,7 +108,6 @@ function controllaToken(req, res) {
                 }
             });
         }
-
     }
     return ctrlToken;
 }
@@ -120,9 +119,13 @@ app.post("/api/controlloToken", function (req, res, next) {
     let ctrlToken = controllaToken(req, res);
     console.log(ctrlToken);
     if (ctrlToken.allow && !ctrlToken.payload.err_iat) {
+        let token = createToken({
+            "_id": ctrlToken.payload._id,
+            "user": ctrlToken.payload.user
+        });
         res.send({
             "data": "TOKEN OK",
-            token: ctrlToken.payload
+            token: token
         });
     } else {
         error(req, res, new ERRORS.TOKEN_EXPIRED({}));
@@ -429,7 +432,6 @@ app.post("/api/getQuestionByUser", function (req, res) {
 
 app.post("/api/getQuestions", function (req, res) {
     let ctrlToken = controllaToken(req, res);
-
 
     con = mySql.createConnection({
         host: "localhost",
