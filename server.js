@@ -382,6 +382,7 @@ app.post("/api/insertAnswer", function (req, res) {
 
 
             let queryString = "INSERT INTO risposte(testoRisposta, data, domanda, utente) VALUES (?,NOW(),?,?)";
+            console.log(queryString+" "+testo+" "+domanda+" "+utente);
             con.query(queryString, [testo, domanda, utente], function (errQuery, result) {
                 if (errQuery) {
                     //console.log(errQuery);

@@ -1,0 +1,18 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Rispondi</ion-title>
+    <ion-button color="danger" slot="start" size="small" (click)="dismiss()">X</ion-button>
+    <ion-button color="primary" slot="end" size="small" (click)="invia()"><ion-icon name="send-outline"></ion-icon></ion-button>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-item style="--ion-background-color: {{colore}} !important;">
+    <ion-label class="ion-text-center">{{categoria}}</ion-label>
+  </ion-item>
+  <ion-item>
+    <ion-label  class="ion-text-center" text-wrap>{{testo}}</ion-label>
+  </ion-item>
+    <ion-textarea [(ngModel)]="testoRisposta" rows="8" class="ion-margin ion-text-center" placeholder="Scrivi la tua risposta qui..."></ion-textarea>
+
+</ion-content>

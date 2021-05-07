@@ -13,19 +13,7 @@ export class Tab1Page implements OnInit{
 
   ngOnInit(){
     //alert();
-    this.Http.sendPOSTRequest("/api/controlloToken",{}).subscribe(
-      (data)=>{
-        console.log(data);
-        localStorage.setItem('token',data.token);
-      },
-      (error)=>{
-        console.log(error);
-        //alert(error.status);
-        if(error.status==604||error.status==603){
-          this.router.navigateByUrl('login');
-        }
-      }
-    )
+
     //this.router.navigateByUrl('login');
     /*this.Http.sendPOSTRequest("/api/prova",{}).subscribe(
       (data)=>{

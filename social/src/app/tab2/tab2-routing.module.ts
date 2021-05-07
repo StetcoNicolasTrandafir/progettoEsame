@@ -6,6 +6,10 @@ const routes: Routes = [
   {
     path: '',
     component: Tab2Page,
+  },
+  {
+    path: 'modal-answer',
+    loadChildren: () => import('./modal-answer/modal-answer.module').then( m => m.ModalAnswerPageModule)
   }
 ];
 
