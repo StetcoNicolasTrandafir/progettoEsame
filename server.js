@@ -6,6 +6,8 @@ const bodyParser = require('body-parser');
 const jwt = require("jsonwebtoken");
 const fs = require('fs');
 const mySql = require('mysql');
+const fileupload = require('express-fileupload');
+
 
 const app = express();
 
@@ -59,7 +61,7 @@ app.use("/", bodyParser.json());
 app.use("/", bodyParser.urlencoded({
     extended: true
 }));
-
+app.use(fileupload());
 app.use("/", function(req, res, next){
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
@@ -570,6 +572,20 @@ app.post("/api/sendMessage", function (req, res) {
         error(req, res, new ERRORS.TOKEN_DOESNT_EXIST({}));
     }
 });
+
+app.post("/api/processUpFile", function (req, res, next) {
+    let f = req.files.myFile;
+    console.log("F=> "+f.name);
+    let output = __dirname + '/img/' + f.name;
+    f.mv(output,function(err){
+        if(err){
+            res.send(err);
+        }else{
+            console.log("File moved to: " + output);
+            res.send({data:"fileUploaded"});
+        }
+    })
+})
 
 function error(req, res, err) {
     res.status(err.code).send(err.message);

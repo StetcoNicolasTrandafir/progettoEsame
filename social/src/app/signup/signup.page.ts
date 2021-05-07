@@ -23,6 +23,8 @@ export class SignupPage implements OnInit {
   sesso: any='M';
   private latitudine: number=10;
   private longitudine: number=10;
+  mostrafoto: boolean=false;
+  private selectedFile: File;
 
   constructor(private router:Router,private http:HttpService,private pipe:DatePipe) { }
 
@@ -30,7 +32,6 @@ export class SignupPage implements OnInit {
   }
 
   signup() {
-
 
     if(this.username==""){
       this.errore="Inserire uno username";
@@ -56,15 +57,22 @@ export class SignupPage implements OnInit {
       this.errore="Inserire una data di nascita";
     }else if(this.mail==""){
       this.errore="Inserire una mail";
-    }else{
+    }
+    else if(!this.selectedFile){
+      this.errore="Inserire una foto";
+    }
+    else{
       this.getPosition();
       alert(this.latitudine);
+      const uploadData = new FormData();
+      uploadData.append('myFile', this.selectedFile, this.selectedFile.name);
+
       let param={
         user:this.username,
         mail:this.mail,
         nome:this.nome,
         cognome:this.cognome,
-        foto:'avatar.svg',
+        foto:this.selectedFile.name,
         sesso:this.sesso,
         descrizione:this.descrizione,
         dataNascita:this.pipe.transform(this.dataNascita, 'dd-MM-yyyy'),
@@ -76,6 +84,14 @@ export class SignupPage implements OnInit {
             if (data.code == 50) {
               this.errore = data.data;
             } else {
+              this.http.sendPOSTRequest("/api/processUpFile", uploadData).subscribe(
+                (data) => {
+                  console.log(data);
+                },
+                (error) => {
+                  console.log(error);
+                }
+              );
               localStorage.setItem('token', data.token);
               this.router.navigateByUrl('');
             }
@@ -105,5 +121,11 @@ export class SignupPage implements OnInit {
           alert("Errore");
         });
     }
+  }
+
+  onFileChanged(event) {
+    this.selectedFile = event.target.files[0];
+    console.log(this.selectedFile);
+
   }
 }

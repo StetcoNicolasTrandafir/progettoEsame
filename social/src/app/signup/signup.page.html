@@ -57,6 +57,10 @@
       <ion-label position="floating">Descrizione</ion-label>
       <ion-textarea [(ngModel)]="descrizione"></ion-textarea>
     </ion-item>
+    <ion-item>
+      <ion-label>Foto</ion-label><br/><hr>
+      <ion-input type="file" (change)="onFileChanged($event)" #fileInput></ion-input>
+    </ion-item>
     <ion-label position="stacked" style="color: red;">{{errore}}</ion-label>
     <br>
     <section>
