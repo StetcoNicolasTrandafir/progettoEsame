@@ -441,7 +441,7 @@ app.post("/api/getQuestions", function (req, res) {
     });
 
     let utente = ctrlToken.payload._id;
-    let queryString = "SELECT * FROM domande WHERE categoria NOT IN (SELECT idCategoria FROM blacklist WHERE idUtente= ?)";
+    let queryString = "SELECT domande.*, utenti.username, categorie.nomeCategoria, categorie.colore FROM domande, utenti, categorie WHERE (utenti.idUtente=domande.autore AND domande.categoria=categorie.idCategoria) AND categoria NOT IN (SELECT idCategoria FROM blacklist WHERE idUtente= ?)";
     con.query(queryString, [utente,utente], function (errQuery, result) {
         if (errQuery) {
             console.log(errQuery);
