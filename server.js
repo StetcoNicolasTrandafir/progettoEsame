@@ -409,8 +409,6 @@ app.post("/api/insertAnswer", function (req, res) {
 
 
 app.post("/api/getQuestionByUser", function (req, res) {
-    let ctrlToken = controllaToken(req, res);
-
     con = mySql.createConnection({
         host: "localhost",
         user: "root",
@@ -418,13 +416,10 @@ app.post("/api/getQuestionByUser", function (req, res) {
         database: "social"
     });
 
-    let utente = ctrlToken.payload._id;
+    let autore = req.body.autore;
 
-    //validita contiente T o F
-    let validita = req.body.validita;
-     
-    let queryString = "SELECT * FROM domande WHERE autore= ? AND disponibile=?";
-    con.query(queryString, [utente, validita], function (errQuery, result) {
+    let queryString = "SELECT * FROM domande WHERE autore= ?  NOT IN (SELECT idCategoria FROM blacklist WHERE idUtente= ?)";
+    con.query(queryString, [autore, autore], function (errQuery, result) {
         if (errQuery) {
             console.log(errQuery);
             error(req, res, new ERRORS.QUERY_EXECUTE({}));
@@ -448,31 +443,7 @@ app.post("/api/getQuestions", function (req, res) {
 
     let utente = ctrlToken.payload._id;
     let queryString = "SELECT domande.*, utenti.username, categorie.nomeCategoria, categorie.colore FROM domande, utenti, categorie WHERE (utenti.idUtente=domande.autore AND domande.categoria=categorie.idCategoria) AND categoria NOT IN (SELECT idCategoria FROM blacklist WHERE idUtente= ?)";
-    con.query(queryString, [utente, utente], function (errQuery, result) {
-        if (errQuery) {
-            console.log(errQuery);
-            error(req, res, new ERRORS.QUERY_EXECUTE({}));
-        } else
-            res.send({
-                data: result
-            });
-    });
-});
-
-
-app.post("/api/getBlacklist", function (req, res) {
-    let ctrlToken = controllaToken(req, res);
-
-    con = mySql.createConnection({
-        host: "localhost",
-        user: "root",
-        password: "",
-        database: "social"
-    });
-
-    let utente = ctrlToken.payload._id;
-    let queryString = "SELECT categorie.nomeCategoria, categorie.colore FROM blacklist, categorie WHERE (blacklist.idUtente=?)";
-    con.query(queryString, [utente], function (errQuery, result) {
+    con.query(queryString, [utente,utente], function (errQuery, result) {
         if (errQuery) {
             console.log(errQuery);
             error(req, res, new ERRORS.QUERY_EXECUTE({}));
