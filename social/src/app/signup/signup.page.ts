@@ -31,7 +31,7 @@ export class SignupPage implements OnInit {
   ngOnInit() {
   }
 
-  signup() {
+  async signup() {
 
     if(this.username==""){
       this.errore="Inserire uno username";
@@ -62,7 +62,7 @@ export class SignupPage implements OnInit {
       this.errore="Inserire una foto";
     }
     else{
-      this.getPosition();
+      let position= await this.getPosition();
       alert(this.latitudine);
       const uploadData = new FormData();
       uploadData.append('myFile', this.selectedFile, this.selectedFile.name);
@@ -77,7 +77,8 @@ export class SignupPage implements OnInit {
         descrizione:this.descrizione,
         dataNascita:this.pipe.transform(this.dataNascita, 'dd-MM-yyyy'),
         password:this.password,
-        posizione:String(this.latitudine)+";"+String(this.longitudine)
+        posizione: position
+        //posizione:String(this.latitudine)+";"+String(this.longitudine)
       }
         this.http.sendPOSTRequest("/api/signup", param).subscribe(
           (data) => {
@@ -101,7 +102,6 @@ export class SignupPage implements OnInit {
             console.log(error);
           }
         );
-
     }
   }
 
@@ -109,16 +109,19 @@ export class SignupPage implements OnInit {
     this.router.navigateByUrl('login');
   }
 
-  getPosition(){
+  async getPosition(){
     if(!Capacitor.isPluginAvailable('Geolocation')){
       alert("No plugin");
     }else{
-      Plugins.Geolocation.getCurrentPosition().then(geoposition=>{
+      return Plugins.Geolocation.getCurrentPosition().then(geoposition=>{
         this.latitudine = geoposition.coords.latitude;
         this.longitudine = geoposition.coords.longitude;
+
+        return String(this.latitudine)+";"+String(this.longitudine);
       })
         .catch(err=>{
           alert("Errore");
+          console.log(err);
         });
     }
   }
@@ -126,6 +129,5 @@ export class SignupPage implements OnInit {
   onFileChanged(event) {
     this.selectedFile = event.target.files[0];
     console.log(this.selectedFile);
-
   }
 }
