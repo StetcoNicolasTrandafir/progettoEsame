@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import {MenuController} from "@ionic/angular";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-tab3',
@@ -8,11 +9,16 @@ import {MenuController} from "@ionic/angular";
 })
 export class Tab3Page {
 
-  constructor(private menu:MenuController) {}
+  constructor(private menu:MenuController,private router:Router) {}
 
   openMenu() {
     //alert();
     //this.menu.enable(true, 'first');
     this.menu.open('first');
+  }
+
+  logout() {
+    localStorage.removeItem('token');
+    this.router.navigateByUrl('login');
   }
 }
