@@ -15,7 +15,7 @@ const port = 1337;
 let con;
 let saltRounds = 10;
 
-const TIMEOUT = 6000;
+const TIMEOUT = 30;
 
 const privateKey = fs.readFileSync("keys/private.key", "utf8");
 

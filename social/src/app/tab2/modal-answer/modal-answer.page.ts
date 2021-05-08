@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {ModalController} from "@ionic/angular";
 import {HttpService} from "../../service/http.service";
+import {ToastController} from "@ionic/angular";
 
 @Component({
   selector: 'app-modal-answer',
@@ -15,7 +16,7 @@ export class ModalAnswerPage implements OnInit {
   @Input() colore;
   testoRisposta: any;
 
-  constructor(private modalController:ModalController,private http:HttpService) { }
+  constructor(private modalController:ModalController,private http:HttpService,private toastController:ToastController) { }
 
   ngOnInit() {
     //alert(this.colore);
@@ -33,9 +34,19 @@ export class ModalAnswerPage implements OnInit {
     this.http.sendPOSTRequest('/api/insertAnswer',{testo:this.testoRisposta,domanda:this.idDomanda}).subscribe(
       (data)=>{
         console.log(data);
+        this.presentToast();
+        this.dismiss();
       },(error)=>{
         console.log(error);
       }
     )
+  }
+  async presentToast() {
+    const toast = await this.toastController.create({
+      color: 'dark',
+      message: 'Risposta inviata!',
+      duration: 3000
+    });
+    toast.present();
   }
 }

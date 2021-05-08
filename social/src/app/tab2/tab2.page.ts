@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpService} from "../service/http.service";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-tab2',
@@ -10,9 +10,17 @@ import {Router} from "@angular/router";
 export class Tab2Page implements OnInit{
   domande: any=[];
 
-  constructor(private http:HttpService,private router:Router) {}
+  constructor(private http:HttpService,private router:Router,private route:ActivatedRoute) {
+    route.params.subscribe(val => {
+      this.controlloToken();
+    });
+  }
 
   ngOnInit(): void {
+    //this.controlloToken();
+  }
+
+  private controlloToken(){
     this.http.sendPOSTRequest("/api/controlloToken",{}).subscribe(
       (data)=>{
         console.log(data);
@@ -27,9 +35,8 @@ export class Tab2Page implements OnInit{
         }
       }
     )
-
-
   }
+
   private caricaHome(){
     this.http.sendPOSTRequest("/api/getQuestions",{}).subscribe(
       (data)=>{
