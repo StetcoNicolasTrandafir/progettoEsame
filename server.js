@@ -418,7 +418,7 @@ app.post("/api/getQuestionByUser", function (req, res) {
 
     let autore = req.body.autore;
 
-    let queryString = "SELECT * FROM domande WHERE autore= ?  NOT IN (SELECT idCategoria FROM blacklist WHERE idUtente= ?)";
+    let queryString = "SELECT * FROM domande WHERE autore= ? AND NOT IN (SELECT idCategoria FROM blacklist WHERE idUtente= ?)";
     con.query(queryString, [autore, autore], function (errQuery, result) {
         if (errQuery) {
             console.log(errQuery);
@@ -442,8 +442,7 @@ app.post("/api/getQuestions", function (req, res) {
     });
 
     let utente = ctrlToken.payload._id;
-    let queryString = "SELECT domande.*, utenti.username, categorie.nomeCategoria, categorie.colore FROM domande, utenti, categorie WHERE (utenti.idUtente=domande.autore AND domande.categoria=categorie.idCategoria) AND categoria NOT IN (SELECT idCategoria FROM blacklist WHERE idUtente= ?)";
-    con.query(queryString, [utente,utente], function (errQuery, result) {
+    let queryString = "SELECT domande.*, utenti.username, categorie.nomeCategoria, categorie.colore FROM domande, utenti, categorie WHERE domande.autore!=? AND (utenti.idUtente=domande.autore AND domande.categoria=categorie.idCategoria) AND categoria NOT IN (SELECT idCategoria FROM blacklist WHERE idUtente= ?) ORDER BY domande.data DESC";    con.query(queryString, [utente,utente], function (errQuery, result) {
         if (errQuery) {
             console.log(errQuery);
             error(req, res, new ERRORS.QUERY_EXECUTE({}));
