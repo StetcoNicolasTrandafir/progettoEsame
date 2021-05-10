@@ -40,18 +40,18 @@
       <ion-button (click)="openMenu()"><ion-icon name="menu-outline"></ion-icon></ion-button>
     </ion-buttons>
     <ion-title>
-      Profilo
+      {{user.username}}
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <div>
+  <div style="padding: 10%">
     <ion-router-outlet id="main"></ion-router-outlet>
     <ion-avatar>
       <ion-img src="https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y"></ion-img>
     </ion-avatar>
-    <h3></h3>
+
   </div>
 
 

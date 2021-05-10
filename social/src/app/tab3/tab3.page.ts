@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {MenuController} from "@ionic/angular";
 import {Router} from "@angular/router";
+import {HttpService} from "../service/http.service";
 
 @Component({
   selector: 'app-tab3',
@@ -8,8 +9,8 @@ import {Router} from "@angular/router";
   styleUrls: ['tab3.page.scss']
 })
 export class Tab3Page implements OnInit{
-
-  constructor(private menu:MenuController,private router:Router) {}
+  user;
+  constructor(private menu:MenuController,private router:Router,private Http:HttpService) {}
 
   openMenu() {
     //alert();
@@ -23,7 +24,15 @@ export class Tab3Page implements OnInit{
   }
 
   ngOnInit(): void {
-
+    this.Http.sendPOSTRequest('/api/getUser',{}).subscribe(
+      (data)=>{
+        //console.log(data);
+        this.user=data.data[0];
+        console.log(this.user);
+      },(err)=>{
+        console.log(err);
+      }
+    )
 
   }
 }
