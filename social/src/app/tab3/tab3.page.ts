@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {MenuController} from "@ionic/angular";
 import {Router} from "@angular/router";
 
@@ -7,7 +7,7 @@ import {Router} from "@angular/router";
   templateUrl: 'tab3.page.html',
   styleUrls: ['tab3.page.scss']
 })
-export class Tab3Page {
+export class Tab3Page implements OnInit{
 
   constructor(private menu:MenuController,private router:Router) {}
 
@@ -20,5 +20,10 @@ export class Tab3Page {
   logout() {
     localStorage.removeItem('token');
     this.router.navigateByUrl('login');
+  }
+
+  ngOnInit(): void {
+
+
   }
 }

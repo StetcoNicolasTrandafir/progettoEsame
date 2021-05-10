@@ -10,12 +10,11 @@ const fileupload = require('express-fileupload');
 
 
 const app = express();
-
 const port = 1337;
 let con;
 let saltRounds = 10;
 
-const TIMEOUT = 30;
+const TIMEOUT = 30000;
 
 const privateKey = fs.readFileSync("keys/private.key", "utf8");
 
@@ -364,6 +363,43 @@ app.post("/api/insertQuestion", function (req, res) {
 
 
 
+app.post("/api/getUser", function (req, res) {
+
+    let ctrlToken = controllaToken(req, res);
+    if (ctrlToken.allow) {
+        if (!ctrlToken.payload.err_iat) {
+
+            con = mySql.createConnection({
+                host: "localhost",
+                user: "root",
+                password: "",
+                database: "social"
+            });
+
+            let user = ctrlToken.payload._id;
+
+            let queryString = "SELECT * FROM  utenti WHERE idUtente=?";
+            con.query(queryString, [user], function (errQuery, result) {
+                if (errQuery) {
+                    //console.log(errQuery);
+                    error(req, res, new ERRORS.QUERY_EXECUTE({}));
+                } else {
+                    
+                    res.send({
+                        data: result,
+                    });
+                }
+            });
+        } else {
+            error(req, res, new ERRORS.TOKEN_EXPIRED({}));
+        }
+    } else {
+        error(req, res, new ERRORS.TOKEN_DOESNT_EXIST({}));
+    }
+});
+
+
+
 app.post("/api/insertAnswer", function (req, res) {
     let ctrlToken = controllaToken(req, res);
     if (ctrlToken.allow) {
@@ -572,6 +608,46 @@ app.post("/api/getMessagesByReceiver", function (req, res) {
 
 
 
+app.post("/api/getChats", function (req, res) {
+
+    console.log("servizio richiamato");
+    let ctrlToken = controllaToken(req, res);
+    if (ctrlToken.allow) {
+        if(!ctrlToken.payload.err_iat) {
+
+            con = mySql.createConnection({
+                host: "localhost",
+                user: "root",
+                password: "",
+                database: "social"
+            });
+
+            let utente = ctrlToken.payload._id;
+
+            //let queryString = "SELECT DISTINCT matched.*, utenti.* FROM matched, utenti WHERE (matched.idUtenteDomanda=? OR matched.idUtenteRisposta=?) AND (utenti.idUtente != ?) ";
+            let queryString = "SELECT DISTINCT matched.*, utenti.idUtente, utenti.username, utenti.nome, utenti.cognome, utenti.foto FROM matched, utenti WHERE (matched.idUtenteDomanda=? OR matched.idUtenteRisposta=?) AND (utenti.idUtente != ?) AND (utenti.idUtente=matched.idUtenteRisposta OR utenti.idUtente=matched.idUtenteDomanda)";
+            console.log(queryString);
+
+            con.query(queryString, [utente, utente,utente], function (errQuery, result) {
+                if (errQuery) {
+                    //console.log(errQuery);
+                    error(req, res, new ERRORS.QUERY_EXECUTE({}));
+                } else {
+                    res.send({
+                        data: result
+                    });
+                }
+            });
+        } else {
+            error(req, res, new ERRORS.TOKEN_EXPIRED({}));
+        }
+    } else {
+        error(req, res, new ERRORS.TOKEN_DOESNT_EXIST({}));
+    }
+});
+
+
+
 app.post("/api/sendMessage", function (req, res) {
     let ctrlToken = controllaToken(req, res);
     if (ctrlToken.allow) {
@@ -589,6 +665,9 @@ app.post("/api/sendMessage", function (req, res) {
             let testo = req.body.testo;
 
             let queryString = "INSERT INTO messaggi(testoMessaggio, data,mittente,destinatario) VALUES (?,NOW(),?,?)";
+
+            console.log(utente, destinatario, testo);
+            console.log(queryString);
             con.query(queryString, [testo, utente, destinatario], function (errQuery, result) {
                 if (errQuery) {
                     //console.log(errQuery);

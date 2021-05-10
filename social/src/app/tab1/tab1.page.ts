@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, Output} from '@angular/core';
 import {Router} from "@angular/router";
 import {HttpService} from "../service/http.service";
 
@@ -8,20 +8,19 @@ import {HttpService} from "../service/http.service";
   styleUrls: ['tab1.page.scss']
 })
 export class Tab1Page implements OnInit{
+  chats: any=[];
 
   constructor(private router: Router,private Http:HttpService) {}
 
   ngOnInit(){
-    //alert();
-
-    //this.router.navigateByUrl('login');
-    /*this.Http.sendPOSTRequest("/api/prova",{}).subscribe(
+    //Controllo CHAT
+    this.Http.sendPOSTRequest('/api/getChats',{}).subscribe(
       (data)=>{
         console.log(data);
-      },
-      (error)=>{
-        console.log(error);
+        this.chats=data.data;
+      },(err)=>{
+        console.log(err);
       }
-    )*/
+    );
   }
 }

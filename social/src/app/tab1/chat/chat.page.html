@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-button color="danger" slot="start" size="small" (click)="dismiss()">X</ion-button>
+    <ion-title>{{datoChat.username}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div style="height: 100%">
+  <div style="height: 85%;">
+  <app-message *ngFor="let item of messages" [messaggio]="item" [idChat]="this.datoChat.idUtente"></app-message>
+    <div style="height: 17%"></div>
+  </div>
+  <div style="position: fixed;height: 15%;background-color: white;width: 100%;padding-top:2%;border-top: 1px solid black">
+    <ion-item>
+      <ion-textarea placeholder="Scrivi un messaggio..." style="width: 80%" [(ngModel)]="testoMessaggio" >
+
+      </ion-textarea>
+      <ion-button style="margin: auto" color="primary" slot="end" size="small" (click)="invia()"><ion-icon name="send-outline"></ion-icon></ion-button>
+    </ion-item>
+  </div>
+  </div>
+</ion-content>
