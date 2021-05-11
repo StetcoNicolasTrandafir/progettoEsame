@@ -9,7 +9,7 @@ import {HttpService} from "../service/http.service";
   styleUrls: ['tab3.page.scss']
 })
 export class Tab3Page implements OnInit{
-  user;
+  user="";
   constructor(private menu:MenuController,private router:Router,private Http:HttpService) {}
 
   openMenu() {
