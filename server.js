@@ -447,26 +447,61 @@ app.post("/api/insertAnswer", function (req, res) {
 
 
 app.post("/api/getQuestionByUser", function (req, res) {
-    con = mySql.createConnection({
-        host: "localhost",
-        user: "root",
-        password: "",
-        database: "social"
-    });
-
-    let autore = req.body.autore;
-
-    let queryString = "SELECT * FROM domande WHERE autore= ? AND NOT IN (SELECT idCategoria FROM blacklist WHERE idUtente= ?)";
-    con.query(queryString, [autore, autore], function (errQuery, result) {
-        if (errQuery) {
-            console.log(errQuery);
-            error(req, res, new ERRORS.QUERY_EXECUTE({}));
-        } else
-            res.send({
-                data: result
+    let ctrlToken = controllaToken(req, res);
+    if (ctrlToken.allow) {
+        if (!ctrlToken.payload.err_iat) {
+            con = mySql.createConnection({
+                host: "localhost",
+                user: "root",
+                password: "",
+                database: "social"
             });
-    });
+
+            let autore = ctrlToken.payload._id;
+
+            let queryString = "SELECT domande.*, categorie.nomeCategoria, categorie.colore  FROM domande, categorie WHERE domande.autore= ? AND domande.categoria=categorie.idCategoria";
+            con.query(queryString, [autore], function (errQuery, result) {
+                if (errQuery) {
+                    console.log(errQuery);
+                    error(req, res, new ERRORS.QUERY_EXECUTE({}));
+                } else
+                    res.send({
+                        data: result
+                    });
+            });
+        }
+        else {
+            error(req, res, new ERRORS.TOKEN_EXPIRED({}));
+        }
+    } else {
+        error(req, res, new ERRORS.TOKEN_DOESNT_EXIST({}));
+    }
 });
+
+
+app.post("/api/getCategories", function (req, res) {
+    
+            con = mySql.createConnection({
+                host: "localhost",
+                user: "root",
+                password: "",
+                database: "social"
+            });
+
+
+
+            let queryString = "SELECT * FROM categorie";
+            con.query(queryString,[], function (errQuery, result) {
+                if (errQuery) {
+                    console.log(errQuery);
+                    error(req, res, new ERRORS.QUERY_EXECUTE({}));
+                } else
+                    res.send({
+                        data: result
+                    });
+            });
+        }
+    );
 
 
 app.post("/api/getQuestions", function (req, res) {
@@ -545,6 +580,30 @@ app.post("/api/getAnswerByUser", function (req, res) {
 
 
 
+app.post("/api/handleRequest", function (req, res) {
+    con = mySql.createConnection({
+        host: "localhost",
+        user: "root",
+        password: "",
+        database: "social"
+    });
+
+    let risposta = req.body.risposta;
+    let stato = req.body.stato;
+
+    let queryString = "UPDATE risposte SET stato=? WHERE idRisposta=?";
+    con.query(queryString, [ stato, risposta], function (errQuery, result) {
+        if (errQuery) {
+             console.log(errQuery);
+            error(req, res, new ERRORS.QUERY_EXECUTE({}));
+        } else
+            res.send({
+                data: result
+            });
+    });
+});
+
+
 app.post("/api/getAnswerByQuestion", function (req, res) {
     con = mySql.createConnection({
         host: "localhost",
@@ -554,11 +613,12 @@ app.post("/api/getAnswerByQuestion", function (req, res) {
     });
 
     let domanda = req.body.domanda;
+    let stato = req.body.stato;
 
-    let queryString = "SELECT * FROM risposte WHERE domanda= ? ";
-    con.query(queryString, [domanda], function (errQuery, result) {
+    let queryString = "SELECT risposte.*, utenti.username, domande.testoDomanda FROM risposte,utenti, domande WHERE domanda= ? AND stato=? AND risposte.utente=utenti.idUtente AND domande.idDomanda=risposte.domanda";
+    con.query(queryString, [domanda, stato], function (errQuery, result) {
         if (errQuery) {
-            console.log(errQuery);
+             console.log(errQuery);
             error(req, res, new ERRORS.QUERY_EXECUTE({}));
         } else
             res.send({
@@ -692,6 +752,94 @@ app.post("/api/sendMessage", function (req, res) {
         error(req, res, new ERRORS.TOKEN_DOESNT_EXIST({}));
     }
 });
+
+
+
+app.post("/api/startChat", function (req, res) {
+    let ctrlToken = controllaToken(req, res);
+    if (ctrlToken.allow) {
+        if (!ctrlToken.payload.err_iat) {
+
+            con = mySql.createConnection({
+                host: "localhost",
+                user: "root",
+                password: "",
+                database: "social"
+            });
+
+            let utenteDomanda = ctrlToken.payload._id;
+            let utenteRisposta = req.body.utenteRisposta;
+            let domanda= req.body.domanda;
+            let risposta= req.body.risposta;
+
+            let queryString = "INSERT INTO messaggi(testoMessaggio, data,mittente,destinatario) VALUES (?, NOW(), ?,?),(?, NOW(), ?,?)";
+
+            con.query(queryString, [domanda, utenteDomanda, utenteRisposta, risposta, utenteRisposta,utenteDomanda], function (errQuery, result) {
+                if (errQuery) {
+                    //console.log(errQuery);
+                    error(req, res, new ERRORS.QUERY_EXECUTE({}));
+                } else {
+                    let token = createToken({
+                        "_id": ctrlToken.payload._id,
+                        "user": ctrlToken.payload.user
+                    });
+                    res.send({
+                        data: "Chat iniziata!",
+                        token: token
+                    });
+                }
+            });
+        } else {
+            error(req, res, new ERRORS.TOKEN_EXPIRED({}));
+        }
+    } else {
+        error(req, res, new ERRORS.TOKEN_DOESNT_EXIST({}));
+    }
+});
+
+
+
+app.post("/api/match", function (req, res) {
+    let ctrlToken = controllaToken(req, res);
+    if (ctrlToken.allow) {
+        if (!ctrlToken.payload.err_iat) {
+
+            con = mySql.createConnection({
+                host: "localhost",
+                user: "root",
+                password: "",
+                database: "social"
+            });
+
+            let utente = ctrlToken.payload._id;
+            let utenteRisposta= req.body.utenteRisposta;
+            let queryString = "INSERT INTO matched(idUtenteDomanda,idUtenteRisposta, matched, data) VALUES (?,?,'T',NOW())";
+
+   
+            con.query(queryString, [utente, utenteRisposta], function (errQuery, result) {
+                if (errQuery) {
+                    //console.log(errQuery);
+                    error(req, res, new ERRORS.QUERY_EXECUTE({}));
+                } else {
+                    let token = createToken({
+                        "_id": ctrlToken.payload._id,
+                        "user": ctrlToken.payload.user
+                    });
+                    res.send({
+                        data: "Match creato!",
+                        token: token
+                    });
+                }
+            });
+        } else {
+            error(req, res, new ERRORS.TOKEN_EXPIRED({}));
+        }
+    } else {
+        error(req, res, new ERRORS.TOKEN_DOESNT_EXIST({}));
+    }
+});
+
+
 
 app.post("/api/processUpFile", function (req, res, next) {
     let f = req.files.myFile;

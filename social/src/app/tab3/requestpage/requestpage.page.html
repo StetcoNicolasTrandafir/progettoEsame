@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="dark" (click)="back()"><ion-icon name="arrow-back-outline"></ion-icon></ion-button>
+    </ion-buttons>
+
+    <ion-title>Richieste</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <app-request *ngFor="let item of richieste" [richiesta]="item"></app-request>
+  <ion-card *ngIf="nessunaRisposta">
+    <ion-card-header>
+      <ion-card-title>Non hai nessuna risposta per questa domanda!</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

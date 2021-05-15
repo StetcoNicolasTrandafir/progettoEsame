@@ -1,0 +1,10 @@
+<ion-card style="background-color:{{myQuestion.colore}}">
+  <ion-card-header>
+  </ion-card-header>
+
+  <ion-card-content>
+    {{myQuestion.testoDomanda}}
+    <br/>
+    <ion-button class="ion-margin-top" expand="block" color="light" (click)="visualizzaRisposte(myQuestion.idDomanda)">Visualizza risposte</ion-button>
+  </ion-card-content>
+</ion-card>

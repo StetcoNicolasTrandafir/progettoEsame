@@ -1,0 +1,16 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Domanda</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-item>
+    <ion-label>Categoria</ion-label>
+    <ion-select ok-text="Seleziona" cancel-text="Annulla" [(ngModel)]="selectedCategory">
+      <ion-select-option *ngFor="let item of categorie" value="{{item.idCategoria}}">{{item.nomeCategoria}}</ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ion-textarea [(ngModel)]="testoDomanda" rows="8" class="ion-margin ion-text-center" placeholder="Scrivi la tua domanda qui..."></ion-textarea>
+  <ion-button expand="block" (click)="insertQuestion()">Inserisci Domanda</ion-button>
+</ion-content>

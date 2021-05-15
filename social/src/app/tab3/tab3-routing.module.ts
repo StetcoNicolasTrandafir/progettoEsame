@@ -6,6 +6,14 @@ const routes: Routes = [
   {
     path: '',
     component: Tab3Page,
+  },
+  {
+    path: 'requestpage/:id',
+    loadChildren: () => import('./requestpage/requestpage.module').then( m => m.RequestpagePageModule)
+  },
+  {
+    path: 'insertquestionpage',
+    loadChildren: () => import('./insertquestionpage/insertquestionpage.module').then( m => m.InsertquestionpagePageModule)
   }
 ];
 
