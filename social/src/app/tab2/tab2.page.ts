@@ -9,6 +9,8 @@ import {ActivatedRoute, Router} from "@angular/router";
 })
 export class Tab2Page implements OnInit{
   domande: any=[];
+  categorie: any=[];
+  selectedCategories: any;
 
   constructor(private http:HttpService,private router:Router,private route:ActivatedRoute) {
     route.params.subscribe(val => {
@@ -18,6 +20,15 @@ export class Tab2Page implements OnInit{
 
   ngOnInit(): void {
     //this.controlloToken();
+    this.http.sendPOSTRequest('/api/getCategories',{}).subscribe(
+      (data)=>{
+        console.log(data);
+        this.categorie=data.data;
+      },
+      (err)=>{
+        console.log(err);
+      }
+    )
   }
 
   private controlloToken(){
@@ -39,6 +50,18 @@ export class Tab2Page implements OnInit{
 
   private caricaHome(){
     this.http.sendPOSTRequest("/api/getQuestions",{}).subscribe(
+      (data)=>{
+        console.log(data.data);
+        this.domande=data.data;
+      },(error)=>{
+        console.log(error);
+      }
+    );
+  }
+
+  caricaDomandePerCategorie() {
+    console.log(this.selectedCategories);
+    this.http.sendPOSTRequest("/api/getQuestionsByCategory",{categorie:this.selectedCategories}).subscribe(
       (data)=>{
         console.log(data.data);
         this.domande=data.data;

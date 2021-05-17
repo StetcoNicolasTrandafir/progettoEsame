@@ -28,7 +28,7 @@ export class Tab3Page implements OnInit{
         }
       )
 
-      this.Http.sendPOSTRequest('/api/getQuestionByUser',{}).subscribe(
+      this.Http.sendPOSTRequest('/api/getQuestionByUser',{disponibile:'T'}).subscribe(
         (data)=>{
           console.log(data);
           this.myQuestions=data.data;
@@ -68,5 +68,15 @@ export class Tab3Page implements OnInit{
       componentProps: {}
     });
     return await modal.present();
+  }
+
+  apriRisposte() {
+    this.menu.close('first');
+    this.router.navigate(['tabs/tab3/answerpage',this.id]);
+  }
+
+  apriArchivioDomande() {
+    this.menu.close('first');
+    this.router.navigate(['tabs/tab3/questionarchive']);
   }
 }

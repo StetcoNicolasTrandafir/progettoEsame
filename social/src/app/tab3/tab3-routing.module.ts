@@ -14,6 +14,14 @@ const routes: Routes = [
   {
     path: 'insertquestionpage',
     loadChildren: () => import('./insertquestionpage/insertquestionpage.module').then( m => m.InsertquestionpagePageModule)
+  },
+  {
+    path: 'answerpage/:id',
+    loadChildren: () => import('./answerpage/answerpage.module').then( m => m.AnswerpagePageModule)
+  },
+  {
+    path: 'questionarchive',
+    loadChildren: () => import('./questionarchive/questionarchive.module').then( m => m.QuestionarchivePageModule)
   }
 ];
 

@@ -10,17 +10,17 @@
         <ion-icon name="mail" slot="start"></ion-icon>
         <ion-label>Richieste</ion-label>
       </ion-item>
-      <ion-item>
+      <ion-item (click)="apriRisposte()">
         <ion-icon name="paper-plane" slot="start"></ion-icon>
-        <ion-label>Outbox</ion-label>
+        <ion-label>Risposte</ion-label>
+      </ion-item>
+      <ion-item (click)="apriArchivioDomande()">
+        <ion-icon name="archive" slot="start"></ion-icon>
+        <ion-label>Archivio Domande</ion-label>
       </ion-item>
       <ion-item>
         <ion-icon name="heart" slot="start"></ion-icon>
         <ion-label>Favorites</ion-label>
-      </ion-item>
-      <ion-item>
-        <ion-icon name="archive" slot="start"></ion-icon>
-        <ion-label>Archived</ion-label>
       </ion-item>
       <ion-item>
         <ion-icon name="trash" slot="start"></ion-icon>
@@ -49,7 +49,7 @@
   <div style="padding: 10%">
     <ion-router-outlet id="main"></ion-router-outlet>
     <ion-avatar>
-      <ion-img src="http://localhost:1337/img/{{user.foto}}"></ion-img>
+      <ion-img src="http://localhost:1337/img/{{user.idUtente}}.{{user.foto}}"></ion-img>
     </ion-avatar>
 
   </div>

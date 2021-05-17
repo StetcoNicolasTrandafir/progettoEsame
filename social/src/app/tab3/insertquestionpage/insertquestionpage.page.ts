@@ -8,10 +8,10 @@ import {ModalController} from "@ionic/angular";
   styleUrls: ['./insertquestionpage.page.scss'],
 })
 export class InsertquestionpagePage implements OnInit {
-  testoDomanda: any;
+  testoDomanda: any="";
   categorie: any=[];
   selectedCategory: any;
-
+  txtError="";
   constructor(private http:HttpService,private modalController:ModalController) { }
 
   ngOnInit() {
@@ -27,14 +27,20 @@ export class InsertquestionpagePage implements OnInit {
   }
 
   insertQuestion() {
-    //alert(this.selectedCategory);
-    this.http.sendPOSTRequest('/api/insertQuestion',{testo:this.testoDomanda,categoria:this.selectedCategory}).subscribe(
-      (data)=>{
-        console.log(data);
-        this.modalController.dismiss();
-      },(err)=>{
-        console.log(err);
-      }
-    )
+
+      this.http.sendPOSTRequest('/api/insertQuestion',{testo:this.testoDomanda,categoria:this.selectedCategory}).subscribe(
+        (data)=>{
+          console.log(data);
+          this.modalController.dismiss();
+        },(err)=>{
+          console.log(err);
+        }
+      )
+
+
+  }
+
+  back() {
+    this.modalController.dismiss();
   }
 }

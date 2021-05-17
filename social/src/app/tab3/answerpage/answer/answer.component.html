@@ -1,0 +1,19 @@
+<ion-card style="background-color:{{risposta.colore}}" color="black">
+  <ion-card-header>
+    <ion-card-subtitle>{{risposta.username}}</ion-card-subtitle>
+  </ion-card-header>
+
+  <ion-card-content>
+    {{risposta.testoDomanda}}
+    <br/>
+    {{risposta.testoRisposta}}
+    <br/>
+    <div class="ion-text-center">
+      <ion-chip outline style="background-color: white;color: {{risposta.colore}}">
+        <ion-label *ngIf="risposta.stato=='S'">In attesa di risposta</ion-label>
+        <ion-label *ngIf="risposta.stato=='R'">Rifiutata</ion-label>
+        <ion-label *ngIf="risposta.stato=='A'">Accettata</ion-label>
+      </ion-chip>
+    </div>
+  </ion-card-content>
+</ion-card>

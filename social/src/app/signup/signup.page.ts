@@ -65,8 +65,10 @@ export class SignupPage implements OnInit {
       let position= await this.getPosition();
       alert(this.latitudine);
       const uploadData = new FormData();
-      uploadData.append('myFile', this.selectedFile, this.selectedFile.name);
+      //uploadData.append('myFile', this.selectedFile, this.selectedFile.name);
 
+      //console.log(uploadData.get('myFile'));
+      //console.log(this.selectedFile);
       let param={
         user:this.username,
         mail:this.mail,
@@ -78,13 +80,15 @@ export class SignupPage implements OnInit {
         dataNascita:this.pipe.transform(this.dataNascita, 'dd-MM-yyyy'),
         password:this.password,
         posizione: position
-        //posizione:String(this.latitudine)+";"+String(this.longitudine)
       }
         this.http.sendPOSTRequest("/api/signup", param).subscribe(
           (data) => {
             if (data.code == 50) {
               this.errore = data.data;
             } else {
+              console.log(data);
+              uploadData.append('myFile', this.selectedFile, data.data+"."+this.selectedFile.name.split('.')[this.selectedFile.name.split('.').length-1]);
+
               this.http.sendPOSTRequest("/api/processUpFile", uploadData).subscribe(
                 (data) => {
                   console.log(data);

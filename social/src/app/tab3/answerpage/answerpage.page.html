@@ -1,0 +1,12 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="dark" (click)="back()"><ion-icon name="arrow-back-outline"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-title>Risposte</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <app-answer [risposta]="item" *ngFor="let item of risposte"></app-answer>
+</ion-content>

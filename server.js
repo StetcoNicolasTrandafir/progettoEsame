@@ -152,7 +152,12 @@ app.post("/api/signUp", function (req, res, next) {
     let posizione = req.body.posizione;
     let dataNascita = req.body.dataNascita;
     let password = req.body.password;
+    console.log("Req.Body===>", req.body);
 
+    //let f = req.body.img.files.myFile;
+    foto = (foto.split('.')[foto.split('.').length - 1]);
+
+    console.log(foto)
     con.connect(function (err) {
         if (err) {
             console.log("Errore di connessione al DB");
@@ -196,7 +201,7 @@ app.post("/api/signUp", function (req, res, next) {
                                                     //console.log(result.insertId);
                                                     res.send({
                                                         "token": token,
-                                                        "data": "Signed up!"
+                                                        "data": result.insertId,
                                                     });
                                                 }
                                             });
@@ -270,7 +275,7 @@ app.post("/api/login", function (req, res) {
                 error(req, res, new ERRORS.DB_CONNECTION({}));
             } else {
 
-
+                console.log("Sei qui==========>");
                 con.query(queryString, [mail], function (errQuery, result) {
                     if (errQuery) {
                         console.log(errQuery);
@@ -386,7 +391,7 @@ app.post("/api/getUser", function (req, res) {
                     //console.log(errQuery);
                     error(req, res, new ERRORS.QUERY_EXECUTE({}));
                 } else {
-                    
+
                     res.send({
                         data: result,
                     });
@@ -420,7 +425,7 @@ app.post("/api/insertAnswer", function (req, res) {
 
 
             let queryString = "INSERT INTO risposte(testoRisposta, data, domanda, utente) VALUES (?,NOW(),?,?)";
-            console.log(queryString+" "+testo+" "+domanda+" "+utente);
+            console.log(queryString + " " + testo + " " + domanda + " " + utente);
             con.query(queryString, [testo, domanda, utente], function (errQuery, result) {
                 if (errQuery) {
                     //console.log(errQuery);
@@ -458,9 +463,11 @@ app.post("/api/getQuestionByUser", function (req, res) {
             });
 
             let autore = ctrlToken.payload._id;
+            let disponibile=req.body.disponibile;
+            console.log(disponibile);
 
-            let queryString = "SELECT domande.*, categorie.nomeCategoria, categorie.colore  FROM domande, categorie WHERE domande.autore= ? AND domande.categoria=categorie.idCategoria";
-            con.query(queryString, [autore], function (errQuery, result) {
+            let queryString = "SELECT domande.*, categorie.nomeCategoria, categorie.colore  FROM domande, categorie WHERE domande.autore= ? AND domande.categoria=categorie.idCategoria AND domande.disponibile= ?";
+            con.query(queryString, [autore, disponibile], function (errQuery, result) {
                 if (errQuery) {
                     console.log(errQuery);
                     error(req, res, new ERRORS.QUERY_EXECUTE({}));
@@ -469,8 +476,7 @@ app.post("/api/getQuestionByUser", function (req, res) {
                         data: result
                     });
             });
-        }
-        else {
+        } else {
             error(req, res, new ERRORS.TOKEN_EXPIRED({}));
         }
     } else {
@@ -480,28 +486,27 @@ app.post("/api/getQuestionByUser", function (req, res) {
 
 
 app.post("/api/getCategories", function (req, res) {
-    
-            con = mySql.createConnection({
-                host: "localhost",
-                user: "root",
-                password: "",
-                database: "social"
+
+    con = mySql.createConnection({
+        host: "localhost",
+        user: "root",
+        password: "",
+        database: "social"
+    });
+
+
+
+    let queryString = "SELECT * FROM categorie";
+    con.query(queryString, [], function (errQuery, result) {
+        if (errQuery) {
+            console.log(errQuery);
+            error(req, res, new ERRORS.QUERY_EXECUTE({}));
+        } else
+            res.send({
+                data: result
             });
-
-
-
-            let queryString = "SELECT * FROM categorie";
-            con.query(queryString,[], function (errQuery, result) {
-                if (errQuery) {
-                    console.log(errQuery);
-                    error(req, res, new ERRORS.QUERY_EXECUTE({}));
-                } else
-                    res.send({
-                        data: result
-                    });
-            });
-        }
-    );
+    });
+});
 
 
 app.post("/api/getQuestions", function (req, res) {
@@ -515,7 +520,8 @@ app.post("/api/getQuestions", function (req, res) {
     });
 
     let utente = ctrlToken.payload._id;
-    let queryString = "SELECT domande.*, utenti.username, categorie.nomeCategoria, categorie.colore FROM domande, utenti, categorie WHERE domande.autore!=? AND (utenti.idUtente=domande.autore AND domande.categoria=categorie.idCategoria) AND categoria NOT IN (SELECT idCategoria FROM blacklist WHERE idUtente= ?) ORDER BY domande.data DESC";    con.query(queryString, [utente,utente], function (errQuery, result) {
+    let queryString = "SELECT domande.*, utenti.username, categorie.nomeCategoria, categorie.colore FROM domande, utenti, categorie WHERE domande.autore!=? AND (utenti.idUtente=domande.autore AND domande.categoria=categorie.idCategoria) AND categoria NOT IN (SELECT idCategoria FROM blacklist WHERE idUtente= ?) AND domande.disponibile='T' ORDER BY domande.data DESC";
+    con.query(queryString, [utente, utente], function (errQuery, result) {
         if (errQuery) {
             console.log(errQuery);
             error(req, res, new ERRORS.QUERY_EXECUTE({}));
@@ -539,8 +545,10 @@ app.post("/api/getQuestionsByCategory", function (req, res) {
     let categorie = req.body.categorie;
     console.log(categorie);
 
+    let stringCategories = "";
 
-    let queryString = "SELECT * FROM domande WHERE categoria IN (SELECT idCategoria FROM categorie WHERE nomeCategoria IN (?))";
+
+    let queryString = "SELECT domande.*, categorie.* FROM domande, categorie WHERE domande.categoria IN (?) AND categorie.idCategoria= domande.categoria";
 
     console.log(queryString);
 
@@ -556,7 +564,7 @@ app.post("/api/getQuestionsByCategory", function (req, res) {
 });
 
 
-app.post("/api/getAnswerByUser", function (req, res) {
+app.post("/api/getAnswersByUser", function (req, res) {
     con = mySql.createConnection({
         host: "localhost",
         user: "root",
@@ -564,9 +572,10 @@ app.post("/api/getAnswerByUser", function (req, res) {
         database: "social"
     });
 
-    let utente = req.body.utente;
+    let ctrlToken= controllaToken(req,res);
+    let utente= ctrlToken.payload._id;
 
-    let queryString = "SELECT * FROM risposte WHERE utente= ? ";
+    let queryString = "SELECT risposte.*, domande.testoDomanda, utenti.username, categorie.colore FROM risposte, domande, utenti, categorie WHERE utente= ? AND domande.idDomanda=risposte.domanda AND domande.autore= utenti.idUtente AND domande.categoria= categorie.idCategoria";
     con.query(queryString, [utente], function (errQuery, result) {
         if (errQuery) {
             console.log(errQuery);
@@ -592,9 +601,9 @@ app.post("/api/handleRequest", function (req, res) {
     let stato = req.body.stato;
 
     let queryString = "UPDATE risposte SET stato=? WHERE idRisposta=?";
-    con.query(queryString, [ stato, risposta], function (errQuery, result) {
+    con.query(queryString, [stato, risposta], function (errQuery, result) {
         if (errQuery) {
-             console.log(errQuery);
+            console.log(errQuery);
             error(req, res, new ERRORS.QUERY_EXECUTE({}));
         } else
             res.send({
@@ -618,7 +627,7 @@ app.post("/api/getAnswerByQuestion", function (req, res) {
     let queryString = "SELECT risposte.*, utenti.username, domande.testoDomanda FROM risposte,utenti, domande WHERE domanda= ? AND stato=? AND risposte.utente=utenti.idUtente AND domande.idDomanda=risposte.domanda";
     con.query(queryString, [domanda, stato], function (errQuery, result) {
         if (errQuery) {
-             console.log(errQuery);
+            console.log(errQuery);
             error(req, res, new ERRORS.QUERY_EXECUTE({}));
         } else
             res.send({
@@ -675,7 +684,7 @@ app.post("/api/getChats", function (req, res) {
     console.log("servizio richiamato");
     let ctrlToken = controllaToken(req, res);
     if (ctrlToken.allow) {
-        if(!ctrlToken.payload.err_iat) {
+        if (!ctrlToken.payload.err_iat) {
 
             con = mySql.createConnection({
                 host: "localhost",
@@ -690,7 +699,7 @@ app.post("/api/getChats", function (req, res) {
             let queryString = "SELECT DISTINCT matched.*, utenti.idUtente, utenti.username, utenti.nome, utenti.cognome, utenti.foto FROM matched, utenti WHERE (matched.idUtenteDomanda=? OR matched.idUtenteRisposta=?) AND (utenti.idUtente != ?) AND (utenti.idUtente=matched.idUtenteRisposta OR utenti.idUtente=matched.idUtenteDomanda)";
             console.log(queryString);
 
-            con.query(queryString, [utente, utente,utente], function (errQuery, result) {
+            con.query(queryString, [utente, utente, utente], function (errQuery, result) {
                 if (errQuery) {
                     //console.log(errQuery);
                     error(req, res, new ERRORS.QUERY_EXECUTE({}));
@@ -769,12 +778,12 @@ app.post("/api/startChat", function (req, res) {
 
             let utenteDomanda = ctrlToken.payload._id;
             let utenteRisposta = req.body.utenteRisposta;
-            let domanda= req.body.domanda;
-            let risposta= req.body.risposta;
+            let domanda = req.body.domanda;
+            let risposta = req.body.risposta;
 
             let queryString = "INSERT INTO messaggi(testoMessaggio, data,mittente,destinatario) VALUES (?, NOW(), ?,?),(?, NOW(), ?,?)";
 
-            con.query(queryString, [domanda, utenteDomanda, utenteRisposta, risposta, utenteRisposta,utenteDomanda], function (errQuery, result) {
+            con.query(queryString, [domanda, utenteDomanda, utenteRisposta, risposta, utenteRisposta, utenteDomanda], function (errQuery, result) {
                 if (errQuery) {
                     //console.log(errQuery);
                     error(req, res, new ERRORS.QUERY_EXECUTE({}));
@@ -812,10 +821,10 @@ app.post("/api/match", function (req, res) {
             });
 
             let utente = ctrlToken.payload._id;
-            let utenteRisposta= req.body.utenteRisposta;
+            let utenteRisposta = req.body.utenteRisposta;
             let queryString = "INSERT INTO matched(idUtenteDomanda,idUtenteRisposta, matched, data) VALUES (?,?,'T',NOW())";
 
-   
+
             con.query(queryString, [utente, utenteRisposta], function (errQuery, result) {
                 if (errQuery) {
                     //console.log(errQuery);
@@ -840,10 +849,11 @@ app.post("/api/match", function (req, res) {
 });
 
 
-
 app.post("/api/processUpFile", function (req, res, next) {
     let f = req.files.myFile;
-    console.log("F=> " + f.name);
+    console.log("F=> ", f);
+    //console.log(JSON.parse(req.param));
+
     let output = __dirname + '/img/' + f.name;
     f.mv(output, function (err) {
         if (err) {
@@ -859,8 +869,4 @@ app.post("/api/processUpFile", function (req, res, next) {
 
 function error(req, res, err) {
     res.status(err.code).send(err.message);
-    /*res.send({
-        data:err.message,
-        code:err.code
-    });*/
 }

@@ -1,5 +1,8 @@
 <ion-header>
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="dark" (click)="back()"><ion-icon name="arrow-back-outline"></ion-icon></ion-button>
+    </ion-buttons>
     <ion-title>Domanda</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -12,5 +15,6 @@
     </ion-select>
   </ion-item>
   <ion-textarea [(ngModel)]="testoDomanda" rows="8" class="ion-margin ion-text-center" placeholder="Scrivi la tua domanda qui..."></ion-textarea>
-  <ion-button expand="block" (click)="insertQuestion()">Inserisci Domanda</ion-button>
+  <ion-button [disabled]="testoDomanda==''||!selectedCategory" expand="block" (click)="insertQuestion()">Inserisci Domanda</ion-button>
+
 </ion-content>
