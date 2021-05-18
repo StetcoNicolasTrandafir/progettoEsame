@@ -1,0 +1,177 @@
+const { usersService } = require("../services")
+const jwt = require("jsonwebtoken");
+const fs = require("fs");
+const privateKey = fs.readFileSync("keys/private.key", "utf8");
+const ERRORS = require('errors');
+
+
+//Gestione errori del TOKEN
+ERRORS.create({
+  code: 603,
+  name: 'TOKEN_EXPIRED',
+  defaultMessage: 'Token is expired'
+});
+
+ERRORS.create({
+  code: 604,
+  name: 'TOKEN_DOESNT_EXIST',
+  defaultMessage: 'Token doesnt exist'
+});
+
+//CHIAMATE
+const signUp= async (req, res, next)=>{
+  let user = req.body.user;
+  let mail = req.body.mail;
+  let nome = req.body.nome;
+  let cognome = req.body.cognome;
+  let foto = req.body.foto;
+  let sesso = req.body.sesso;
+  let descrizione = req.body.descrizione;
+  let posizione = req.body.posizione;
+  let dataNascita = req.body.dataNascita;
+  let password = req.body.password;
+
+  foto= (foto.split('.')[foto.split('.').length-1]);
+
+  try {
+    //estraggo ed elaboro i dati tramite il service userService
+    const risultato = await usersService.signUp(user, mail, nome, cognome, foto, sesso, descrizione, posizione, dataNascita, password, req, res);
+    console.log("risultato", risultato);
+    res.send(risultato);
+
+    next();
+  } catch(e) {
+    console.log(e.message)
+    res.sendStatus(500) && next(error)
+  }
+}
+
+
+const login = async (req, res, next) => {
+  //recupero il parametro id dall'url della chiamata
+  const id = req.body["mail"];
+  const pwd = req.body["password"];
+  try {
+    //estraggo ed elaboro i dati tramite il service userService
+    const risultato = await usersService.login(id, pwd, req, res);
+    console.log("risultato", risultato);
+    res.send(risultato);
+    
+    //ANCHOR chiedere che minchia vuol dire
+    next();
+  } catch(e) {
+    console.log(e.message)
+    res.sendStatus(500) && next(error)
+  }
+}
+
+const prova= async (req, res,next)=> {
+  res.send({data: "funanzia"})
+}
+
+const processUpFile = async (req, res, next) => {
+  //recupero il parametro id dall'url della chiamata
+  let f = req.files.myFile;
+  try {
+    //estraggo ed elaboro i dati tramite il service userService
+    const risultato = await usersService.processUpFile(f, req, res);
+    res.send(risultato);
+
+    next();
+  } catch(e) {
+    console.log(e.message)
+    res.sendStatus(500) && next(error)
+  }
+}
+
+const getUser = async (req, res, next) => {
+
+  let ctrlToken = await controllaToken(req, res);
+
+  let id = ctrlToken.payload._id;
+  try {
+    const risultato = await usersService.getUser(id, req, res);
+    res.send(risultato);
+
+    next();
+  } catch(e) {
+    console.log("test");
+    console.log(e.message)
+    res.sendStatus(500) && next(error)
+  }
+}
+
+const controlloToken= async (req, res, next)=>{
+  let ctrlToken = await controllaToken(req, res);
+  console.log(ctrlToken);
+  if (ctrlToken.allow && !ctrlToken.payload.err_iat) {
+    let token = createToken({
+      "_id": ctrlToken.payload._id,
+      "user": ctrlToken.payload.user
+    });
+    res.send({
+      "data": "TOKEN OK",
+      token: token
+    });
+  }
+}
+
+
+//FUNZIONI COMUNI
+async function controllaToken(req, res) {
+  let ctrlToken = {
+    allow: false,
+    payload: {}
+  };
+
+  // lettura token
+  if (req.headers["token"] == undefined) {
+    error(req, res, new ERRORS.TOKEN_DOESNT_EXIST({}));
+  } else {
+    const token = req.headers["token"].split(' ')[1];
+    //console.log("TOKEN => "+token);
+    console.log(token + " - " + typeof (token));
+    if (token != "null") {
+      const res = await jwt.verify(token, privateKey);
+
+      ctrlToken.allow = true;
+      if (res) {
+        //ctrlToken.allow=true;
+        ctrlToken.payload = res;
+      } else {
+        ctrlToken.payload = {
+          "err_iat": true,
+          "message": "Token scaduto"
+        };
+        error(req, res, new ERRORS.TOKEN_EXPIRED({}));
+      }
+    }
+  }
+  return ctrlToken;
+}
+
+function createToken(obj) {
+  let token = jwt.sign({
+        '_id': obj._id,
+        'user': obj.user,
+        'iat': Math.floor(Date.now() / 1000),
+        'exp': Math.floor(Date.now() / 1000 + usersService.TIMEOUT)
+      },
+      privateKey
+  );
+  return token;
+}
+
+function error(req, res, err) {
+  res.status(err.code).send(err.message);
+}
+
+
+module.exports = {
+  login,
+  getUser,
+  controlloToken,
+  signUp,
+  processUpFile,
+  prova
+}

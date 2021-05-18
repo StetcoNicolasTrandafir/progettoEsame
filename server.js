@@ -228,18 +228,6 @@ app.post("/api/signUp", function (req, res, next) {
 });
 
 
-app.post("/api/prova", function (req, res) {
-    //Permetto l'accesso a tutti i tipi di client con *
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    //Permetto l'accesso a tutti i tipi di richieste
-    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
-    console.log("Chiamata risucita");
-    console.log(req.headers);
-    res.send({
-        data: "Chiamata riuscita"
-    });
-});
-
 app.post("/api/login", function (req, res) {
 
 
@@ -545,8 +533,6 @@ app.post("/api/getQuestionsByCategory", function (req, res) {
     let categorie = req.body.categorie;
     console.log(categorie);
 
-    let stringCategories = "";
-
 
     let queryString = "SELECT domande.*, categorie.* FROM domande, categorie WHERE domande.categoria IN (?) AND categorie.idCategoria= domande.categoria";
 
@@ -622,10 +608,9 @@ app.post("/api/getAnswerByQuestion", function (req, res) {
     });
 
     let domanda = req.body.domanda;
-    let stato = req.body.stato;
 
-    let queryString = "SELECT risposte.*, utenti.username, domande.testoDomanda FROM risposte,utenti, domande WHERE domanda= ? AND stato=? AND risposte.utente=utenti.idUtente AND domande.idDomanda=risposte.domanda";
-    con.query(queryString, [domanda, stato], function (errQuery, result) {
+    let queryString = "SELECT risposte.*, utenti.username, domande.testoDomanda FROM risposte,utenti, domande WHERE domanda= ?  AND risposte.utente=utenti.idUtente AND domande.idDomanda=risposte.domanda";
+    con.query(queryString, [domanda], function (errQuery, result) {
         if (errQuery) {
             console.log(errQuery);
             error(req, res, new ERRORS.QUERY_EXECUTE({}));
