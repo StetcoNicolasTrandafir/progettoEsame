@@ -31,7 +31,7 @@ export class ChatPage implements OnInit {
     });
   }
   caricaMessaggi():void{
-    this.Http.sendPOSTRequest('/api/getMessagesByReceiver',{destinatario:this.datoChat.idUtente}).subscribe(
+    this.Http.sendPOSTRequest('/chat/getMessagesByReceiver',{destinatario:this.datoChat.idUtente}).subscribe(
       (data)=>{
         console.log(data);
         this.messages=data.data;
@@ -43,7 +43,7 @@ export class ChatPage implements OnInit {
 
   invia() {
     if(this.testoMessaggio!=""&&this.testoMessaggio!="\n"){
-      this.Http.sendPOSTRequest('/api/sendMessage',{destinatario:this.datoChat.idUtente,testo:this.testoMessaggio}).subscribe(
+      this.Http.sendPOSTRequest('/chat/sendMessage',{destinatario:this.datoChat.idUtente,testo:this.testoMessaggio}).subscribe(
         (data)=>{
           console.log(data);
           this.caricaMessaggi();

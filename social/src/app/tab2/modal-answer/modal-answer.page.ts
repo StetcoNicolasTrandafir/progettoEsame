@@ -31,7 +31,7 @@ export class ModalAnswerPage implements OnInit {
 
   invia() {
     //alert(this.idDomanda);
-    this.http.sendPOSTRequest('/api/insertAnswer',{testo:this.testoRisposta,domanda:this.idDomanda}).subscribe(
+    this.http.sendPOSTRequest('/question/insertAnswer',{testo:this.testoRisposta,domanda:this.idDomanda}).subscribe(
       (data)=>{
         console.log(data);
         this.presentToast();

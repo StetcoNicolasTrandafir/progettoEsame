@@ -20,7 +20,7 @@ export class Tab2Page implements OnInit{
 
   ngOnInit(): void {
     //this.controlloToken();
-    this.http.sendPOSTRequest('/api/getCategories',{}).subscribe(
+    this.http.sendPOSTRequest('/question/getCategories',{}).subscribe(
       (data)=>{
         console.log(data);
         this.categorie=data.data;
@@ -32,7 +32,7 @@ export class Tab2Page implements OnInit{
   }
 
   private controlloToken(){
-    this.http.sendPOSTRequest("/api/controlloToken",{}).subscribe(
+    this.http.sendPOSTRequest("/user/controlloToken",{}).subscribe(
       (data)=>{
         console.log(data);
         localStorage.setItem('token',data.token);
@@ -49,7 +49,7 @@ export class Tab2Page implements OnInit{
   }
 
   private caricaHome(){
-    this.http.sendPOSTRequest("/api/getQuestions",{}).subscribe(
+    this.http.sendPOSTRequest("/question/getQuestions",{}).subscribe(
       (data)=>{
         console.log(data.data);
         this.domande=data.data;
@@ -61,7 +61,7 @@ export class Tab2Page implements OnInit{
 
   caricaDomandePerCategorie() {
     console.log(this.selectedCategories);
-    this.http.sendPOSTRequest("/api/getQuestionsByCategory",{categorie:this.selectedCategories}).subscribe(
+    this.http.sendPOSTRequest("/question/getQuestionsByCategories",{categorie:this.selectedCategories}).subscribe(
       (data)=>{
         console.log(data.data);
         this.domande=data.data;

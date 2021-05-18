@@ -81,7 +81,7 @@ export class SignupPage implements OnInit {
         password:this.password,
         posizione: position
       }
-        this.http.sendPOSTRequest("/api/signup", param).subscribe(
+        this.http.sendPOSTRequest("/user/signup", param).subscribe(
           (data) => {
             if (data.code == 50) {
               this.errore = data.data;
@@ -89,7 +89,7 @@ export class SignupPage implements OnInit {
               console.log(data);
               uploadData.append('myFile', this.selectedFile, data.data+"."+this.selectedFile.name.split('.')[this.selectedFile.name.split('.').length-1]);
 
-              this.http.sendPOSTRequest("/api/processUpFile", uploadData).subscribe(
+              this.http.sendPOSTRequest("/user/processUpFile", uploadData).subscribe(
                 (data) => {
                   console.log(data);
                 },

@@ -28,7 +28,7 @@ export class LoginPage implements OnInit {
     }else if(this.password==""){
       this.errore="Inserisci password";
     }else{
-      this.http.sendPOSTRequest("/api/login",{mail:this.user,password:this.password}).subscribe(
+      this.http.sendPOSTRequest("/user/login",{mail:this.user,password:this.password}).subscribe(
         (data)=>{
           if(typeof (data.data)!="string"){
             localStorage.setItem("token",data.token);

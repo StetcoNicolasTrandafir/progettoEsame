@@ -113,6 +113,8 @@ const controlloToken= async (req, res, next)=>{
       "data": "TOKEN OK",
       token: token
     });
+  }else{
+    error(req, res, new ERRORS.TOKEN_DOESNT_EXIST({}));
   }
 }
 
@@ -128,11 +130,13 @@ async function controllaToken(req, res) {
   if (req.headers["token"] == undefined) {
     error(req, res, new ERRORS.TOKEN_DOESNT_EXIST({}));
   } else {
-    const token = req.headers["token"].split(' ')[1];
+    let token = req.headers["token"].split(' ')[1];
     //console.log("TOKEN => "+token);
     console.log(token + " - " + typeof (token));
-    if (token != "null") {
+    if (token != "undefined"&&token!="null") {
+      
       const res = await jwt.verify(token, privateKey);
+      
 
       ctrlToken.allow = true;
       if (res) {

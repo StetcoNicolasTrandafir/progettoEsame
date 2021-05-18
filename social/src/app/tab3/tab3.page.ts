@@ -16,7 +16,7 @@ export class Tab3Page implements OnInit{
   myQuestions=[];
   constructor(private menu:MenuController,private router:Router,private Http:HttpService,private activatedroute:ActivatedRoute,private modalController:ModalController){
     this.activatedroute.params.subscribe(params => {
-      this.Http.sendPOSTRequest('/api/getUser',{}).subscribe(
+      this.Http.sendPOSTRequest('/user/getUser',{}).subscribe(
         (data)=>{
           //console.log(data);
           this.user=data.data[0];
@@ -28,7 +28,7 @@ export class Tab3Page implements OnInit{
         }
       )
 
-      this.Http.sendPOSTRequest('/api/getQuestionByUser',{disponibile:'T'}).subscribe(
+      this.Http.sendPOSTRequest('/question/getQuestionsByUser',{disponibile:'T'}).subscribe(
         (data)=>{
           console.log(data);
           this.myQuestions=data.data;

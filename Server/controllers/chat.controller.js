@@ -93,35 +93,37 @@ const makeMatch = async (req, res, next) => {
 //FUNZIONI COMUNI
 async function controllaToken(req, res) {
     let ctrlToken = {
-        allow: false,
-        payload: {}
+      allow: false,
+      payload: {}
     };
-
+  
     // lettura token
     if (req.headers["token"] == undefined) {
-        error(req, res, new ERRORS.TOKEN_DOESNT_EXIST({}));
+      error(req, res, new ERRORS.TOKEN_DOESNT_EXIST({}));
     } else {
-        const token = req.headers["token"].split(' ')[1];
-        //console.log("TOKEN => "+token);
-        console.log(token + " - " + typeof (token));
-        if (token != "null") {
-            const res = await jwt.verify(token, privateKey);
-
-            ctrlToken.allow = true;
-            if (res) {
-                //ctrlToken.allow=true;
-                ctrlToken.payload = res;
-            } else {
-                ctrlToken.payload = {
-                    "err_iat": true,
-                    "message": "Token scaduto"
-                };
-                error(req, res, new ERRORS.TOKEN_EXPIRED({}));
-            }
+      let token = req.headers["token"].split(' ')[1];
+      //console.log("TOKEN => "+token);
+      console.log(token + " - " + typeof (token));
+      if (token != "undefined"&&token!="null") {
+        
+        const res = await jwt.verify(token, privateKey);
+        
+  
+        ctrlToken.allow = true;
+        if (res) {
+          //ctrlToken.allow=true;
+          ctrlToken.payload = res;
+        } else {
+          ctrlToken.payload = {
+            "err_iat": true,
+            "message": "Token scaduto"
+          };
+          error(req, res, new ERRORS.TOKEN_EXPIRED({}));
         }
+      }
     }
     return ctrlToken;
-}
+  }
 
 function error(req, res, err) {
     res.status(err.code).send(err.message);

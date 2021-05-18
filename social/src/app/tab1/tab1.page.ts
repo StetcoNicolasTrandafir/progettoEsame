@@ -13,7 +13,7 @@ export class Tab1Page implements OnInit{
   constructor(private router: Router,private Http:HttpService,private activatedRoute:ActivatedRoute) {
     this.activatedRoute.params.subscribe(params => {
       //Controllo CHAT
-      this.Http.sendPOSTRequest('/api/getChats',{}).subscribe(
+      this.Http.sendPOSTRequest('/chat/getChats',{}).subscribe(
         (data)=>{
           console.log(data);
           this.chats=data.data;

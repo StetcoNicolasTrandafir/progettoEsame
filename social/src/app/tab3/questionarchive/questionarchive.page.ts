@@ -13,7 +13,7 @@ export class QuestionarchivePage implements OnInit {
   constructor(private router:Router,private http:HttpService) { }
 
   ngOnInit() {
-    this.http.sendPOSTRequest('/api/getQuestionByUser',{disponibile:'F'}).subscribe(
+    this.http.sendPOSTRequest('/question/getQuestionsByUser',{disponibile:'F'}).subscribe(
       (data)=>{
         console.log(data);
         this.domande=data.data;

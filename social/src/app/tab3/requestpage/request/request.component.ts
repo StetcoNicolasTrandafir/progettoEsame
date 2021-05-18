@@ -17,7 +17,7 @@ export class RequestComponent implements OnInit {
   }
 
   nega($event: MouseEvent) {
-    this.http.sendPOSTRequest('/api/handleRequest',{risposta:this.richiesta.idRisposta,stato:'R'}).subscribe(
+    this.http.sendPOSTRequest('/question/handleRequest',{risposta:this.richiesta.idRisposta,stato:'R'}).subscribe(
       (data)=>{
         console.log(data);
         //TODO CANCELLARE RICHIESTA
@@ -28,7 +28,7 @@ export class RequestComponent implements OnInit {
   }
 
   accetta($event: MouseEvent) {
-    this.http.sendPOSTRequest('/api/handleRequest',{risposta:this.richiesta.idRisposta,stato:'A'}).subscribe(
+    this.http.sendPOSTRequest('/question/handleRequest',{risposta:this.richiesta.idRisposta,stato:'A'}).subscribe(
       (data)=>{
         console.log(data);
         this.inserisciMatch();
@@ -41,7 +41,7 @@ export class RequestComponent implements OnInit {
   }
 
   inviaMessaggi(){
-    this.http.sendPOSTRequest('/api/startChat',{utenteRisposta:this.richiesta.utente,risposta:this.richiesta.testoRisposta,domanda:this.richiesta.testoDomanda}).subscribe(
+    this.http.sendPOSTRequest('/chat/startChat',{utenteRisposta:this.richiesta.utente,risposta:this.richiesta.testoRisposta,domanda:this.richiesta.testoDomanda}).subscribe(
       (data)=>{
         console.log(data);
       },(err)=>{
@@ -51,7 +51,7 @@ export class RequestComponent implements OnInit {
   }
 
   inserisciMatch(){
-    this.http.sendPOSTRequest('/api/match',{utenteRisposta:this.richiesta.utente}).subscribe(
+    this.http.sendPOSTRequest('/chat/makeMatch',{utenteRisposta:this.richiesta.utente}).subscribe(
       (data)=>{
         console.log(data);
       },(err)=>{

@@ -15,7 +15,7 @@ export class InsertquestionpagePage implements OnInit {
   constructor(private http:HttpService,private modalController:ModalController) { }
 
   ngOnInit() {
-    this.http.sendPOSTRequest('/api/getCategories',{}).subscribe(
+    this.http.sendPOSTRequest('/question/getCategories',{}).subscribe(
       (data)=>{
         console.log(data);
         this.categorie=data.data;
@@ -28,7 +28,7 @@ export class InsertquestionpagePage implements OnInit {
 
   insertQuestion() {
 
-      this.http.sendPOSTRequest('/api/insertQuestion',{testo:this.testoDomanda,categoria:this.selectedCategory}).subscribe(
+      this.http.sendPOSTRequest('/question/insertQuestion',{testo:this.testoDomanda,categoria:this.selectedCategory}).subscribe(
         (data)=>{
           console.log(data);
           this.modalController.dismiss();

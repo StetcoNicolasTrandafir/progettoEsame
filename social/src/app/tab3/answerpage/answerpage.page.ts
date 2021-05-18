@@ -13,7 +13,7 @@ export class AnswerpagePage implements OnInit {
   constructor(private router:Router,private http:HttpService) { }
 
   ngOnInit() {
-    this.http.sendPOSTRequest('/api/getAnswersByUser',{}).subscribe(
+    this.http.sendPOSTRequest('/question/getAnswersByUser',{}).subscribe(
       (data)=>{
         console.log(data);
         this.risposte=data.data;
