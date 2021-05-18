@@ -1,8 +1,13 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>Rispondi</ion-title>
-    <ion-button color="danger" slot="start" size="small" (click)="dismiss()">X</ion-button>
-    <ion-button color="primary" slot="end" size="small" (click)="invia()"><ion-icon name="send-outline"></ion-icon></ion-button>
+    <ion-buttons slot="start">
+      <ion-button color="dark" (click)="dismiss()"><ion-icon name="arrow-back-outline"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button color="dark" slot="end" size="small" (click)="invia()"><ion-icon name="send-outline"></ion-icon></ion-button>
+    </ion-buttons>
+
   </ion-toolbar>
 </ion-header>
 

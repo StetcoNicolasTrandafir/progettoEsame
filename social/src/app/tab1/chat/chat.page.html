@@ -1,6 +1,8 @@
 <ion-header>
   <ion-toolbar>
-    <ion-button color="danger" slot="start" size="small" (click)="dismiss()">X</ion-button>
+    <ion-buttons slot="start">
+      <ion-button color="dark" (click)="dismiss()"><ion-icon name="arrow-back-outline"></ion-icon></ion-button>
+    </ion-buttons>
     <ion-title>{{datoChat.username}}</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -16,7 +18,7 @@
       <ion-textarea placeholder="Scrivi un messaggio..." style="width: 80%" [(ngModel)]="testoMessaggio" >
 
       </ion-textarea>
-      <ion-button style="margin: auto" color="primary" slot="end" size="small" (click)="invia()"><ion-icon name="send-outline"></ion-icon></ion-button>
+      <ion-button style="margin: auto" color="light" slot="end" size="small" (click)="invia()"><ion-icon name="send-outline"></ion-icon></ion-button>
     </ion-item>
   </div>
   </div>
