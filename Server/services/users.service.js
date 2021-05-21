@@ -15,14 +15,33 @@ ERRORS.create({
 const TIMEOUT=600;
 const privateKey = fs.readFileSync("services/keys/private.key", "utf8");
 
-const getUser = async  (idUtente, req, res)=>{
+const getUser = async  (idUtente, req, res)=> {
     let queryString = "SELECT * FROM  utenti WHERE idUtente=?";
     const result = await db.execute(queryString, [idUtente], req, res);
-    return({
+    return ({
         data: result,
     });
 }
 
+const changePassword= async(utente, oldPwd,newPwd, req, res)=>{
+    let quesryString="SELECT username, password FROM utenti WHERE idUtente=?";
+    const result= await db.execute(quesryString,[utente], req, res );
+    console.log(result);
+    const comp = await bcrypt.compare(oldPwd, result[0].password);
+    if(comp){
+        let saltRounds = 10;
+        const hash=await bcrypt.hash(newPwd, saltRounds);
+        quesryString="UPDATE utenti SET password=? WHERE idUtente=?";
+        const resultUpdate= await db.execute(quesryString, [hash, utente]);
+        console.log(resultUpdate);
+        return({
+            data:"Password cambiata con successo"
+        });
+    }else
+        return({
+            data:"Password errata"
+        })
+}
 
 const signUp= async  (user, mail, nome, cognome, foto, sesso, descrizione, posizione, dataNascita, pwd, req, res)=>{
     let queryMail = "SELECT idUtente FROM utenti WHERE mail=?";
@@ -105,6 +124,9 @@ const login = async (mail, password, req, res) => {
     }
 }
 
+
+
+
 function createToken(obj) {
     let token = jwt.sign({
             '_id': obj._id,
@@ -127,5 +149,6 @@ module.exports = {
     getUser,
     signUp,
     processUpFile,
+    changePassword
   }
 

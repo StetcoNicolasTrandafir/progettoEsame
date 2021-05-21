@@ -15,6 +15,7 @@ router.post('/getQuestionsByCategories', questionController.getQuestionsByCatego
 router.post('/getAnswersByUser', questionController.getAnswersByUser);
 router.post('/getAnswersByQuestion', questionController.getAnswersByQuestion);
 router.post('/getCategories', questionController.getCategories);
+router.post('/getMyCategories', questionController.getMyCategories);
 router.post('/handleRequest', questionController.handleRequest);
 
 

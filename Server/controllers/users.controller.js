@@ -46,6 +46,21 @@ const signUp= async (req, res, next)=>{
   }
 }
 
+const changePassword = async (req, res, next) => {
+  //recupero il parametro id dall'url della chiamata
+  let ctrlToken = await controllaToken(req, res);
+  let utente = ctrlToken.payload._id;
+  const oldPwd = req.body["oldPassword"];
+  const newPwd = req.body["newPassword"];
+  try {
+    const risultato = await usersService.changePassword(utente, oldPwd,newPwd, req, res);
+    res.send(risultato);
+    next();
+  } catch(e) {
+    console.log(e.message)
+    res.sendStatus(500) && next(error)
+  }
+}
 
 const login = async (req, res, next) => {
   //recupero il parametro id dall'url della chiamata
@@ -134,10 +149,14 @@ async function controllaToken(req, res) {
     //console.log("TOKEN => "+token);
     console.log(token + " - " + typeof (token));
     if (token != "undefined"&&token!="null") {
-      
-      const res = await jwt.verify(token, privateKey);
-      
 
+      try{
+        const res = await jwt.verify(token, privateKey);
+      }catch (err){
+        console.log(err);
+        error(req, res, new ERRORS.TOKEN_EXPIRED({}));
+      }
+      
       ctrlToken.allow = true;
       if (res) {
         //ctrlToken.allow=true;
@@ -177,5 +196,6 @@ module.exports = {
   controlloToken,
   signUp,
   processUpFile,
-  prova
+  prova,
+  changePassword
 }

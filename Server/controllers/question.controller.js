@@ -5,6 +5,18 @@ const privateKey = fs.readFileSync("keys/private.key", "utf8");
 const ERRORS = require('errors');
 
 
+//Gestione errori del TOKEN
+ERRORS.create({
+    code: 603,
+    name: 'TOKEN_EXPIRED',
+    defaultMessage: 'Token is expired'
+});
+
+ERRORS.create({
+    code: 604,
+    name: 'TOKEN_DOESNT_EXIST',
+    defaultMessage: 'Token doesnt exist'
+});
 
 const insertAnswer=async (req, res, next)=>{
 
@@ -128,6 +140,23 @@ const getCategories = async (req, res, next) => {
     }
 }
 
+const getMyCategories = async (req, res, next) => {
+
+    let ctrlToken= await controllaToken(req,res);
+    let utente= ctrlToken.payload._id;
+
+    try {
+        const risultato = await questionService.getMyCategories(utente,req, res);
+        res.send(risultato);
+        next();
+    } catch(e) {
+        console.log(e.message)
+        res.sendStatus(500) && next(error)
+    }
+}
+
+
+
 const handleRequest = async (req, res, next) => {
 
     let risposta = req.body.risposta;
@@ -159,9 +188,13 @@ async function controllaToken(req, res) {
       //console.log("TOKEN => "+token);
       console.log(token + " - " + typeof (token));
       if (token != "undefined"&&token!="null") {
-        
-        const res = await jwt.verify(token, privateKey);
-        
+
+          try{
+              const res = await jwt.verify(token, privateKey);
+          }catch (err){
+              console.log(err);
+              error(req, res, new ERRORS.TOKEN_EXPIRED({}));
+          }
   
         ctrlToken.allow = true;
         if (res) {
@@ -194,5 +227,6 @@ module.exports = {
     insertAnswer,
     getQuestionsByUser,
     getQuestions,
-    handleRequest
+    handleRequest,
+    getMyCategories
 }

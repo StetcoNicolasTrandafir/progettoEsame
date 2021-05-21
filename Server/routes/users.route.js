@@ -13,7 +13,7 @@ router.post('/getUser', userController.getUser);
 router.post('/controlloToken', userController.controlloToken);
 router.post('/signUp', userController.signUp);
 router.post('/processUpFile', userController.processUpFile);
-
+router.post('/changePassword', userController.changePassword);
 
 
 module.exports = router

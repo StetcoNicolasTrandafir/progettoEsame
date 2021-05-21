@@ -94,6 +94,18 @@ const getAnswersByQuestion = async  (domanda,req, res)=>{
     });
 }
 
+
+const getMyCategories = async  (user,req, res)=>{
+
+    let queryString = "SELECT * FROM categorie WHERE idCategoria NOT IN (SELECT idCategoria FROM blacklist WHERE idUtente=?)";
+    const result = await db.execute(queryString, [user], req, res);
+
+    return({
+        data: result,
+    });
+}
+
+
 const getCategories = async  (req, res)=>{
 
     let queryString = "SELECT * FROM categorie";
@@ -133,6 +145,7 @@ module.exports = {
     insertAnswer,
     getQuestionsByUser,
     getQuestions,
-    handleRequest
+    handleRequest,
+    getMyCategories
 }
 

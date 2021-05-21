@@ -4,6 +4,17 @@ const fs = require('fs');
 const privateKey = fs.readFileSync("keys/private.key", "utf8");
 const ERRORS = require('errors');
 
+ERRORS.create({
+    code: 603,
+    name: 'TOKEN_EXPIRED',
+    defaultMessage: 'Token is expired'
+});
+
+ERRORS.create({
+    code: 604,
+    name: 'TOKEN_DOESNT_EXIST',
+    defaultMessage: 'Token doesnt exist'
+});
 
 const getMessagesByReceiver= async (req, res, next)=>{
     let ctrlToken = await controllaToken(req, res);
@@ -103,12 +114,17 @@ async function controllaToken(req, res) {
     } else {
       let token = req.headers["token"].split(' ')[1];
       //console.log("TOKEN => "+token);
+
+
       console.log(token + " - " + typeof (token));
       if (token != "undefined"&&token!="null") {
-        
-        const res = await jwt.verify(token, privateKey);
-        
-  
+        try{
+            const res = await jwt.verify(token, privateKey);
+        }catch (err){
+            console.log(err);
+            error(req, res, new ERRORS.TOKEN_EXPIRED({}));
+        }
+
         ctrlToken.allow = true;
         if (res) {
           //ctrlToken.allow=true;
