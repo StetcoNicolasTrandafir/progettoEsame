@@ -1,4 +1,6 @@
-const { usersService } = require("../services")
+const {
+  usersService
+} = require("../services")
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
 const privateKey = fs.readFileSync("keys/private.key", "utf8");
@@ -19,7 +21,7 @@ ERRORS.create({
 });
 
 //CHIAMATE
-const signUp= async (req, res, next)=>{
+const signUp = async (req, res, next) => {
   let user = req.body.user;
   let mail = req.body.mail;
   let nome = req.body.nome;
@@ -31,7 +33,7 @@ const signUp= async (req, res, next)=>{
   let dataNascita = req.body.dataNascita;
   let password = req.body.password;
 
-  foto= (foto.split('.')[foto.split('.').length-1]);
+  foto = (foto.split('.')[foto.split('.').length - 1]);
 
   try {
     //estraggo ed elaboro i dati tramite il service userService
@@ -40,7 +42,7 @@ const signUp= async (req, res, next)=>{
     res.send(risultato);
 
     next();
-  } catch(e) {
+  } catch (e) {
     console.log(e.message)
     res.sendStatus(500) && next(error)
   }
@@ -53,10 +55,10 @@ const changePassword = async (req, res, next) => {
   const oldPwd = req.body["oldPassword"];
   const newPwd = req.body["newPassword"];
   try {
-    const risultato = await usersService.changePassword(utente, oldPwd,newPwd, req, res);
+    const risultato = await usersService.changePassword(utente, oldPwd, newPwd, req, res);
     res.send(risultato);
     next();
-  } catch(e) {
+  } catch (e) {
     console.log(e.message)
     res.sendStatus(500) && next(error)
   }
@@ -71,17 +73,19 @@ const login = async (req, res, next) => {
     const risultato = await usersService.login(id, pwd, req, res);
     console.log("risultato", risultato);
     res.send(risultato);
-    
+
     //ANCHOR chiedere che minchia vuol dire
     next();
-  } catch(e) {
+  } catch (e) {
     console.log(e.message)
     res.sendStatus(500) && next(error)
   }
 }
 
-const prova= async (req, res,next)=> {
-  res.send({data: "funanzia"})
+const prova = async (req, res, next) => {
+  res.send({
+    data: "funanzia"
+  })
 }
 
 const processUpFile = async (req, res, next) => {
@@ -93,7 +97,7 @@ const processUpFile = async (req, res, next) => {
     res.send(risultato);
 
     next();
-  } catch(e) {
+  } catch (e) {
     console.log(e.message)
     res.sendStatus(500) && next(error)
   }
@@ -109,16 +113,16 @@ const getUser = async (req, res, next) => {
     res.send(risultato);
 
     next();
-  } catch(e) {
+  } catch (e) {
     console.log("test");
     console.log(e.message)
     res.sendStatus(500) && next(error)
   }
 }
 
-const controlloToken= async (req, res, next)=>{
+const controlloToken = async (req, res, next) => {
   let ctrlToken = await controllaToken(req, res);
-  console.log(ctrlToken);
+  //console.log(ctrlToken);
   if (ctrlToken.allow && !ctrlToken.payload.err_iat) {
     let token = createToken({
       "_id": ctrlToken.payload._id,
@@ -128,7 +132,7 @@ const controlloToken= async (req, res, next)=>{
       "data": "TOKEN OK",
       token: token
     });
-  }else{
+  } else {
     error(req, res, new ERRORS.TOKEN_DOESNT_EXIST({}));
   }
 }
@@ -148,19 +152,20 @@ async function controllaToken(req, res) {
     let token = req.headers["token"].split(' ')[1];
     //console.log("TOKEN => "+token);
     console.log(token + " - " + typeof (token));
-    if (token != "undefined"&&token!="null") {
+    console.log(token + " - " + typeof (token));
+    if (token != "undefined" && token != "null") {
 
-      try{
-        const res = await jwt.verify(token, privateKey);
-      }catch (err){
-        console.log(err);
-        error(req, res, new ERRORS.TOKEN_EXPIRED({}));
-      }
-      
+      //console.log(jwt.verify(token, privateKey));
+      const result = await jwt.verify(token, privateKey);
+    
+     
+      //console.log(result);
+            
+
       ctrlToken.allow = true;
-      if (res) {
+      if (result) {
         //ctrlToken.allow=true;
-        ctrlToken.payload = res;
+        ctrlToken.payload = result;
       } else {
         ctrlToken.payload = {
           "err_iat": true,
@@ -175,12 +180,12 @@ async function controllaToken(req, res) {
 
 function createToken(obj) {
   let token = jwt.sign({
-        '_id': obj._id,
-        'user': obj.user,
-        'iat': Math.floor(Date.now() / 1000),
-        'exp': Math.floor(Date.now() / 1000 + usersService.TIMEOUT)
-      },
-      privateKey
+      '_id': obj._id,
+      'user': obj.user,
+      'iat': Math.floor(Date.now() / 1000),
+      'exp': Math.floor(Date.now() / 1000 + usersService.TIMEOUT)
+    },
+    privateKey
   );
   return token;
 }

@@ -116,19 +116,18 @@ async function controllaToken(req, res) {
       //console.log("TOKEN => "+token);
 
 
+      
       console.log(token + " - " + typeof (token));
       if (token != "undefined"&&token!="null") {
-        try{
-            const res = await jwt.verify(token, privateKey);
-        }catch (err){
-            console.log(err);
-            error(req, res, new ERRORS.TOKEN_EXPIRED({}));
-        }
+
+        const result = await jwt.verify(token, privateKey);
+        console.log(result);
+              
 
         ctrlToken.allow = true;
-        if (res) {
+        if (result) {
           //ctrlToken.allow=true;
-          ctrlToken.payload = res;
+          ctrlToken.payload = result;
         } else {
           ctrlToken.payload = {
             "err_iat": true,

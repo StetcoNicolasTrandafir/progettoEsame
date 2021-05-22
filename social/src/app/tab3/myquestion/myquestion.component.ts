@@ -1,7 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {ChatPage} from "../../tab1/chat/chat.page";
-import {ModalController} from "@ionic/angular";
+import {AlertController, ModalController} from "@ionic/angular";
 import {RequestpagePage} from "../requestpage/requestpage.page";
+import {HttpService} from "../../service/http.service";
 
 @Component({
   selector: 'app-myquestion',
@@ -11,7 +12,7 @@ import {RequestpagePage} from "../requestpage/requestpage.page";
 export class MyquestionComponent implements OnInit {
   @Input() myQuestion;
 
-  constructor(private modalController:ModalController) { }
+  constructor(private modalController:ModalController,private alertController:AlertController,private http:HttpService) { }
 
   ngOnInit() {
    // alert(this.myQuestion.idDomanda);
@@ -31,5 +32,37 @@ export class MyquestionComponent implements OnInit {
       }
     });
     return await modal.present();
+  }
+
+  async arhiviaDomanda() {
+    const alert = await this.alertController.create({
+      cssClass: '',
+      header: 'Archivia Domanda',
+      message: 'Sei sicuro di voler archiviare questa domanda?',
+      buttons: [
+        {
+          text: 'Annulla',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (blah) => {
+            //console.log('Confirm Cancel: blah');
+          }
+        }, {
+          text: 'Conferma',
+          handler: () => {
+            //console.log('Confirm Okay');
+            this.http.sendPOSTRequest('/question/updateQuestionState',{domanda:this.myQuestion.idDomanda,stato:'F'}).subscribe(
+              (data)=>{
+                console.log(data);
+              },(err)=>{
+                console.log(err);
+              }
+            )
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 }

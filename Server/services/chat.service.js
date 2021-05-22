@@ -43,9 +43,12 @@ const getChats = async  (utente, destinatario, username, req, res)=>{
 
 const makeMatch = async  (utente, utenteRisposta, username, req, res)=>{
 
+    let queryCtrl= "SELECT matchedId FROM matched WHERE (idUtenteDomanda=? AND idUtenteRisposta=?) OR (idUtenteDomanda=? AND idUtenteRisposta=?)";
+    const ctrl=await db.execute(queryCtrl, [utente, utenteRisposta,utenteRisposta,utente]);
+    console.log(ctrl);
+    if(ctrl.length==0){
     let queryString = "INSERT INTO matched (idUtenteDomanda, idUtenteRisposta, matched , data) VALUES (?,?, 'T', NOW())";
     let params= [utente, utenteRisposta];
-
     const result = await db.execute(queryString, params, req, res);
 
     let token = createToken({
@@ -56,6 +59,11 @@ const makeMatch = async  (utente, utenteRisposta, username, req, res)=>{
         data: "Match effettuato!",
         token:token
     });
+    }else
+        return ({
+            data:"Match già esistente"
+        })
+    
 }
 
 const startChat = async  (utenteDomanda, utenteRisposta,domanda, risposta, username, req, res)=>{

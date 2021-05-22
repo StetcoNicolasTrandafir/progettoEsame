@@ -14,13 +14,14 @@ export class Tab2Page implements OnInit{
 
   constructor(private http:HttpService,private router:Router,private route:ActivatedRoute) {
     route.params.subscribe(val => {
+      console.log("TOKEN => "+localStorage.getItem('token'));
       this.controlloToken();
     });
   }
 
   ngOnInit(): void {
     //this.controlloToken();
-    this.http.sendPOSTRequest('/question/getCategories',{}).subscribe(
+    this.http.sendPOSTRequest('/question/getMyCategories',{}).subscribe(
       (data)=>{
         console.log(data);
         this.categorie=data.data;
@@ -60,14 +61,27 @@ export class Tab2Page implements OnInit{
   }
 
   caricaDomandePerCategorie() {
-    console.log(this.selectedCategories);
-    this.http.sendPOSTRequest("/question/getQuestionsByCategories",{categorie:this.selectedCategories}).subscribe(
-      (data)=>{
-        console.log(data.data);
-        this.domande=data.data;
-      },(error)=>{
-        console.log(error);
-      }
-    );
+
+    if(this.selectedCategories.length>0){
+      console.log(this.selectedCategories);
+      this.http.sendPOSTRequest("/question/getQuestionsByCategories",{categorie:this.selectedCategories}).subscribe(
+        (data)=>{
+          console.log(data.data);
+          this.domande=data.data;
+        },(error)=>{
+          console.log(error);
+        }
+      );
+    }else{
+      this.http.sendPOSTRequest("/question/getQuestions",{}).subscribe(
+        (data)=>{
+          console.log(data.data);
+          this.domande=data.data;
+        },(error)=>{
+          console.log(error);
+        }
+      );
+    }
+
   }
 }

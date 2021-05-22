@@ -10,15 +10,48 @@ const TIMEOUT=600;
 
 
 
+const updateBlackList = async  (utente,categorie,req, res)=>{
+
+    let queryString = "DELETE * FROM blacklist  WHERE idUtente=?";
+    const resultDelete = await db.execute(queryString, [utente], req, res);
+    console.log(resultDelete);
+    let result;
+    for(let i=0; i < categorie.length; i++){
+        queryString= "INSERT INTO blacklist(idUtente, idCategoria) VALUES (?,?)";
+        result = await db.execute(queryString, [utente, categorie[i]], req, res);
+    }
+
+    return({
+        data: "Blacklist aggiornata!",
+    });
+}
+
+
+
+
+const updateQuestionState = async  (domanda,stato,req, res)=>{
+
+    let queryString = "UPDATE domande SET disponibile=? WHERE idDomanda=?";
+
+
+    const result = await db.execute(queryString, [stato,domanda], req, res);
+    return({
+        data: "Disponibilita domanda aggiornata!",
+    });
+}
+
 const handleRequest = async  (risposta,stato,req, res)=>{
 
     let queryString = "UPDATE risposte SET stato=? WHERE idRisposta=?";
 
-    const result = await db.execute(queryString, [risposta,stato], req, res);
+
+    const result = await db.execute(queryString, [stato,risposta], req, res);
     return({
         data: "Richiesta gestita!",
     });
 }
+
+
 const insertAnswer = async  (utente,testo,domanda,username,req, res)=>{
 
     let queryString = "INSERT INTO risposte(testoRisposta, data, domanda, utente) VALUES (?,NOW(),?,?)";
@@ -52,18 +85,34 @@ const insertQuestion = async  (autore,testo,categoria,username,req, res)=>{
 }
 const getQuestions = async  (utente,req, res)=>{
 
-    let queryString = "SELECT domande.*, utenti.username, categorie.nomeCategoria, categorie.colore FROM domande, utenti, categorie WHERE domande.autore!=? AND (utenti.idUtente=domande.autore AND domande.categoria=categorie.idCategoria) AND categoria NOT IN (SELECT idCategoria FROM blacklist WHERE idUtente= ?) AND domande.disponibile='T' ORDER BY domande.data DESC";
-    const result = await db.execute(queryString, [utente,utente], req, res);
+    let queryString = "SELECT utenti.username, categorie.nomeCategoria, categorie.colore, domande.idDomanda, domande.testoDomanda, domande.data, domande.categoria, domande.disponibile, domande.autore,SQRT(POWER(((SELECT SUBSTRING_INDEX(posizione,';',1) FROM utenti WHERE idUtente=?)-SUBSTRING_INDEX(utenti.posizione,';',1)),2)";
+    queryString+="+ POWER(((SELECT SUBSTRING_INDEX(posizione,';',-1) FROM utenti WHERE idUtente=?)-SUBSTRING_INDEX(utenti.posizione,';',-1)),2)";
+    queryString+=") AS DISTANZA";
+    queryString+=" FROM domande INNER JOIN utenti ON utenti.idUtente=domande.autore";
+    queryString+=" INNER JOIN categorie ON domande.categoria=categorie.idCategoria";
+    queryString+=" WHERE domande.autore!=? AND domande.categoria NOT IN (SELECT idCategoria FROM blacklist WHERE idUtente= ?) AND domande.disponibile='T'";
+    queryString+=" GROUP BY domande.idDomanda,domande.testoDomanda,domande.data,domande.categoria,domande.disponibile,domande.autore";
+    queryString+=" ORDER BY DISTANZA ASC, domande.data DESC";
+    console.log(queryString);
+    const result = await db.execute(queryString, [utente,utente,utente,utente], req, res);
     return({
         data: result,
     });
 }
 
 
-const getQuestionsByCategories = async  (categorie,req, res)=>{
+const getQuestionsByCategories = async  (categorie,utente,req, res)=>{
 
-    let queryString = "SELECT domande.*, categorie.* FROM domande, categorie WHERE domande.categoria IN (?) AND categorie.idCategoria= domande.categoria";
-    const result = await db.execute(queryString, [categorie], req, res);
+
+    let queryString = "SELECT utenti.username, categorie.nomeCategoria, categorie.colore, domande.idDomanda, domande.testoDomanda, domande.data, domande.categoria, domande.disponibile, domande.autore,SQRT(POWER(((SELECT SUBSTRING_INDEX(posizione,';',1) FROM utenti WHERE idUtente=?)-SUBSTRING_INDEX(utenti.posizione,';',1)),2)";
+    queryString+="+ POWER(((SELECT SUBSTRING_INDEX(posizione,';',-1) FROM utenti WHERE idUtente=?)-SUBSTRING_INDEX(utenti.posizione,';',-1)),2)";
+    queryString+=") AS DISTANZA";
+    queryString+=" FROM domande INNER JOIN utenti ON utenti.idUtente=domande.autore";
+    queryString+=" INNER JOIN categorie ON domande.categoria=categorie.idCategoria";
+    queryString+=" WHERE domande.autore!=? AND domande.categoria IN (?) AND domande.categoria NOT IN (SELECT idCategoria FROM blacklist WHERE idUtente= ?) AND domande.disponibile='T'";
+    queryString+=" GROUP BY domande.idDomanda,domande.testoDomanda,domande.data,domande.categoria,domande.disponibile,domande.autore";
+    queryString+=" ORDER BY DISTANZA ASC, domande.data DESC";
+    const result = await db.execute(queryString, [utente,utente,utente,categorie,utente], req, res);
     return({
         data: result,
     });
@@ -77,7 +126,7 @@ const getQuestionsByUser = async  (utente,disponibile,req, res)=>{
     });
 }
 
-const getAnswersByUser = async  (utente,req, res)=>{
+const getAnswersByUser = async  (utente, req, res)=>{
     let queryString = "SELECT risposte.*, domande.testoDomanda, utenti.username, categorie.colore FROM risposte, domande, utenti, categorie WHERE utente= ? AND domande.idDomanda=risposte.domanda AND domande.autore= utenti.idUtente AND domande.categoria= categorie.idCategoria";
     const result = await db.execute(queryString, [utente], req, res);
     return({
@@ -85,10 +134,10 @@ const getAnswersByUser = async  (utente,req, res)=>{
     });
 }
 
-const getAnswersByQuestion = async  (domanda,req, res)=>{
+const getAnswersByQuestion = async  (domanda,stato,req, res)=>{
 
-    let queryString = "SELECT risposte.*, utenti.username, domande.testoDomanda FROM risposte,utenti, domande WHERE domanda= ? AND risposte.utente=utenti.idUtente AND domande.idDomanda=risposte.domanda";
-    const result = await db.execute(queryString, [domanda], req, res);
+    let queryString = "SELECT risposte.*, utenti.username, domande.testoDomanda FROM risposte,utenti, domande WHERE domanda= ? AND risposte.utente=utenti.idUtente AND domande.idDomanda=risposte.domanda AND risposte.stato=?";
+    const result = await db.execute(queryString, [domanda, stato], req, res);
     return({
         data: result,
     });
@@ -146,6 +195,8 @@ module.exports = {
     getQuestionsByUser,
     getQuestions,
     handleRequest,
-    getMyCategories
+    getMyCategories,
+    updateBlackList,
+    updateQuestionState
 }
 

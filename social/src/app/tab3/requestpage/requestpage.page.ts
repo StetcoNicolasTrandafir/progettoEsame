@@ -18,7 +18,7 @@ export class RequestpagePage implements OnInit {
 
   ngOnInit() {
     console.log(this.domanda);
-    this.http.sendPOSTRequest('/question/getAnswersByQuestion',{domanda:this.domanda.myquestion,stato:this.domanda.stato}).subscribe(
+    this.http.sendPOSTRequest('/question/getAnswersByQuestion',{stato:'S',domanda:this.domanda.myquestion}).subscribe(
       (data)=>{
         console.log(data);
         this.richieste=data.data;
