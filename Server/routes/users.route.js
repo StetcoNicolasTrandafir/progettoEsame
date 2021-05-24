@@ -14,6 +14,7 @@ router.post('/controlloToken', userController.controlloToken);
 router.post('/signUp', userController.signUp);
 router.post('/processUpFile', userController.processUpFile);
 router.post('/changePassword', userController.changePassword);
+router.post('/updateUser', userController.updateUser);
 
 
 module.exports = router

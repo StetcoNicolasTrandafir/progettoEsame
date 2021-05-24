@@ -43,6 +43,9 @@ const changePassword= async(utente, oldPwd,newPwd, req, res)=>{
         })
 }
 
+
+
+
 const signUp= async  (user, mail, nome, cognome, foto, sesso, descrizione, posizione, dataNascita, pwd, req, res)=>{
     let queryMail = "SELECT idUtente FROM utenti WHERE mail=?";
     const ctrMail = await db.execute(queryMail, [mail], req, res);
@@ -93,6 +96,28 @@ const processUpFile= async (file, req, res)=>{
             });
         }
     })
+}
+
+
+const updateUser= async(idUtente,user, mail, descrizione, pos, req, res)=>{
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    console.log("TEST MAIL=> " + re.test(String(mail).toLowerCase()));
+    if(re.test(String(mail).toLowerCase()))
+        return({
+            data:"Inserisci un indirizzo e-mail valido"
+        })
+        else{
+            let queryString="UPDATE utenti SET user=?, mail=?, descrizione=?, posizione=? WHERE idUtente=?";
+            const result= await db.execute(queryString,[user,mail,descrizione, pos,idUtente], req, res);
+            let token = createToken({
+                "_id": idUtente,
+                "user": user
+            });
+            return({
+                "token": token,
+                "data": "Dati modificati con successo"
+            });
+        }
 }
 
 const login = async (mail, password, req, res) => {
@@ -149,6 +174,7 @@ module.exports = {
     getUser,
     signUp,
     processUpFile,
-    changePassword
+    changePassword,
+    updateUser
   }
 

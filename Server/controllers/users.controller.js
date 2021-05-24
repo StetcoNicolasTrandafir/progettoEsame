@@ -48,6 +48,31 @@ const signUp = async (req, res, next) => {
   }
 }
 
+
+const updateUser = async (req, res, next) => {
+  //recupero il parametro id dall'url della chiamata
+  let ctrlToken = await controllaToken(req, res);
+  let utente = ctrlToken.payload._id;
+  let user = req.body.user;
+  let mail = req.body.mail;
+  // let nome = req.body.nome;
+  // let cognome = req.body.cognome;
+  let foto = req.body.foto;
+  // let sesso = req.body.sesso;
+  let descrizione = req.body.descrizione;
+  let posizione = req.body.posizione;
+  // let dataNascita = req.body.dataNascita;
+  // let password = req.body.password;
+  try {
+    const risultato = await usersService.updateUser(utente,user, mail,descrizione, posizione, req, res);
+    res.send(risultato);
+    next();
+  } catch (e) {
+    console.log(e.message)
+    res.sendStatus(500) && next(error)
+  }
+}
+
 const changePassword = async (req, res, next) => {
   //recupero il parametro id dall'url della chiamata
   let ctrlToken = await controllaToken(req, res);
@@ -74,7 +99,6 @@ const login = async (req, res, next) => {
     console.log("risultato", risultato);
     res.send(risultato);
 
-    //ANCHOR chiedere che minchia vuol dire
     next();
   } catch (e) {
     console.log(e.message)
@@ -202,5 +226,6 @@ module.exports = {
   signUp,
   processUpFile,
   prova,
-  changePassword
+  changePassword,
+  updateUser
 }
