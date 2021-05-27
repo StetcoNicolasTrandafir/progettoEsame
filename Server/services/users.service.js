@@ -63,6 +63,7 @@ const changePassword= async(utente, oldPwd,newPwd, req, res)=>{
 
 
 const signUp= async  (user, mail, nome, cognome, foto, sesso, descrizione, posizione, dataNascita, pwd, req, res)=>{
+
     let queryMail = "SELECT idUtente FROM utenti WHERE mail=?";
     const ctrMail = await db.execute(queryMail, [mail], req, res);
     if(ctrMail.length!=0)

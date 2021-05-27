@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const fs = require("fs");
 const privateKey = fs.readFileSync("keys/private.key", "utf8");
 const ERRORS = require('errors');
+const { crypto } = require("../crypto");
 
 
 //Gestione errori del TOKEN
@@ -22,6 +23,7 @@ ERRORS.create({
 
 //CHIAMATE
 const signUp = async (req, res, next) => {
+  
   let user = req.body.user;
   let mail = req.body.mail;
   let nome = req.body.nome;
@@ -32,6 +34,7 @@ const signUp = async (req, res, next) => {
   let posizione = req.body.posizione;
   let dataNascita = req.body.dataNascita;
   let password = req.body.password;
+
 
   foto = (foto.split('.')[foto.split('.').length - 1]);
 
@@ -87,6 +90,17 @@ const changePassword = async (req, res, next) => {
     console.log(e.message)
     res.sendStatus(500) && next(error)
   }
+}
+
+const provaCrittografia= async (req, res)=>{
+  let text= req.body.text;
+  let hash= crypto.encrypt(text);
+  let decrypted=crypto.decrypt(hash);
+  res.send({
+    testo: text,
+    criptata:hash,
+    decriptata: decrypted
+  })
 }
 
 const login = async (req, res, next) => {
@@ -162,6 +176,8 @@ const controlloToken = async (req, res, next) => {
 }
 
 
+
+
 //FUNZIONI COMUNI
 async function controllaToken(req, res) {
   let ctrlToken = {
@@ -232,5 +248,6 @@ module.exports = {
   processUpFile,
   prova,
   changePassword,
-  updateUser
+  updateUser,
+  provaCrittografia
 }

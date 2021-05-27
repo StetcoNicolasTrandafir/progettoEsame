@@ -15,6 +15,7 @@ router.post('/signUp', userController.signUp);
 router.post('/processUpFile', userController.processUpFile);
 router.post('/changePassword', userController.changePassword);
 router.post('/updateUser', userController.updateUser);
+router.post('/provaCrittografia', userController.provaCrittografia);
 
 
 module.exports = router

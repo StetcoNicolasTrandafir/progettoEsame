@@ -2,6 +2,8 @@ const jwt = require("jsonwebtoken");
 const fs = require('fs');
 const { db } = require("../db");
 const ERRORS = require('errors');
+const { crypto } = require("../crypto");
+
 
 ERRORS.create({
     code: 602,
@@ -23,6 +25,19 @@ const getMessagesByReceiver = async  (utente, destinatario, username, req, res)=
         "_id": utente,
         "user": username
     });
+
+    let i
+    result.forEach(mex=>{
+
+        mex.testoMessaggio= crypto.decrypt({iv: mex.iv, content:mex.testoMessaggio });
+        //console.log(mex.testoMessaggio)
+    });
+    /*for(i; i<result.length; i++){
+        console.log(result[i].testoMessaggio)
+        result[i].testoMessaggio= crypto.decrypt({iv: res[i].iv, content:res[i].testoMessaggio });
+        console.log(result[i].testoMessaggio)
+    }*/
+    console.log("LUNGHEZZA===>",result.length);
     return({
         data: result,
         token:token
@@ -67,8 +82,10 @@ const makeMatch = async  (utente, utenteRisposta, username, req, res)=>{
 }
 
 const startChat = async  (utenteDomanda, utenteRisposta,domanda, risposta, username, req, res)=>{
-    let queryString = "INSERT INTO messaggi(testoMessaggio, data,mittente,destinatario) VALUES (?, NOW(), ?,?),(?, NOW(), ?,?)";
-    let params= [domanda, utenteDomanda, utenteRisposta, risposta, utenteRisposta, utenteDomanda];
+    let domandaCriptata= crypto.encrypt(domanda);
+    let rispostaCriptata= crypto.encrypt(risposta);
+    let queryString = "INSERT INTO messaggi(testoMessaggio, data,mittente,destinatario, iv) VALUES (?, NOW(), ?,?,?),(?, NOW(), ?,?,?)";
+    let params= [domandaCriptata.content, utenteDomanda, utenteRisposta,domandaCriptata.iv, rispostaCriptata.content, utenteRisposta, utenteDomanda,rispostaCriptata.iv];
     const result = await db.execute(queryString, params, req, res);
 
     let token = createToken({
@@ -85,8 +102,9 @@ const startChat = async  (utenteDomanda, utenteRisposta,domanda, risposta, usern
 
 const sendMessage = async  (testo,utente, destinatario,user, req, res)=>{
 
-    let queryString = "INSERT INTO messaggi(testoMessaggio, data,mittente,destinatario) VALUES (?,NOW(),?,?)";
-    let params= [testo, utente, destinatario];
+    let enrcypted= crypto.encrypt(testo);
+    let queryString = "INSERT INTO messaggi(testoMessaggio, data,mittente,destinatario, iv) VALUES (?,NOW(),?,?,?)";
+    let params= [enrcypted.content, utente, destinatario, enrcypted.iv];
 
     const result = await db.execute(queryString, params, req, res);
 

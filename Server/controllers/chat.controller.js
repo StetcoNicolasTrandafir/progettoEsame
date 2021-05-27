@@ -4,6 +4,7 @@ const fs = require('fs');
 const privateKey = fs.readFileSync("keys/private.key", "utf8");
 const ERRORS = require('errors');
 
+
 ERRORS.create({
     code: 603,
     name: 'TOKEN_EXPIRED',
