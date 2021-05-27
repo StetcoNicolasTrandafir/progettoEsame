@@ -179,10 +179,15 @@ async function controllaToken(req, res) {
     console.log(token + " - " + typeof (token));
     if (token != "undefined" && token != "null") {
 
+      let result;
+      try{
+         result = await jwt.verify(token, privateKey);
+      }
+      catch (ex){
+        console.log(ex);
+      }
       //console.log(jwt.verify(token, privateKey));
-      const result = await jwt.verify(token, privateKey);
-    
-     
+
       //console.log(result);
             
 

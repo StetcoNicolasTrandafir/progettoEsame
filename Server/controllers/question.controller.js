@@ -222,7 +222,14 @@ async function controllaToken(req, res) {
         console.log(token + " - " + typeof (token));
         if (token != "undefined" && token != "null") {
 
-            const result = await jwt.verify(token, privateKey);
+
+            let result;
+            try{
+                result = await jwt.verify(token, privateKey);
+            }
+            catch (ex){
+                console.log(ex);
+            }
             console.log(result);
 
             ctrlToken.allow = true;

@@ -12,6 +12,12 @@ ERRORS.create({
     defaultMessage: 'An error occured crypting your data'
 });
 
+ERRORS.create({
+    code: 606,
+    name: 'HASH_COMPARE',
+    defaultMessage: 'An error occured comparing hashes'
+});
+
 const TIMEOUT=600;
 const privateKey = fs.readFileSync("services/keys/private.key", "utf8");
 
@@ -30,13 +36,23 @@ const changePassword= async(utente, oldPwd,newPwd, req, res)=>{
     const comp = await bcrypt.compare(oldPwd, result[0].password);
     if(comp){
         let saltRounds = 10;
-        const hash=await bcrypt.hash(newPwd, saltRounds);
-        quesryString="UPDATE utenti SET password=? WHERE idUtente=?";
-        const resultUpdate= await db.execute(quesryString, [hash, utente]);
-        console.log(resultUpdate);
-        return({
-            data:"Password cambiata con successo"
-        });
+        let hash;
+        try{
+            hash=await bcrypt.hash(newPwd, saltRounds);
+        }catch (e){
+            console.log(e);
+        }
+        if(hash){
+            quesryString="UPDATE utenti SET password=? WHERE idUtente=?";
+            const resultUpdate= await db.execute(quesryString, [hash, utente]);
+            console.log(resultUpdate);
+            return({
+                data:"Password cambiata con successo"
+            });
+        }else
+            error(req, res, new ERRORS.HASH({}));
+
+
     }else
         return({
             data:"Password errata"
@@ -66,20 +82,26 @@ const signUp= async  (user, mail, nome, cognome, foto, sesso, descrizione, posiz
         else
         {
             let saltRounds = 10;
-            const hash=await bcrypt.hash(pwd, saltRounds);
-            //TODO gestione errore
-            let insertQuery = "INSERT INTO utenti(username, password, nome, cognome, mail, foto, posizione, sesso, descrizione, dataNascita) VALUES (?,?,?,?,?,?,?,?,?,STR_TO_DATE(?, '%d-%m-%Y'))";
-            let param=[user, hash, nome, cognome, mail, foto, posizione, sesso, descrizione, dataNascita];
-            const resultInsert= await db.execute(insertQuery, param, req, res);
-            console.log("Result insert:",resultInsert)
-            let token = createToken({
-                "_id": resultInsert.insertId,
-                "user": user
-            });
-            return({
-                "token": token,
-                "data": "Signed up!"
-            });
+            try{
+                hash=await bcrypt.hash(newPwd, saltRounds);
+            }catch (e){
+                console.log(e);
+            }
+            if(hash){
+                let insertQuery = "INSERT INTO utenti(username, password, nome, cognome, mail, foto, posizione, sesso, descrizione, dataNascita) VALUES (?,?,?,?,?,?,?,?,?,STR_TO_DATE(?, '%d-%m-%Y'))";
+                let param=[user, hash, nome, cognome, mail, foto, posizione, sesso, descrizione, dataNascita];
+                const resultInsert= await db.execute(insertQuery, param, req, res);
+                console.log("Result insert:",resultInsert)
+                let token = createToken({
+                    "_id": resultInsert.insertId,
+                    "user": user
+                });
+                return({
+                    "token": token,
+                    "data": "Signed up!"
+                });
+            }else
+                error(req, res, new ERRORS.HASH({}));
         }
     }
 }

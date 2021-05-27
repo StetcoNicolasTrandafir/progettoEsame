@@ -15,7 +15,7 @@ export class MyquestionComponent implements OnInit {
   constructor(private modalController:ModalController,private alertController:AlertController,private http:HttpService) { }
 
   ngOnInit() {
-   // alert(this.myQuestion.idDomanda);
+
   }
 
   async visualizzaRisposte(idDomanda: number) {
