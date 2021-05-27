@@ -1,4 +1,4 @@
-<ion-card style="background-color:{{domanda.colore}}" color="black">
+<ion-card style="background-color:{{domanda.colore}}" color="black" [hidden]="nascondiDomanda">
   <ion-card-header>
     <ion-icon (click)="arhiviaDomanda()" style="float: right" name="push-outline"></ion-icon>
   </ion-card-header>

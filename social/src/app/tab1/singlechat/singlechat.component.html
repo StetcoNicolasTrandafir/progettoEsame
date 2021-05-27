@@ -1,6 +1,7 @@
 <ion-item (click)="openChat()">
   <ion-avatar slot="start">
-    <ion-img src="http://localhost:1337/img/{{singleChat.foto}}"></ion-img>
+    <ion-img [hidden]="!mostraAvatar" src="https://library.kissclipart.com/20180922/eve/kissclipart-icon-full-name-clipart-computer-icons-avatar-icon-f6cf26ff2213f36e.jpg"></ion-img>
+    <ion-img [hidden]="mostraAvatar" (ionError)="mostraAvatar=true" src="http://localhost:1337/img/{{singleChat.foto}}"></ion-img>-->
   </ion-avatar>
   <ion-label>
     <h3>{{singleChat.username}}</h3>
