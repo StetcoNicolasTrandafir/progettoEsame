@@ -10,9 +10,11 @@ import {ChatPage} from "../chat/chat.page";
 })
 export class SinglechatComponent implements OnInit {
   @Input() singleChat;
+  mostraAvatar: boolean=false;
   constructor(private router:Router,private modalController:ModalController) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
   async openChat() {
 
@@ -25,5 +27,9 @@ export class SinglechatComponent implements OnInit {
       });
       return await modal.present();
 
+  }
+
+  alert() {
+    alert();
   }
 }

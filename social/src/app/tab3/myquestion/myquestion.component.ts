@@ -11,6 +11,7 @@ import {HttpService} from "../../service/http.service";
 })
 export class MyquestionComponent implements OnInit {
   @Input() myQuestion;
+  nascondiDomanda: boolean=false;
 
   constructor(private modalController:ModalController,private alertController:AlertController,private http:HttpService) { }
 
@@ -54,6 +55,7 @@ export class MyquestionComponent implements OnInit {
             this.http.sendPOSTRequest('/question/updateQuestionState',{domanda:this.myQuestion.idDomanda,stato:'F'}).subscribe(
               (data)=>{
                 console.log(data);
+                this.nascondiDomanda=true;
               },(err)=>{
                 console.log(err);
               }

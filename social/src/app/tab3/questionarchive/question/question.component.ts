@@ -9,6 +9,7 @@ import {HttpService} from "../../../service/http.service";
 })
 export class QuestionComponent implements OnInit {
   @Input() domanda;
+  nascondiDomanda: boolean=false;
   constructor(private alertController:AlertController,private http:HttpService) { }
 
   ngOnInit() {}
@@ -33,6 +34,7 @@ export class QuestionComponent implements OnInit {
             this.http.sendPOSTRequest('/question/updateQuestionState',{domanda:this.domanda.idDomanda,stato:'T'}).subscribe(
               (data)=>{
                 console.log(data);
+                this.nascondiDomanda=true;
               },(err)=>{
                 console.log(err);
               }

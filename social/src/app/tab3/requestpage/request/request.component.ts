@@ -8,6 +8,7 @@ import {HttpService} from "../../../service/http.service";
 })
 export class RequestComponent implements OnInit {
   @Input() richiesta;
+  nascondiDomanda: boolean=false;
 
 
   constructor(private http:HttpService) { }
@@ -21,6 +22,7 @@ export class RequestComponent implements OnInit {
       (data)=>{
         console.log(data);
         //TODO CANCELLARE RICHIESTA
+        this.nascondiDomanda=true;
       },(err)=>{
         console.log(err);
       }
@@ -33,7 +35,7 @@ export class RequestComponent implements OnInit {
         console.log(data);
         this.inserisciMatch();
         this.inviaMessaggi();
-
+        this.nascondiDomanda=true;
       },(err)=>{
         console.log(err);
       }
