@@ -35,7 +35,6 @@ const signUp = async (req, res, next) => {
   let dataNascita = req.body.dataNascita;
   let password = req.body.password;
 
-
   foto = (foto.split('.')[foto.split('.').length - 1]);
 
   try {

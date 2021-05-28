@@ -26,9 +26,7 @@ const getMessagesByReceiver = async  (utente, destinatario, username, req, res)=
         "user": username
     });
 
-    let i
     result.forEach(mex=>{
-
         mex.testoMessaggio= crypto.decrypt({iv: mex.iv, content:mex.testoMessaggio });
         //console.log(mex.testoMessaggio)
     });

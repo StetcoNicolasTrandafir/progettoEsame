@@ -2,11 +2,10 @@ const jwt = require("jsonwebtoken");
 const fs = require('fs');
 const { db } = require("../db");
 const ERRORS = require('errors');
+const { crypto } = require("../crypto");
+
 const privateKey = fs.readFileSync("keys/private.key", "utf8");
 const TIMEOUT=600;
-
-
-
 
 
 
@@ -44,7 +43,6 @@ const handleRequest = async  (risposta,stato,req, res)=>{
 
     let queryString = "UPDATE risposte SET stato=? WHERE idRisposta=?";
 
-
     const result = await db.execute(queryString, [stato,risposta], req, res);
     return({
         data: "Richiesta gestita!",
@@ -54,9 +52,10 @@ const handleRequest = async  (risposta,stato,req, res)=>{
 
 const insertAnswer = async  (utente,testo,domanda,username,req, res)=>{
 
+    let enrcypted= crypto.encrypt(testo);
     let queryString = "INSERT INTO risposte(testoRisposta, data, domanda, utente) VALUES (?,NOW(),?,?)";
 
-    const result = await db.execute(queryString, [testo, domanda, utente], req, res);
+    const result = await db.execute(queryString, [enrcypted, domanda, utente], req, res);
 
     let token = createToken({
         "_id": utente,
@@ -70,8 +69,9 @@ const insertAnswer = async  (utente,testo,domanda,username,req, res)=>{
 }
 const insertQuestion = async  (autore,testo,categoria,username,req, res)=>{
 
+    let enrcypted= crypto.encrypt(testo);
     let queryString = "INSERT INTO domande(testoDomanda, data,categoria,disponibile, autore) VALUES (?,NOW(),?,'T',?)";
-    const result = await db.execute(queryString, [testo, categoria, autore], req, res);
+    const result = await db.execute(queryString, [enrcypted, categoria, autore], req, res);
 
     let token = createToken({
         "_id": autore,
@@ -85,7 +85,7 @@ const insertQuestion = async  (autore,testo,categoria,username,req, res)=>{
 }
 const getQuestions = async  (utente,req, res)=>{
 
-    let queryString = "SELECT utenti.username, categorie.nomeCategoria, categorie.colore, domande.idDomanda, domande.testoDomanda, domande.data, domande.categoria, domande.disponibile, domande.autore,SQRT(POWER(((SELECT SUBSTRING_INDEX(posizione,';',1) FROM utenti WHERE idUtente=?)-SUBSTRING_INDEX(utenti.posizione,';',1)),2)";
+    let queryString = "SELECT utenti.username, categorie.nomeCategoria, categorie.colore,domande.iv, domande.idDomanda, domande.testoDomanda, domande.data, domande.categoria, domande.disponibile, domande.autore,SQRT(POWER(((SELECT SUBSTRING_INDEX(posizione,';',1) FROM utenti WHERE idUtente=?)-SUBSTRING_INDEX(utenti.posizione,';',1)),2)";
     queryString+="+ POWER(((SELECT SUBSTRING_INDEX(posizione,';',-1) FROM utenti WHERE idUtente=?)-SUBSTRING_INDEX(utenti.posizione,';',-1)),2)";
     queryString+=") AS DISTANZA";
     queryString+=" FROM domande INNER JOIN utenti ON utenti.idUtente=domande.autore";
@@ -95,6 +95,9 @@ const getQuestions = async  (utente,req, res)=>{
     queryString+=" ORDER BY DISTANZA ASC, domande.data DESC";
     console.log(queryString);
     const result = await db.execute(queryString, [utente,utente,utente,utente], req, res);
+    result.forEach(question=>{
+        question.testoDomanda= crypto.decrypt({iv: question.iv, content:question.testoDomanda });
+    });
     return({
         data: result,
     });
@@ -104,7 +107,7 @@ const getQuestions = async  (utente,req, res)=>{
 const getQuestionsByCategories = async  (categorie,utente,req, res)=>{
 
 
-    let queryString = "SELECT utenti.username, categorie.nomeCategoria, categorie.colore, domande.idDomanda, domande.testoDomanda, domande.data, domande.categoria, domande.disponibile, domande.autore,SQRT(POWER(((SELECT SUBSTRING_INDEX(posizione,';',1) FROM utenti WHERE idUtente=?)-SUBSTRING_INDEX(utenti.posizione,';',1)),2)";
+    let queryString = "SELECT utenti.username, categorie.nomeCategoria, categorie.colore, domande.idDomanda,domande.iv, domande.testoDomanda, domande.data, domande.categoria, domande.disponibile, domande.autore,SQRT(POWER(((SELECT SUBSTRING_INDEX(posizione,';',1) FROM utenti WHERE idUtente=?)-SUBSTRING_INDEX(utenti.posizione,';',1)),2)";
     queryString+="+ POWER(((SELECT SUBSTRING_INDEX(posizione,';',-1) FROM utenti WHERE idUtente=?)-SUBSTRING_INDEX(utenti.posizione,';',-1)),2)";
     queryString+=") AS DISTANZA";
     queryString+=" FROM domande INNER JOIN utenti ON utenti.idUtente=domande.autore";
@@ -113,6 +116,9 @@ const getQuestionsByCategories = async  (categorie,utente,req, res)=>{
     queryString+=" GROUP BY domande.idDomanda,domande.testoDomanda,domande.data,domande.categoria,domande.disponibile,domande.autore";
     queryString+=" ORDER BY DISTANZA ASC, domande.data DESC";
     const result = await db.execute(queryString, [utente,utente,utente,categorie,utente], req, res);
+    result.forEach(question=>{
+        question.testoDomanda= crypto.decrypt({iv: question.iv, content:question.testoDomanda });
+    });
     return({
         data: result,
     });
@@ -121,6 +127,9 @@ const getQuestionsByCategories = async  (categorie,utente,req, res)=>{
 const getQuestionsByUser = async  (utente,disponibile,req, res)=>{
     let queryString = "SELECT domande.*, categorie.nomeCategoria, categorie.colore  FROM domande, categorie WHERE domande.autore= ? AND domande.categoria=categorie.idCategoria AND domande.disponibile= ?";
     const result = await db.execute(queryString, [utente,disponibile], req, res);
+    result.forEach(question=>{
+        question.testoDomanda= crypto.decrypt({iv: question.iv, content:question.testoDomanda });
+    });
     return({
         data: result,
     });
@@ -129,6 +138,9 @@ const getQuestionsByUser = async  (utente,disponibile,req, res)=>{
 const getAnswersByUser = async  (utente, req, res)=>{
     let queryString = "SELECT risposte.*, domande.testoDomanda, utenti.username, categorie.colore FROM risposte, domande, utenti, categorie WHERE utente= ? AND domande.idDomanda=risposte.domanda AND domande.autore= utenti.idUtente AND domande.categoria= categorie.idCategoria";
     const result = await db.execute(queryString, [utente], req, res);
+    result.forEach(answer=>{
+        answer.testoRisposta= crypto.decrypt({iv: answer.iv, content:answer.testoRisposta });
+    });
     return({
         data: result,
     });
@@ -138,6 +150,9 @@ const getAnswersByQuestion = async  (domanda,stato,req, res)=>{
 
     let queryString = "SELECT risposte.*, utenti.username, domande.testoDomanda FROM risposte,utenti, domande WHERE domanda= ? AND risposte.utente=utenti.idUtente AND domande.idDomanda=risposte.domanda AND risposte.stato=?";
     const result = await db.execute(queryString, [domanda, stato], req, res);
+    result.forEach(answer=>{
+        answer.testoRisposta= crypto.decrypt({iv: answer.iv, content:answer.testoRisposta });
+    });
     return({
         data: result,
     });
