@@ -53,9 +53,9 @@ const handleRequest = async  (risposta,stato,req, res)=>{
 const insertAnswer = async  (utente,testo,domanda,username,req, res)=>{
 
     let enrcypted= crypto.encrypt(testo);
-    let queryString = "INSERT INTO risposte(testoRisposta, data, domanda, utente) VALUES (?,NOW(),?,?)";
+    let queryString = "INSERT INTO risposte(testoRisposta, data,iv, domanda, utente) VALUES (?,NOW(),?,?,?)";
 
-    const result = await db.execute(queryString, [enrcypted, domanda, utente], req, res);
+    const result = await db.execute(queryString, [enrcypted.content,enrcypted.iv, domanda, utente], req, res);
 
     let token = createToken({
         "_id": utente,
@@ -70,8 +70,9 @@ const insertAnswer = async  (utente,testo,domanda,username,req, res)=>{
 const insertQuestion = async  (autore,testo,categoria,username,req, res)=>{
 
     let enrcypted= crypto.encrypt(testo);
-    let queryString = "INSERT INTO domande(testoDomanda, data,categoria,disponibile, autore) VALUES (?,NOW(),?,'T',?)";
-    const result = await db.execute(queryString, [enrcypted, categoria, autore], req, res);
+    
+    let queryString = "INSERT INTO domande(testoDomanda,data,iv,categoria,disponibile, autore) VALUES (?,NOW(),?,?,'T',?)";
+    const result = await db.execute(queryString, [enrcypted.content,enrcypted.iv, categoria, autore], req, res);
 
     let token = createToken({
         "_id": autore,
@@ -152,6 +153,7 @@ const getAnswersByQuestion = async  (domanda,stato,req, res)=>{
     const result = await db.execute(queryString, [domanda, stato], req, res);
     result.forEach(answer=>{
         answer.testoRisposta= crypto.decrypt({iv: answer.iv, content:answer.testoRisposta });
+        answer.testoDomanda= crypto.decrypt({iv: answer.iv, content:answer.testoDomanda });
     });
     return({
         data: result,

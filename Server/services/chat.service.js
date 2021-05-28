@@ -27,8 +27,9 @@ const getMessagesByReceiver = async  (utente, destinatario, username, req, res)=
     });
 
     result.forEach(mex=>{
+        console.log(mex.testoMessaggio)
         mex.testoMessaggio= crypto.decrypt({iv: mex.iv, content:mex.testoMessaggio });
-        //console.log(mex.testoMessaggio)
+        console.log(mex.testoMessaggio)
     });
     /*for(i; i<result.length; i++){
         console.log(result[i].testoMessaggio)
@@ -46,6 +47,7 @@ const getChats = async  (utente, destinatario, username, req, res)=>{
 
     let queryString = "SELECT DISTINCT matched.*, utenti.idUtente, utenti.username, utenti.nome, utenti.cognome, utenti.foto FROM matched, utenti WHERE (matched.idUtenteDomanda=? OR matched.idUtenteRisposta=?) AND (utenti.idUtente != ?) AND (utenti.idUtente=matched.idUtenteRisposta OR utenti.idUtente=matched.idUtenteDomanda)";
     let params= [utente, utente, utente];
+
 
     const result = await db.execute(queryString, params, req, res);
     return({
@@ -76,7 +78,6 @@ const makeMatch = async  (utente, utenteRisposta, username, req, res)=>{
         return ({
             data:"Match già esistente"
         })
-    
 }
 
 const startChat = async  (utenteDomanda, utenteRisposta,domanda, risposta, username, req, res)=>{
@@ -141,4 +142,3 @@ module.exports = {
     getChats,
     startChat
   }
-
