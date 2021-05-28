@@ -84,7 +84,7 @@ const signUp= async  (user, mail, nome, cognome, foto, sesso, descrizione, posiz
         {
             let saltRounds = 10;
             try{
-                hash=await bcrypt.hash(newPwd, saltRounds);
+                hash=await bcrypt.hash(pwd, saltRounds);
             }catch (e){
                 console.log(e);
             }
@@ -99,7 +99,7 @@ const signUp= async  (user, mail, nome, cognome, foto, sesso, descrizione, posiz
                 });
                 return({
                     "token": token,
-                    "data": "Signed up!"
+                    "data": resultInsert.insertId
                 });
             }else
                 error(req, res, new ERRORS.HASH({}));
@@ -108,13 +108,14 @@ const signUp= async  (user, mail, nome, cognome, foto, sesso, descrizione, posiz
 }
 
 const processUpFile= async (file, req, res)=>{
-    let output = __dirname + '/img/' + file.name;
+    let output = __dirname + '/../img/' + file.name;
+    console.log("OOUUTTPPUUTT ==> "+output);
     file.mv(output, function (err) {
         if (err) {
             res.send(err);
         } else {
             console.log("File moved to: " + output);
-            res.send({
+            return({
                 data: "fileUploaded"
             });
         }

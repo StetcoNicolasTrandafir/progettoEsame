@@ -3,6 +3,7 @@ import {Router} from "@angular/router";
 import {HttpService} from "../service/http.service";
 import {Capacitor, Plugins} from "@capacitor/core";
 import {DatePipe} from "@angular/common";
+import { Geolocation } from '@capacitor/geolocation';
 
 
 @Component({
@@ -63,7 +64,7 @@ export class SignupPage implements OnInit {
     }
     else{
       let position= await this.getPosition();
-      alert(this.latitudine);
+      //alert(this.latitudine);
       const uploadData = new FormData();
       //uploadData.append('myFile', this.selectedFile, this.selectedFile.name);
 
@@ -81,24 +82,25 @@ export class SignupPage implements OnInit {
         password:this.password,
         posizione: position
       }
+      console.log(param);
         this.http.sendPOSTRequest("/user/signup", param).subscribe(
           (data) => {
             if (data.code == 50) {
               this.errore = data.data;
             } else {
               console.log(data);
+              localStorage.setItem('token', data.token);
               uploadData.append('myFile', this.selectedFile, data.data+"."+this.selectedFile.name.split('.')[this.selectedFile.name.split('.').length-1]);
-
               this.http.sendPOSTRequest("/user/processUpFile", uploadData).subscribe(
-                (data) => {
-                  console.log(data);
+                (result) => {
+                  console.log(result);
+                  this.router.navigateByUrl('');
                 },
                 (error) => {
                   console.log(error);
                 }
               );
-              localStorage.setItem('token', data.token);
-              this.router.navigateByUrl('');
+
             }
 
           },
@@ -114,20 +116,9 @@ export class SignupPage implements OnInit {
   }
 
   async getPosition(){
-    if(!Capacitor.isPluginAvailable('Geolocation')){
-      alert("No plugin");
-    }else{
-      return Plugins.Geolocation.getCurrentPosition().then(geoposition=>{
-        this.latitudine = geoposition.coords.latitude;
-        this.longitudine = geoposition.coords.longitude;
-
-        return String(this.latitudine)+";"+String(this.longitudine);
-      })
-        .catch(err=>{
-          alert("Errore");
-          console.log(err);
-        });
-    }
+    const coordinates = await Geolocation.getCurrentPosition();
+    console.log(coordinates);
+    return coordinates.coords.latitude+";"+coordinates.coords.longitude;
   }
 
   onFileChanged(event) {
