@@ -137,10 +137,12 @@ const getQuestionsByUser = async  (utente,disponibile,req, res)=>{
 }
 
 const getAnswersByUser = async  (utente, req, res)=>{
-    let queryString = "SELECT risposte.*, domande.testoDomanda, utenti.username, categorie.colore FROM risposte, domande, utenti, categorie WHERE utente= ? AND domande.idDomanda=risposte.domanda AND domande.autore= utenti.idUtente AND domande.categoria= categorie.idCategoria";
+    let queryString = "SELECT risposte.*, domande.testoDomanda, utenti.username,domande.iv AS ivDomanda, categorie.colore FROM risposte, domande, utenti, categorie WHERE utente= ? AND domande.idDomanda=risposte.domanda AND domande.autore= utenti.idUtente AND domande.categoria= categorie.idCategoria";
     const result = await db.execute(queryString, [utente], req, res);
     result.forEach(answer=>{
         answer.testoRisposta= crypto.decrypt({iv: answer.iv, content:answer.testoRisposta });
+        answer.testoDomanda= crypto.decrypt({iv: answer.ivDomanda, content:answer.testoDomanda });
+
     });
     return({
         data: result,
@@ -149,11 +151,11 @@ const getAnswersByUser = async  (utente, req, res)=>{
 
 const getAnswersByQuestion = async  (domanda,stato,req, res)=>{
 
-    let queryString = "SELECT risposte.*, utenti.username, domande.testoDomanda FROM risposte,utenti, domande WHERE domanda= ? AND risposte.utente=utenti.idUtente AND domande.idDomanda=risposte.domanda AND risposte.stato=?";
+    let queryString = "SELECT risposte.*,domande.iv as ivDomanda, utenti.username, domande.testoDomanda FROM risposte,utenti, domande WHERE domanda= ? AND risposte.utente=utenti.idUtente AND domande.idDomanda=risposte.domanda AND risposte.stato=?";
     const result = await db.execute(queryString, [domanda, stato], req, res);
     result.forEach(answer=>{
         answer.testoRisposta= crypto.decrypt({iv: answer.iv, content:answer.testoRisposta });
-        answer.testoDomanda= crypto.decrypt({iv: answer.iv, content:answer.testoDomanda });
+        answer.testoDomanda= crypto.decrypt({iv: answer.ivDomanda, content:answer.testoDomanda });
     });
     return({
         data: result,

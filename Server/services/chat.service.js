@@ -27,9 +27,9 @@ const getMessagesByReceiver = async  (utente, destinatario, username, req, res)=
     });
 
     result.forEach(mex=>{
-        console.log(mex.testoMessaggio)
+        console.log("DB => "+mex.testoMessaggio)
         mex.testoMessaggio= crypto.decrypt({iv: mex.iv, content:mex.testoMessaggio });
-        console.log(mex.testoMessaggio)
+        console.log("DECRIPTATO" +mex.testoMessaggio)
     });
     /*for(i; i<result.length; i++){
         console.log(result[i].testoMessaggio)
@@ -82,6 +82,8 @@ const makeMatch = async  (utente, utenteRisposta, username, req, res)=>{
 
 const startChat = async  (utenteDomanda, utenteRisposta,domanda, risposta, username, req, res)=>{
     let domandaCriptata= crypto.encrypt(domanda);
+    console.log("DOMANDA====>",domanda);
+    console.log("RISPOSTA====>",risposta);
     let rispostaCriptata= crypto.encrypt(risposta);
     let queryString = "INSERT INTO messaggi(testoMessaggio, data,mittente,destinatario, iv) VALUES (?, NOW(), ?,?,?),(?, NOW(), ?,?,?)";
     let params= [domandaCriptata.content, utenteDomanda, utenteRisposta,domandaCriptata.iv, rispostaCriptata.content, utenteRisposta, utenteDomanda,rispostaCriptata.iv];

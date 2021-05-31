@@ -6,7 +6,9 @@ import {HttpClient,HttpHeaders} from "@angular/common/http";
 })
 export class HttpService {
 
-  private URL_SERVICE="http://localhost:1337";
+  //private URL_SERVICE="http://localhost:1337";
+  private URL_SERVICE="http://192.168.1.14:1337";
+
   constructor(private http: HttpClient) { }
   public sendPOSTRequest(endPoint: string,datiBody):any{
     //alert(localStorage.getItem('token'));
