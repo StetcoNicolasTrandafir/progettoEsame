@@ -1,68 +1,59 @@
 <ion-header>
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="dark" (click)="goBack()"><ion-icon name="arrow-back-outline"></ion-icon></ion-button>
+    </ion-buttons>
     <ion-title>Profilo</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-item>
-    <ion-label position="floating" >Username</ion-label>
-    <ion-input [(ngModel)]="username"></ion-input>
-  </ion-item>
+  <ion-card>
+    <ion-card-header>
 
-  <ion-item>
-    <ion-label position="floating" readonly="true">Nome</ion-label>
-    <ion-input [(ngModel)]="nome" readonly="true"></ion-input>
-  </ion-item>
-  <ion-item>
-    <ion-label position="floating" readonly="true">Cognome</ion-label>
-    <ion-input [(ngModel)]="cognome" readonly="true"></ion-input>
-  </ion-item>
-  <br/>
-
-  <ion-radio-group [(ngModel)]="sesso" readonly="true">
+      <ion-card-title class="ion-text-center">Profilo</ion-card-title>
+    </ion-card-header>
     <ion-item>
-      <ion-label>Uomo</ion-label>
-      <ion-radio slot="start" color="primary" value="M"></ion-radio>
+      <ion-label position="floating" >Username</ion-label>
+      <ion-input [(ngModel)]="username"></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-label>Donna</ion-label>
-      <ion-radio slot="start" color="danger" value="F"></ion-radio>
+      <ion-label position="floating">Mail</ion-label>
+      <ion-input [(ngModel)]="mail"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Descrizione</ion-label>
+      <ion-textarea [(ngModel)]="descrizione"></ion-textarea>
     </ion-item>
 
-  </ion-radio-group>
-  <br/>
-  <ion-item>
-    <!--<ion-label>Data di nascita</ion-label>-->
-    <ion-datetime placeholder="Select Date" [(ngModel)]="dataNascita" readonly="true"></ion-datetime>
-  </ion-item>
-  <ion-item>
-    <ion-label position="floating">Mail</ion-label>
-    <ion-input [(ngModel)]="mail"></ion-input>
-  </ion-item>
-  <ion-item>
-    <ion-label position="floating">Descrizione</ion-label>
-    <ion-textarea [(ngModel)]="descrizione"></ion-textarea>
-  </ion-item>
-  <ion-label position="stacked" style="color: red;">{{errore}}</ion-label>
-  <br>
-  <section>
-    <ion-button color="primary" (click)="changeInfo()" expand="block">Salva</ion-button>
-  </section>
-  <ion-item>
-    <ion-label position="floating">Vecchia Password</ion-label>
-    <ion-input type="password" [(ngModel)]="vecchiaPassword"></ion-input>
-  </ion-item>
-  <ion-item>
-    <ion-label position="floating">Nuova Password</ion-label>
-    <ion-input type="password" [(ngModel)]="nuovaPassword"></ion-input>
-  </ion-item>
-  <ion-item>
-    <ion-label position="floating">Conferma Password</ion-label>
-    <ion-input type="password" [(ngModel)]="confermaPassword"></ion-input>
-  </ion-item>
-  <section>
-    <ion-button color="primary" (click)="changePassword()" expand="block">Cambia Password</ion-button>
-  </section>
+    <div class="ion-text-center" style="color: red;padding-top:10px;">{{errore}}</div>
+
+    <br>
+    <section>
+      <ion-button color="primary" (click)="saveInfo()" expand="block">Modifica informazioni</ion-button>
+    </section>
+    </ion-card>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title class="ion-text-center">Password</ion-card-title>
+    </ion-card-header>
+    <ion-item>
+      <ion-label position="floating">Vecchia Password</ion-label>
+      <ion-input [(ngModel)]="oldPwd" type="password"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Nuova Password</ion-label>
+      <ion-input [(ngModel)]="newPwd" type="password"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Conferma Password</ion-label>
+      <ion-input [(ngModel)]="confirmPwd" type="password"></ion-input>
+    </ion-item>
+    <div class="ion-text-center" style="color: red;padding-top:10px;">{{errore}}</div>
+    <br>
+    <section>
+      <ion-button color="primary" (click)="changePwd()" expand="block">Cambia Password</ion-button>
+    </section>
+  </ion-card>
 </ion-content>

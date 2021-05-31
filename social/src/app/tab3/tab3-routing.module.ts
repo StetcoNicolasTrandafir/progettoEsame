@@ -22,7 +22,11 @@ const routes: Routes = [
   {
     path: 'questionarchive',
     loadChildren: () => import('./questionarchive/questionarchive.module').then( m => m.QuestionarchivePageModule)
+  },  {
+    path: 'profile',
+    loadChildren: () => import('./profile/profile.module').then( m => m.ProfilePageModule)
   }
+
 ];
 
 @NgModule({
