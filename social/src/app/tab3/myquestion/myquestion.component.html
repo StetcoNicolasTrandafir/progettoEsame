@@ -1,7 +1,6 @@
 <ion-card style="background-color:{{myQuestion.colore}}" color="black" [hidden]="nascondiDomanda">
   <!---->
   <ion-card-header>
-
    <ion-icon (click)="arhiviaDomanda()" style="float: right" name="trash-bin-outline"></ion-icon>
 
   </ion-card-header>
@@ -9,6 +8,6 @@
   <ion-card-content>
     {{myQuestion.testoDomanda}}
     <br/>
-    <ion-button class="ion-margin-top" expand="block" color="light" (click)="visualizzaRisposte(myQuestion.idDomanda)">Visualizza risposte</ion-button>
+    <ion-button class="ion-margin-top" expand="block" color="light" (click)="visualizzaRisposte(myQuestion.idDomanda)">Visualizza risposte <ion-badge *ngIf="myQuestion.numeroRisposte!=0" style="margin-left:5px;background-color: {{myQuestion.colore}}">{{myQuestion.numeroRisposte}}</ion-badge></ion-button>
   </ion-card-content>
 </ion-card>

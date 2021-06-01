@@ -123,16 +123,30 @@ const processUpFile= async (file, req, res)=>{
 }
 
 
-const updateUser= async(idUtente,user, mail, descrizione, pos, req, res)=>{
+const updateUser= async(idUtente,user, mail, descrizione, req, res)=>{
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     console.log("TEST MAIL=> " + re.test(String(mail).toLowerCase()));
-    if(re.test(String(mail).toLowerCase()))
+    if(!re.test(String(mail).toLowerCase()))
         return({
             data:"Inserisci un indirizzo e-mail valido"
         })
         else{
-            let queryString="UPDATE utenti SET user=?, mail=?, descrizione=?, posizione=? WHERE idUtente=?";
-            const result= await db.execute(queryString,[user,mail,descrizione, pos,idUtente], req, res);
+            let ctrMailQuery="SELECT idUtente FROM utenti WHERE mail=? AND idUtente!=?";
+            const mailResult= await db.execute(ctrMailQuery,[mail, idUtente], req, res);
+            if(mailResult.length!=0){
+                return({
+                    data:"Indirizzo e-mail già utilizzato"
+                });
+            }else{
+                let ctrUserQuery="SELECT idUtente FROM utenti WHERE username=? AND idUtente!=?";
+            const userResult= await db.execute(ctrUserQuery,[user, idUtente], req, res);
+            if(userResult.length!=0){
+                return({
+                    data:"Username già utilizzato, scegline un altro"
+                });
+            }else{
+                let queryString="UPDATE utenti SET username=?, mail=?, descrizione=? WHERE idUtente=?";
+            const result= await db.execute(queryString,[user,mail,descrizione,idUtente], req, res);
             let token = createToken({
                 "_id": idUtente,
                 "user": user
@@ -141,6 +155,8 @@ const updateUser= async(idUtente,user, mail, descrizione, pos, req, res)=>{
                 "token": token,
                 "data": "Dati modificati con successo"
             });
+            }
+            } 
         }
 }
 

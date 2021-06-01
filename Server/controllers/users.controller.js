@@ -59,14 +59,27 @@ const updateUser = async (req, res, next) => {
   let mail = req.body.mail;
   // let nome = req.body.nome;
   // let cognome = req.body.cognome;
-  let foto = req.body.foto;
+  //let foto = req.body.foto;
   // let sesso = req.body.sesso;
   let descrizione = req.body.descrizione;
-  let posizione = req.body.posizione;
+  //let posizione = req.body.posizione;
   // let dataNascita = req.body.dataNascita;
   // let password = req.body.password;
   try {
-    const risultato = await usersService.updateUser(utente,user, mail,descrizione, posizione, req, res);
+    const risultato = await usersService.updateUser(utente,user, mail,descrizione, req, res);
+    res.send(risultato);
+    next();
+  } catch (e) {
+    console.log(e.message)
+    res.sendStatus(500) && next(error)
+  }
+}
+
+const updatePosition= async(req, res, next)=>{
+  let utente = ctrlToken.payload._id;
+  let posizione = req.body.posizione;
+  try {
+    const risultato = await usersService.updatePosition(posizione, req, res);
     res.send(risultato);
     next();
   } catch (e) {

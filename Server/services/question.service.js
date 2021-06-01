@@ -126,7 +126,11 @@ const getQuestionsByCategories = async  (categorie,utente,req, res)=>{
 }
 
 const getQuestionsByUser = async  (utente,disponibile,req, res)=>{
-    let queryString = "SELECT domande.*, categorie.nomeCategoria, categorie.colore  FROM domande, categorie WHERE domande.autore= ? AND domande.categoria=categorie.idCategoria AND domande.disponibile= ?";
+    //let queryString = "SELECT domande.*, categorie.nomeCategoria, categorie.colore,  FROM domande, categorie WHERE domande.autore= ? AND domande.categoria=categorie.idCategoria AND domande.disponibile= ?";
+    let queryString = "SELECT domande.idDomanda,domande.testoDomanda,domande.data,domande.iv,categorie.nomeCategoria,categorie.colore,COUNT(risposte.idRisposta) as numeroRisposte FROM domande LEFT JOIN risposte ON risposte.domanda=domande.idDomanda AND risposte.stato='S' ";
+    queryString+="INNER JOIN categorie ON categorie.idCategoria=domande.categoria ";
+    queryString+="WHERE domande.autore=? AND domande.disponibile=? ";
+    queryString+="GROUP BY domande.idDomanda,domande.testoDomanda,domande.data,domande.iv,categorie.nomeCategoria,categorie.colore";
     const result = await db.execute(queryString, [utente,disponibile], req, res);
     result.forEach(question=>{
         question.testoDomanda= crypto.decrypt({iv: question.iv, content:question.testoDomanda });

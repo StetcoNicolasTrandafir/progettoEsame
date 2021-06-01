@@ -30,7 +30,7 @@ export class LoginPage implements OnInit {
     }else{
       this.http.sendPOSTRequest("/user/login",{mail:this.user,password:this.password}).subscribe(
         (data)=>{
-          if(typeof (data.data)!="string"){
+          if(data.data){
             localStorage.setItem("token",data.token);
             this.router.navigateByUrl('');
           }else{

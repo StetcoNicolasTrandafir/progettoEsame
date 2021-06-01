@@ -54,13 +54,34 @@ export class ProfilePage implements OnInit {
       this.errore="Inserire una mail";
     }else{
       //CAMBIA INFO
+      this.http.sendPOSTRequest('/user/updateUser',{user:this.username,mail:this.mail,descrizione:this.descrizione}).subscribe(
+        (data)=>{
+          console.log(data);
+          this.errore=data.data;
+          if(data.token){
+            localStorage.setItem('token',data.token);
+          }
+        },(err)=>{
+          console.log(err);
+        }
+      )
     }
   }
 
   changePwd() {
+    alert();
     //CONTROLLO PASSWORD VECCHIA
     if(this.newPwd!=this.confirmPwd){
       this.errorePassword="La due password non coincidono";
+    }else{
+      this.http.sendPOSTRequest('/user/changePassword',{oldPassword:this.oldPwd,newPassword:this.confirmPwd}).subscribe(
+        data=>{
+          console.log(data);
+          this.errorePassword=data.data;
+        },err=>{
+          console.log(err);
+        }
+      )
     }
   }
 }
