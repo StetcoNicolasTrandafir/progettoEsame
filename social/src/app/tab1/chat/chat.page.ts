@@ -10,6 +10,7 @@ import {HttpService} from "../../service/http.service";
 })
 export class ChatPage implements OnInit {
   @Input() datoChat;
+  interval;
 
   messages=[];
   testoMessaggio: any;
@@ -18,14 +19,15 @@ export class ChatPage implements OnInit {
   ngOnInit() {
     //console.log(this.datoChat);
     this.caricaMessaggi();
-    setInterval(()=>{
+    this.interval=setInterval(()=>{
       this.caricaMessaggi();
-    },5000);
+    },1000);
     //this.caricaMessaggi();
   }
   dismiss() {
     // using the injected ModalController this page
     // can "dismiss" itself and optionally pass back data
+    clearInterval(this.interval);
     this.modalController.dismiss({
       'dismissed': true
     });

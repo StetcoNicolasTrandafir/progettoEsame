@@ -18,8 +18,11 @@ const getMessagesByReceiver = async  (utente, destinatario, username, req, res)=
 
     let queryString = "SELECT * FROM messaggi WHERE (mittente= ? AND destinatario = ?) OR (mittente=? AND destinatario = ?) ORDER BY data ASC";
     let params= [utente, destinatario, destinatario, utente];
-
     const result = await db.execute(queryString, params, req, res);
+
+    let updateString="UPDATE messaggi SET letto='T' WHERE destinatario=? AND mittente=?";
+    params= [utente, destinatario];
+    const update = await db.execute(updateString, params, req, res);
 
     let token = createToken({
         "_id": utente,
@@ -27,29 +30,57 @@ const getMessagesByReceiver = async  (utente, destinatario, username, req, res)=
     });
 
     result.forEach(mex=>{
-        console.log("DB => "+mex.testoMessaggio)
         mex.testoMessaggio= crypto.decrypt({iv: mex.iv, content:mex.testoMessaggio });
-        console.log("DECRIPTATO" +mex.testoMessaggio)
     });
     /*for(i; i<result.length; i++){
         console.log(result[i].testoMessaggio)
         result[i].testoMessaggio= crypto.decrypt({iv: res[i].iv, content:res[i].testoMessaggio });
         console.log(result[i].testoMessaggio)
     }*/
-    console.log("LUNGHEZZA===>",result.length);
+    //console.log("LUNGHEZZA===>",result.length);
     return({
         data: result,
         token:token
     });
 }
 
-const getChats = async  (utente, destinatario, username, req, res)=>{
+const getChats = async  (utente, req, res)=>{
 
-    let queryString = "SELECT DISTINCT matched.*, utenti.idUtente, utenti.username, utenti.nome, utenti.cognome, utenti.foto FROM matched, utenti WHERE (matched.idUtenteDomanda=? OR matched.idUtenteRisposta=?) AND (utenti.idUtente != ?) AND (utenti.idUtente=matched.idUtenteRisposta OR utenti.idUtente=matched.idUtenteDomanda)";
-    let params= [utente, utente, utente];
-
-
+    //let queryString = "SELECT DISTINCT matched.*, utenti.idUtente, utenti.username, utenti.nome, utenti.cognome, utenti.foto FROM matched, utenti WHERE (matched.idUtenteDomanda=? OR matched.idUtenteRisposta=?) AND (utenti.idUtente != ?) AND (utenti.idUtente=matched.idUtenteRisposta OR utenti.idUtente=matched.idUtenteDomanda)";
+    let queryString="SELECT DISTINCT matched.matchedId,matched.idUtenteDomanda,matched.idUtenteRisposta,matched.matched,matched.data, utenti.idUtente, utenti.username, utenti.nome, utenti.cognome, utenti.foto, COUNT(messaggi.idMessaggio) AS numeroMessaggi FROM matched LEFT JOIN utenti ON (matched.idUtenteDomanda=? OR matched.idUtenteRisposta=?) AND (utenti.idUtente != ?) AND (utenti.idUtente=matched.idUtenteRisposta OR utenti.idUtente=matched.idUtenteDomanda) LEFT JOIN messaggi ON messaggi.destinatario=? AND messaggi.mittente=utenti.idUtente AND messaggi.letto='F' GROUP BY matched.matchedId,matched.idUtenteDomanda,matched.idUtenteRisposta,matched.matched,matched.data, utenti.idUtente, utenti.username, utenti.nome, utenti.cognome, utenti.foto";
+    let params= [utente, utente, utente,utente];
     const result = await db.execute(queryString, params, req, res);
+
+    /*result.forEach(async (chat)=>{
+        let queryLastMex= "SELECT testoMessaggio,iv FROM messaggi WHERE messaggi.data=(SELECT MAX(data) FROM messaggi WHERE (messaggi.mittente=? AND destinatario=?) OR (messaggi.mittente=? AND destinatario=?))";
+        let parLastMex=[chat.idUtenteRisposta, chat.idUtenteDomanda,chat.idUtenteRisposta,chat.idUtenteDomanda];
+        let resultLastMex = await db.execute(queryLastMex, parLastMex, req, res);
+        console.log("Last mex========>",resultLastMex);
+        result[result.indexOf(chat)].lastMex="pippo";
+        //chat.lastMex=crypto.decrypt({iv: resultLastMex.iv, content:resultLastMex.testoMessaggio });
+        //chat.testoMessaggio = crypto.decrypt({iv: chat.iv, content:chat.testoMessaggio });
+    });*/
+
+    for await (let chat of result){
+        let queryLastMex= "SELECT  testoMessaggio,iv,letto,mittente FROM messaggi WHERE messaggi.data=(SELECT MAX(data) FROM messaggi WHERE (messaggi.mittente=? AND destinatario=?) OR (messaggi.mittente=? AND destinatario=?))";
+        //let queryLastMex= "SELECT testoMessaggio,iv,letto,mittente, COUNT() FROM messaggi WHERE (messaggi.mittente=? AND destinatario=?) OR (messaggi.mittente=? AND destinatario=?) ORDER BY data DESC LIMIT 1";
+        let parLastMex=[chat.idUtenteRisposta, chat.idUtenteDomanda,chat.idUtenteRisposta,chat.idUtenteDomanda];
+        let resultLastMex = await db.execute(queryLastMex, parLastMex, req, res);
+        //console.log("Last mex========>",resultLastMex);
+        
+        let decriptato=crypto.decrypt({iv:resultLastMex[0].iv,content:resultLastMex[0].testoMessaggio});
+        console.log("DECPRITATO=========>", decriptato);
+        chat.lastMex=decriptato;
+        chat.letto=resultLastMex[0].letto;
+        chat.mittenteMessaggio=resultLastMex[0].mittente;
+        //result[result.indexOf(chat)].lastMex=resultLastMex.testoMessaggio
+        //result[result.indexOf(chat)].lastMex=crypto.decrypt({iv: resultLastMex.iv, content:resultLastMex.testoMessaggio});
+        //result[result.indexOf(chat)].lastMex="pippo";
+    }
+
+    //result[0].lastMex="abbate";
+    //result[1].lastMex="pippo";
+
     return({
         data: result
     });
@@ -85,7 +116,8 @@ const startChat = async  (utenteDomanda, utenteRisposta,domanda, risposta, usern
     console.log("DOMANDA====>",domanda);
     console.log("RISPOSTA====>",risposta);
     let rispostaCriptata= crypto.encrypt(risposta);
-    let queryString = "INSERT INTO messaggi(testoMessaggio, data,mittente,destinatario, iv) VALUES (?, NOW(), ?,?,?),(?, NOW(), ?,?,?)";
+
+    let queryString = "INSERT INTO messaggi(testoMessaggio, data,mittente,destinatario, iv) VALUES (?, NOW(), ?,?,?),(?, (NOW() + INTERVAL 1 SECOND), ?,?,?)";
     let params= [domandaCriptata.content, utenteDomanda, utenteRisposta,domandaCriptata.iv, rispostaCriptata.content, utenteRisposta, utenteDomanda,rispostaCriptata.iv];
     const result = await db.execute(queryString, params, req, res);
 

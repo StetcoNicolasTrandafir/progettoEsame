@@ -12,21 +12,25 @@ export class Tab1Page implements OnInit{
 
   constructor(private router: Router,private Http:HttpService,private activatedRoute:ActivatedRoute) {
     this.activatedRoute.params.subscribe(params => {
+        this.caricaChats();
       //Controllo CHAT
-      this.Http.sendPOSTRequest('/chat/getChats',{}).subscribe(
-        (data)=>{
-          console.log(data);
-          this.chats=data.data;
-        },(err)=>{
-          console.log(err);
-        }
-      );
+        setInterval(()=>{this.caricaChats()},3000);
     }
     )
   }
 
   ngOnInit(){
 
+  }
+  caricaChats():void{
+    this.Http.sendPOSTRequest('/chat/getChats',{}).subscribe(
+      (data)=>{
+        console.log(data);
+        this.chats=data.data;
+      },(err)=>{
+        console.log(err);
+      }
+    );
   }
 
 }
