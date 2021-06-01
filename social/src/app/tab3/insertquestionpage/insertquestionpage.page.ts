@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {HttpService} from "../../service/http.service";
 import {ModalController} from "@ionic/angular";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-insertquestionpage',
@@ -12,7 +13,7 @@ export class InsertquestionpagePage implements OnInit {
   categorie: any=[];
   selectedCategory: any;
   txtError="";
-  constructor(private http:HttpService,private modalController:ModalController) { }
+  constructor(private http:HttpService,private modalController:ModalController,private router:Router) { }
 
   ngOnInit() {
     this.http.sendPOSTRequest('/question/getCategories',{}).subscribe(
@@ -22,6 +23,9 @@ export class InsertquestionpagePage implements OnInit {
       },
       (err)=>{
         console.log(err);
+        if(err.status==603||err.status==604){
+          this.router.navigateByUrl('login');
+        }
       }
     )
   }
@@ -34,6 +38,9 @@ export class InsertquestionpagePage implements OnInit {
           this.modalController.dismiss();
         },(err)=>{
           console.log(err);
+          if(err.status==603||err.status==604){
+            this.router.navigateByUrl('login');
+          }
         }
       )
 

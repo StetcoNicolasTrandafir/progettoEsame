@@ -19,6 +19,9 @@ export class AnswerpagePage implements OnInit {
         this.risposte=data.data;
       },(err)=>{
         console.log(err);
+        if(err.status==603||err.status==604){
+          this.router.navigateByUrl('login');
+        }
       }
     )
   }

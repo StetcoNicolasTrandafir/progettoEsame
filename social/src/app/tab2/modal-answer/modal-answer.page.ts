@@ -2,6 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {ModalController} from "@ionic/angular";
 import {HttpService} from "../../service/http.service";
 import {ToastController} from "@ionic/angular";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-modal-answer',
@@ -15,8 +16,9 @@ export class ModalAnswerPage implements OnInit {
   @Input() idDomanda;
   @Input() colore;
   testoRisposta: any;
+  d=false;
 
-  constructor(private modalController:ModalController,private http:HttpService,private toastController:ToastController) { }
+  constructor(private modalController:ModalController,private http:HttpService,private toastController:ToastController,private router:Router) { }
 
   ngOnInit() {
     //alert(this.colore);
@@ -25,7 +27,8 @@ export class ModalAnswerPage implements OnInit {
     // using the injected ModalController this page
     // can "dismiss" itself and optionally pass back data
     this.modalController.dismiss({
-      'dismissed': true
+      'dismissed': true,
+      'd':this.d
     });
   }
 
@@ -35,9 +38,14 @@ export class ModalAnswerPage implements OnInit {
       (data)=>{
         console.log(data);
         this.presentToast();
+        this.d=true;
         this.dismiss();
+
       },(error)=>{
         console.log(error);
+        if(error.status==603||error.status==604){
+          this.router.navigateByUrl('login');
+        }
       }
     )
   }

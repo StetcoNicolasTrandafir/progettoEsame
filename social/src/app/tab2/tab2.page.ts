@@ -56,12 +56,14 @@ export class Tab2Page implements OnInit{
         this.domande=data.data;
       },(error)=>{
         console.log(error);
+        if(error.status==603||error.status==604){
+          this.router.navigateByUrl('login');
+        }
       }
     );
   }
 
   caricaDomandePerCategorie() {
-
     if(this.selectedCategories.length>0){
       console.log(this.selectedCategories);
       this.http.sendPOSTRequest("/question/getQuestionsByCategories",{categorie:this.selectedCategories}).subscribe(
@@ -70,6 +72,9 @@ export class Tab2Page implements OnInit{
           this.domande=data.data;
         },(error)=>{
           console.log(error);
+          if(error.status==603||error.status==604){
+            this.router.navigateByUrl('login');
+          }
         }
       );
     }else{
@@ -79,6 +84,9 @@ export class Tab2Page implements OnInit{
           this.domande=data.data;
         },(error)=>{
           console.log(error);
+          if(error.status==603||error.status==604){
+            this.router.navigateByUrl('login');
+          }
         }
       );
     }

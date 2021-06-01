@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {ModalController} from "@ionic/angular";
 import {HttpService} from "../../service/http.service";
+import {Router} from "@angular/router";
 //import {setInterval} from "timers";
 
 @Component({
@@ -14,7 +15,7 @@ export class ChatPage implements OnInit {
 
   messages=[];
   testoMessaggio: any;
-  constructor(private modalController:ModalController,private Http:HttpService) { }
+  constructor(private modalController:ModalController,private Http:HttpService,private router:Router) { }
 
   ngOnInit() {
     //console.log(this.datoChat);
@@ -39,6 +40,9 @@ export class ChatPage implements OnInit {
         this.messages=data.data;
       },(err)=>{
         console.log(err);
+        if(err.status==603||err.status==604){
+          this.router.navigateByUrl('login');
+        }
       }
     );
   }
@@ -52,6 +56,9 @@ export class ChatPage implements OnInit {
           this.testoMessaggio="";
         },(err)=>{
           console.log(err);
+          if(err.status==603||err.status==604){
+            this.router.navigateByUrl('login');
+          }
         }
       );
     }

@@ -58,6 +58,7 @@ export class MyquestionComponent implements OnInit {
                 this.nascondiDomanda=true;
               },(err)=>{
                 console.log(err);
+
               }
             )
           }

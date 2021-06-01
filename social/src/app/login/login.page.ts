@@ -10,8 +10,8 @@ import {Router} from "@angular/router";
 export class LoginPage implements OnInit {
   latitudine:number;
   longitudine:number;
-  user: any="pengu@gmail.com";
-  password: any="gino";
+  user: any="pinguino";
+  password: any="ciaociao";
   errore: any;
 
   constructor(private http:HttpService,private router:Router) { }

@@ -92,10 +92,11 @@ const getQuestions = async  (utente,req, res)=>{
     queryString+=" FROM domande INNER JOIN utenti ON utenti.idUtente=domande.autore";
     queryString+=" INNER JOIN categorie ON domande.categoria=categorie.idCategoria";
     queryString+=" WHERE domande.autore!=? AND domande.categoria NOT IN (SELECT idCategoria FROM blacklist WHERE idUtente= ?) AND domande.disponibile='T'";
+    queryString+=" AND domande.idDomanda NOT IN (SELECT domanda FROM risposte WHERE utente=?) "
     queryString+=" GROUP BY domande.idDomanda,domande.testoDomanda,domande.data,domande.categoria,domande.disponibile,domande.autore";
     queryString+=" ORDER BY DISTANZA ASC, domande.data DESC";
-    console.log(queryString);
-    const result = await db.execute(queryString, [utente,utente,utente,utente], req, res);
+    //console.log(queryString);
+    const result = await db.execute(queryString, [utente,utente,utente,utente, utente], req, res);
     result.forEach(question=>{
         question.testoDomanda= crypto.decrypt({iv: question.iv, content:question.testoDomanda });
     });
@@ -107,13 +108,13 @@ const getQuestions = async  (utente,req, res)=>{
 
 const getQuestionsByCategories = async  (categorie,utente,req, res)=>{
 
-
     let queryString = "SELECT utenti.username, categorie.nomeCategoria, categorie.colore, domande.idDomanda,domande.iv, domande.testoDomanda, domande.data, domande.categoria, domande.disponibile, domande.autore,SQRT(POWER(((SELECT SUBSTRING_INDEX(posizione,';',1) FROM utenti WHERE idUtente=?)-SUBSTRING_INDEX(utenti.posizione,';',1)),2)";
     queryString+="+ POWER(((SELECT SUBSTRING_INDEX(posizione,';',-1) FROM utenti WHERE idUtente=?)-SUBSTRING_INDEX(utenti.posizione,';',-1)),2)";
     queryString+=") AS DISTANZA";
     queryString+=" FROM domande INNER JOIN utenti ON utenti.idUtente=domande.autore";
     queryString+=" INNER JOIN categorie ON domande.categoria=categorie.idCategoria";
     queryString+=" WHERE domande.autore!=? AND domande.categoria IN (?) AND domande.categoria NOT IN (SELECT idCategoria FROM blacklist WHERE idUtente= ?) AND domande.disponibile='T'";
+    queryString+=" AND domande.idDomanda NOT IN (SELECT domanda FROM risposte WHERE utente=?) "
     queryString+=" GROUP BY domande.idDomanda,domande.testoDomanda,domande.data,domande.categoria,domande.disponibile,domande.autore";
     queryString+=" ORDER BY DISTANZA ASC, domande.data DESC";
     const result = await db.execute(queryString, [utente,utente,utente,categorie,utente], req, res);

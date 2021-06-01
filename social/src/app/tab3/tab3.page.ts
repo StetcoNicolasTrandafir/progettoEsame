@@ -4,6 +4,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {HttpService} from "../service/http.service";
 import {RequestpagePage} from "./requestpage/requestpage.page";
 import {InsertquestionpagePage} from "./insertquestionpage/insertquestionpage.page";
+import {dashCaseToCamelCase} from "@angular/compiler/src/util";
 
 @Component({
   selector: 'app-tab3',
@@ -25,6 +26,9 @@ export class Tab3Page implements OnInit{
           //alert(this.user);
         },(err)=>{
           console.log(err);
+          if(err.status==603||err.status==604){
+            this.router.navigateByUrl('login');
+          }
         }
       )
 
@@ -35,6 +39,9 @@ export class Tab3Page implements OnInit{
         },
         (err)=>{
           console.log(err);
+          if(err.status==603||err.status==604){
+            this.router.navigateByUrl('login');
+          }
         }
       )
       }
@@ -67,6 +74,20 @@ export class Tab3Page implements OnInit{
       cssClass: '',
       componentProps: {}
     });
+    modal.onDidDismiss().then(()=>{
+      this.Http.sendPOSTRequest('/question/getQuestionsByUser',{disponibile:'T'}).subscribe(
+        (data)=>{
+          console.log(data);
+          alert(data.error);
+        },
+        (err)=>{
+          console.log( err);
+          if(err.status==603||err.status==604){
+            this.router.navigateByUrl('login');
+          }
+        }
+      )
+    })
     return await modal.present();
   }
 

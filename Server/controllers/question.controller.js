@@ -123,7 +123,9 @@ const getQuestionsByUser = async (req, res, next) => {
     let disponibile = req.body.disponibile;
     try {
         const risultato = await questionService.getQuestionsByUser(utente, disponibile, req, res);
+        
         res.send(risultato);
+        console.log("GET QUESTION");
         next();
     } catch (e) {
         console.log(e.message)

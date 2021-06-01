@@ -31,6 +31,9 @@ export class RequestpagePage implements OnInit {
       },
       (err)=>{
         console.log(err);
+        if(err.status==603||err.status==604){
+          this.router.navigateByUrl('login');
+        }
       }
     )
   }
