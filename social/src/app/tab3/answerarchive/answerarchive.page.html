@@ -9,5 +9,6 @@
 </ion-header>
 
 <ion-content>
-  <app-receivedanswer [risposta]="item" *ngFor="let item of risposte"></app-receivedanswer>
+  <ion-item>Visualizza risposte preferite<ion-toggle color="primary" [(ngModel)]="preferiti" name="Preferiti" (click)="toggleView()" slot="end">Visualizza preferite</ion-toggle></ion-item>
+  <app-receivedanswer [risposta]="item" *ngFor="let item of risposteCaricate"></app-receivedanswer>
 </ion-content>

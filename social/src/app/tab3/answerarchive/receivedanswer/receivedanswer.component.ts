@@ -12,7 +12,7 @@ export class ReceivedanswerComponent implements OnInit {
 
   icona:string="star-outline";
   ngOnInit() {
-    console.log("RISPOSTA==>",this.risposta)
+    //console.log("RISPOSTA==>",this.risposta)
     if(this.risposta.idPreferenza)
       this.icona="star-sharp";
   }
@@ -72,6 +72,7 @@ export class ReceivedanswerComponent implements OnInit {
         (data)=>{
           console.log(data);
           this.icona="star-sharp";
+          this.risposta.idPreferenza=7;
         },
         (err)=>{
           console.log(err);
@@ -84,6 +85,7 @@ export class ReceivedanswerComponent implements OnInit {
         (data)=>{
           console.log(data);
           this.icona="star-outline";
+          this.risposta.idPreferenza=null;
         },
         (err)=>{
           console.log(err);

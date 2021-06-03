@@ -9,14 +9,17 @@ import {Router} from "@angular/router";
 })
 export class AnswerarchivePage implements OnInit {
   risposte: any;
-
+  risposteCaricate: any;
+  preferiti:boolean=false;
   constructor(private http:HttpService,private router:Router) { }
 
   ngOnInit() {
     this.http.sendPOSTRequest('/question/getRecivedAnswer',{}).subscribe(
       (data)=>{
-        console.log(data);
+        //console.log(data);
         this.risposte=data.data;
+        this.risposteCaricate=this.risposte;
+        console.log("risposte==>",this.risposte);
       },(err)=>{
         console.log(err);
       }
@@ -25,5 +28,13 @@ export class AnswerarchivePage implements OnInit {
 
   goBack() {
     this.router.navigate(['tabs/tab3']);
+  }
+
+  toggleView() {
+    console.log(this.preferiti);
+    if(!this.preferiti)
+      this.risposteCaricate=this.risposte.filter(r=>r.idPreferenza !==null);
+    else
+      this.risposteCaricate=this.risposte;
   }
 }
