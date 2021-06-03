@@ -59,6 +59,15 @@ const changePassword= async(utente, oldPwd,newPwd, req, res)=>{
         })
 }
 
+const updatePosition= async(utente,position, req, res)=>{
+    let quesryString="UPDATE utenti SET posizione=? WHERE idUtente=?";
+    const resultUpdate= await db.execute(quesryString, [position, utente], req, res);
+
+    return({
+        data:"Posizione cambiata con successo"
+    });
+}
+
 
 
 
@@ -117,6 +126,28 @@ const processUpFile= async (file, req, res)=>{
             console.log("File moved to: " + output);
             return({
                 data: "fileUploaded"
+            });
+        }
+    })
+}
+
+const updatePicture= async(file, utente,req, res)=>{
+    let foto= file.name.split('.')[file.name.split('.').length-1];
+    console.log(foto);
+    
+    quesryString="UPDATE utenti SET foto=? WHERE idUtente=?";
+    const resultUpdate= await db.execute(quesryString, [foto, utente], req, res);
+
+    let output = __dirname + '/../img/' + file.name;
+    console.log("OOUUTTPPUUTT ==> "+output);
+    file.mv(output, function (err) {
+        if (err) {
+            res.send(err);
+        } else {
+            console.log("File moved to: " + output);
+            //console.log(resultUpdate);
+            return({
+                data: "Foto aggiornata con successo!"
             });
         }
     })
@@ -222,6 +253,8 @@ module.exports = {
     signUp,
     processUpFile,
     changePassword,
-    updateUser
+    updateUser,
+    updatePosition,
+    updatePicture
   }
 

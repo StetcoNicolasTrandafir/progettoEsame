@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {HttpService} from "../../service/http.service";
+import {Geolocation} from "@capacitor/geolocation";
+import {AlertController} from "@ionic/angular";
+import {dashCaseToCamelCase} from "@angular/compiler/src/util";
 
 @Component({
   selector: 'app-profile',
@@ -17,10 +20,15 @@ export class ProfilePage implements OnInit {
   confirmPwd: any;
   newPwd: any;
   oldPwd: any;
+  selectedFile;
+  erroreFoto: any;
+  id: any;
 
-  constructor(private router:Router,private http:HttpService,private activeroute:ActivatedRoute) {
+  constructor(private router:Router,private http:HttpService,private activeroute:ActivatedRoute, private alertController:AlertController) {
     activeroute.params.subscribe(
       (data)=>{
+        //alert(data.id);
+        this.id=data.id
         this.http.sendPOSTRequest('/user/getUser',{}).subscribe(
           (data)=>{
             console.log(data);
@@ -88,6 +96,77 @@ export class ProfilePage implements OnInit {
           }
         }
       )
+    }
+  }
+
+  async updatePosition() {
+    //alert(position);
+
+    //alert(position);
+    const alertPos = await this.alertController.create({
+      cssClass: '',
+      header: 'Aggiorna Posizione',
+      message: 'Sei sicuro di voler aggiornare la tua posizione?',
+      buttons: [
+        {
+          text: 'Annulla',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (blah) => {
+            //console.log('Confirm Cancel: blah');
+
+          }
+        }, {
+          text: 'Conferma',
+          handler: async () => {
+            //console.log('Confirm Okay');
+            let position = await this.getPosition();
+            console.log(position);
+            //alert(position);
+            this.http.sendPOSTRequest('/user/updatePosition',{posizione:position}).subscribe(
+              data=>{
+                console.log(data);
+              },err=>{
+                console.log(err);
+              }
+            )
+          }
+        }
+      ]
+    });
+
+    await alertPos.present();
+
+
+  }
+
+  async getPosition(){
+    const coordinates = await Geolocation.getCurrentPosition();
+    console.log(coordinates);
+    return coordinates.coords.latitude+";"+coordinates.coords.longitude;
+  }
+
+  onFileChanged(event) {
+    this.selectedFile = event.target.files[0];
+    console.log(this.selectedFile);
+  }
+
+  changeFoto() {
+    if(this.selectedFile){
+      this.erroreFoto="";
+      const uploadData = new FormData();
+      uploadData.append('myFile', this.selectedFile, this.id+"."+this.selectedFile.name.split('.')[this.selectedFile.name.split('.').length-1]);
+      this.http.sendPOSTRequest("/user/updatePicture", uploadData).subscribe(
+        (result) => {
+          console.log(result);
+          this.router.navigateByUrl('');
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+    }else{
+      this.erroreFoto="Foto non caricata";
     }
   }
 }

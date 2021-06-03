@@ -76,10 +76,13 @@ const updateUser = async (req, res, next) => {
 }
 
 const updatePosition= async(req, res, next)=>{
+
+  let ctrlToken = await controllaToken(req, res);
   let utente = ctrlToken.payload._id;
   let posizione = req.body.posizione;
+  console.log(req.body)
   try {
-    const risultato = await usersService.updatePosition(posizione, req, res);
+    const risultato = await usersService.updatePosition(utente,posizione, req, res);
     res.send(risultato);
     next();
   } catch (e) {
@@ -154,6 +157,21 @@ const processUpFile = async (req, res, next) => {
   }
 }
 
+async function updatePicture(req, res, next) {
+  let f = req.files.myFile;
+  let ctrlToken = await controllaToken(req, res);
+  let id = ctrlToken.payload._id;
+  try {
+    const risultato = await usersService.updatePicture(f, id,req, res);
+    res.send(risultato);
+
+    next();
+  } catch (e) {
+    console.log(e.message)
+    res.sendStatus(500) && next(error)
+  }
+}
+
 const getUser = async (req, res, next) => {
 
   let ctrlToken = await controllaToken(req, res);
@@ -187,6 +205,8 @@ const controlloToken = async (req, res, next) => {
     error(req, res, new ERRORS.TOKEN_DOESNT_EXIST({}));
   }
 }
+
+
 
 
 //FUNZIONI COMUNI
@@ -260,5 +280,7 @@ module.exports = {
   prova,
   changePassword,
   updateUser,
-  provaCrittografia
+  provaCrittografia,
+  updatePosition,
+  updatePicture
 }

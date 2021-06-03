@@ -36,6 +36,26 @@
     </ion-card>
   <ion-card>
     <ion-card-header>
+      <ion-card-title class="ion-text-center">Posizione</ion-card-title>
+      <div class="ion-text-center ion-margin-top">Aggiorna la posizone per trovare domande vicino a te</div>
+    </ion-card-header>
+    <section>
+      <ion-button color="primary" (click)="updatePosition()" expand="block">Aggiorna Posizione</ion-button>
+    </section>
+  </ion-card>
+  <ion-card>
+      <ion-card-header>
+        <ion-card-title class="ion-text-center">Foto</ion-card-title>
+        <div class="ion-text-center ion-margin-top">Aggiorna la foto</div>
+      </ion-card-header>
+      <section class="ion-text-center">
+        <ion-input type="file" (change)="onFileChanged($event)" #fileInput></ion-input><br/>
+        <ion-button color="primary" (click)="changeFoto()" expand="block">Cambia Foto</ion-button>
+      </section>
+    <div class="ion-text-center" style="color: red;padding-top:10px;">{{erroreFoto}}</div>
+    </ion-card>
+    <ion-card>
+    <ion-card-header>
       <ion-card-title class="ion-text-center">Password</ion-card-title>
     </ion-card-header>
     <ion-item>

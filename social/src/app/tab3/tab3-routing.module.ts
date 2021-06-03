@@ -22,8 +22,9 @@ const routes: Routes = [
   {
     path: 'questionarchive',
     loadChildren: () => import('./questionarchive/questionarchive.module').then( m => m.QuestionarchivePageModule)
-  },  {
-    path: 'profile',
+  },
+  {
+    path: 'profile/:id',
     loadChildren: () => import('./profile/profile.module').then( m => m.ProfilePageModule)
   }
 

@@ -78,7 +78,7 @@ export class Tab3Page implements OnInit{
       this.Http.sendPOSTRequest('/question/getQuestionsByUser',{disponibile:'T'}).subscribe(
         (data)=>{
           console.log(data);
-          alert(data.error);
+          //alert(data.error);
         },
         (err)=>{
           console.log( err);
@@ -86,8 +86,23 @@ export class Tab3Page implements OnInit{
             this.router.navigateByUrl('login');
           }
         }
+      );
+      this.Http.sendPOSTRequest('/user/getUser',{}).subscribe(
+          (data)=>{
+            //console.log(data);
+            this.user=data.data[0];
+            console.log(this.user);
+            this.id=this.user.idUtente;
+            //alert(this.user);
+          },(err)=>{
+            console.log(err);
+            if(err.status==603||err.status==604){
+              this.router.navigateByUrl('login');
+            }
+          }
       )
     })
+
     return await modal.present();
   }
 
@@ -103,6 +118,6 @@ export class Tab3Page implements OnInit{
 
   apriProfilo() {
     this.menu.close('first');
-    this.router.navigate(['tabs/tab3/profile']);
+    this.router.navigate(['tabs/tab3/profile',this.id]);
   }
 }
