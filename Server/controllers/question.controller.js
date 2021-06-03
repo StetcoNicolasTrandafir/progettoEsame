@@ -177,6 +177,20 @@ const getAnswersByQuestion = async (req, res, next) => {
     }
 }
 
+const getBlackList = async (req, res, next) => {
+    let ctrlToken = await controllaToken(req, res);
+    let utente = ctrlToken.payload._id;
+    try {
+        const risultato = await questionService.getBlackList(utente,req, res);
+        res.send(risultato);
+        next();
+    } catch (e) {
+        console.log(e.message)
+        res.sendStatus(500) && next(error)
+    }
+}
+
+
 const getCategories = async (req, res, next) => {
 
     try {
@@ -196,6 +210,41 @@ const getMyCategories = async (req, res, next) => {
 
     try {
         const risultato = await questionService.getMyCategories(utente, req, res);
+        res.send(risultato);
+        next();
+    } catch (e) {
+        console.log(e.message)
+        res.sendStatus(500) && next(error)
+    }
+}
+
+
+
+const removeFavouriteAnswer = async (req, res, next) => {
+
+    let ctrlToken = await controllaToken(req, res);
+    let utente = ctrlToken.payload._id;
+    let risposta = req.body.risposta;
+
+    try {
+        const risultato = await questionService.removeFavouriteAnswer(risposta,utente, req, res);
+        res.send(risultato);
+        next();
+    } catch (e) {
+        console.log(e.message)
+        res.sendStatus(500) && next(error)
+    }
+}
+
+
+const addFavouriteAnswer = async (req, res, next) => {
+
+    let ctrlToken = await controllaToken(req, res);
+    let utente = ctrlToken.payload._id;
+    let risposta = req.body.risposta;
+
+    try {
+        const risultato = await questionService.addFavouriteAnswer(risposta,utente, req, res);
         res.send(risultato);
         next();
     } catch (e) {
@@ -284,5 +333,8 @@ module.exports = {
     getMyCategories,
     updateBlackList,
     updateQuestionState,
-    getRecivedAnswer
+    getRecivedAnswer,
+    getBlackList,
+    removeFavouriteAnswer,
+    addFavouriteAnswer
 }

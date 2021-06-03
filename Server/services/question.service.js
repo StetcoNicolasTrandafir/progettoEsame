@@ -26,6 +26,29 @@ const updateBlackList = async  (utente,categorie,req, res)=>{
 }
 
 
+const removeFavouriteAnswer = async  (risposta,utente,req, res)=>{
+
+    let queryString = "DELETE FROM rispostePreferite  WHERE idUtente=? AND idRisposta=?";
+    const resultDelete = await db.execute(queryString, [utente, risposta], req, res);
+
+
+    return({
+        data: "Risposta rimossa dalle preferite!",
+    });
+}
+
+
+
+const addFavouriteAnswer = async  (risposta,utente,req, res)=>{
+
+    let queryString = "INSERT INTO rispostePreferite(idUtente,idRisposta) VALUES(?,?)";
+    const resultDelete = await db.execute(queryString, [utente, risposta], req, res);
+    
+    return({
+        data: "Risposta inserita nelle preferite!",
+    });
+}
+
 
 
 const updateQuestionState = async  (domanda,stato,req, res)=>{
@@ -141,6 +164,14 @@ const getQuestionsByUser = async  (utente,disponibile,req, res)=>{
     });
 }
 
+const getBlackList = async  (utente, req, res)=>{
+    let queryString = "SELECT idCategoria FROM blacklist WHERE idUtente=?";
+    const result = await db.execute(queryString, [utente], req, res);
+    return({
+        data: result,
+    });
+}
+
 const getAnswersByUser = async  (utente, req, res)=>{
     let queryString = "SELECT risposte.*, domande.testoDomanda, utenti.username,domande.iv AS ivDomanda, categorie.colore FROM risposte, domande, utenti, categorie WHERE utente= ? AND domande.idDomanda=risposte.domanda AND domande.autore= utenti.idUtente AND domande.categoria= categorie.idCategoria";
     const result = await db.execute(queryString, [utente], req, res);
@@ -169,11 +200,12 @@ const getAnswersByQuestion = async  (domanda,stato,req, res)=>{
 
 const getRecivedAnswer = async  (utente, req, res)=>{
     //let queryString = "SELECT risposte.*, domande.testoDomanda, utenti.username,domande.iv AS ivDomanda, categorie.colore  FROM risposte, domande, utenti,(SELECT utenti.username AS username,utenti.idUtente as idUtente from utenti) AS tmp, categorie WHERE risposte.domanda=domande.idDomanda AND domande.autore=? AND tmp.idUtente=risposte.utente AND utenti.idUtente=domande.autore AND domande.categoria= categorie.idCategoria ";
-    let queryString = "SELECT  tmp.username AS usernameRisposta, risposte.iv, risposte.testoRisposta, risposte.stato, risposte.utente as autoreRisposta,domande.testoDomanda, utenti.username,domande.iv AS ivDomanda, categorie.colore ";
+    let queryString = "SELECT  rispostepreferite.idPreferenza,tmp.username AS usernameRisposta, risposte.idRisposta,risposte.iv, risposte.testoRisposta, risposte.stato, risposte.utente as autoreRisposta,domande.testoDomanda, utenti.username,domande.iv AS ivDomanda, categorie.colore ";
     queryString+="FROM risposte INNER JOIN domande ON domande.idDomanda= risposte.domanda AND domande.autore=? ";
     queryString+=" INNER JOIN categorie ON categorie.idCategoria=domande.categoria ";
     queryString+=" INNER JOIN utenti ON utenti.idUtente=domande.autore";
     queryString+=" INNER JOIN (SELECT utenti.username AS username,utenti.idUtente as idUtente from utenti) AS tmp ON tmp.idUtente=risposte.utente"
+    queryString+=" LEFT JOIN rispostepreferite ON rispostepreferite.idUtente=utenti.idUtente AND rispostepreferite.idRisposta=risposte.idRisposta"
     //queryString+=" WHERE utenti.idUtente= autoreRisposta";
     const result = await db.execute(queryString, [utente], req, res);
     result.forEach(answer=>{
@@ -239,6 +271,9 @@ module.exports = {
     getMyCategories,
     updateBlackList,
     updateQuestionState,
-    getRecivedAnswer
+    getRecivedAnswer,
+    getBlackList,
+    removeFavouriteAnswer,
+    addFavouriteAnswer
 }
 

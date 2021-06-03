@@ -10,7 +10,12 @@ export class ReceivedanswerComponent implements OnInit {
   @Input() risposta;
   constructor(private http:HttpService) { }
 
-  ngOnInit() {}
+  icona:string="star-outline";
+  ngOnInit() {
+    console.log("RISPOSTA==>",this.risposta)
+    if(this.risposta.idPreferenza)
+      this.icona="star-sharp";
+  }
 
   nega($event: MouseEvent) {
     this.http.sendPOSTRequest('/question/handleRequest',{risposta:this.risposta.idRisposta,stato:'R'}).subscribe(
@@ -56,4 +61,37 @@ export class ReceivedanswerComponent implements OnInit {
     )
   }
 
+  togglePreferiti(sender) {
+
+    console.log(sender.risposta)
+    //alert(sender.risposta.idRisposta)
+    if(this.icona=="star-outline"){
+      //inserisci nei preferiti
+
+      this.http.sendPOSTRequest('/question/addFavouriteAnswer',{risposta:sender.risposta.idRisposta}).subscribe(
+        (data)=>{
+          console.log(data);
+          this.icona="star-sharp";
+        },
+        (err)=>{
+          console.log(err);
+        }
+      );
+    }
+    else{
+      //rimuovi dai preferiti
+      this.http.sendPOSTRequest('/question/removeFavouriteAnswer',{risposta:sender.risposta.idRisposta}).subscribe(
+        (data)=>{
+          console.log(data);
+          this.icona="star-outline";
+        },
+        (err)=>{
+          console.log(err);
+        }
+      );
+
+    }
+
+
+  }
 }

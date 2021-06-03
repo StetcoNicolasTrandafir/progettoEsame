@@ -53,6 +53,19 @@ export class ProfilePage implements OnInit {
       (data)=>{
         console.log(data);
         this.categorie=data.data;
+        this.http.sendPOSTRequest('/question/getBlackList',{}).subscribe(
+          (blackList)=>{
+            console.log(blackList)
+            this.selectedCategories=blackList.data;
+            for(let i=0; i< blackList.data.length; i++)
+              this.selectedCategories[i]=(blackList.data[i].idCategoria).toString();
+
+            //console.log("BLACKLISTT==>", this.selectedCategories);
+          },
+          (errBlackList)=>{
+            console.log(errBlackList);
+          }
+        );
       },(err)=>{
         console.log(err);
       }

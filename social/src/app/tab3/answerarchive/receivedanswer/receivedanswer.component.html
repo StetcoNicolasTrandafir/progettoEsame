@@ -1,6 +1,8 @@
 <ion-card style="border-radius:15%;background-color:{{risposta.colore}}" color="black">
   <ion-card-header>
-    <ion-card-subtitle>{{risposta.usernameRisposta}}</ion-card-subtitle>
+    <ion-card-subtitle >{{risposta.usernameRisposta}}</ion-card-subtitle>
+    <ion-icon  (click)="togglePreferiti(this)"  style="float: right" name="{{icona}}"></ion-icon>
+
   </ion-card-header>
 
   <ion-card-content>

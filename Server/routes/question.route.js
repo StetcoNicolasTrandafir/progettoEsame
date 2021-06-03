@@ -18,8 +18,12 @@ router.post('/getRecivedAnswer', questionController.getRecivedAnswer);
 router.post('/getCategories', questionController.getCategories);
 router.post('/getMyCategories', questionController.getMyCategories);
 router.post('/handleRequest', questionController.handleRequest);
+router.post('/getBlackList', questionController.getBlackList);
 router.post('/updateBlackList', questionController.updateBlackList);
 router.post('/updateQuestionState', questionController.updateQuestionState);
+router.post('/addFavouriteAnswer', questionController.addFavouriteAnswer);
+router.post('/removeFavouriteAnswer', questionController.removeFavouriteAnswer);
+
 
 
 
