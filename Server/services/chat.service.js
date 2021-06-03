@@ -47,7 +47,7 @@ const getMessagesByReceiver = async  (utente, destinatario, username, req, res)=
 const getChats = async  (utente, req, res)=>{
 
     //let queryString = "SELECT DISTINCT matched.*, utenti.idUtente, utenti.username, utenti.nome, utenti.cognome, utenti.foto FROM matched, utenti WHERE (matched.idUtenteDomanda=? OR matched.idUtenteRisposta=?) AND (utenti.idUtente != ?) AND (utenti.idUtente=matched.idUtenteRisposta OR utenti.idUtente=matched.idUtenteDomanda)";
-    let queryString="SELECT DISTINCT matched.matchedId,matched.idUtenteDomanda,matched.idUtenteRisposta,matched.matched,matched.data, utenti.idUtente, utenti.username, utenti.nome, utenti.cognome, utenti.foto, COUNT(messaggi.idMessaggio) AS numeroMessaggi FROM matched LEFT JOIN utenti ON (matched.idUtenteDomanda=? OR matched.idUtenteRisposta=?) AND (utenti.idUtente != ?) AND (utenti.idUtente=matched.idUtenteRisposta OR utenti.idUtente=matched.idUtenteDomanda) LEFT JOIN messaggi ON messaggi.destinatario=? AND messaggi.mittente=utenti.idUtente AND messaggi.letto='F' GROUP BY matched.matchedId,matched.idUtenteDomanda,matched.idUtenteRisposta,matched.matched,matched.data, utenti.idUtente, utenti.username, utenti.nome, utenti.cognome, utenti.foto";
+    let queryString="SELECT DISTINCT matched.matchedId,matched.idUtenteDomanda,matched.idUtenteRisposta,matched.matched,matched.data, utenti.idUtente, utenti.username, utenti.nome, utenti.cognome, utenti.foto, COUNT(messaggi.idMessaggio) AS numeroMessaggi FROM matched INNER JOIN utenti ON (matched.idUtenteDomanda=? OR matched.idUtenteRisposta=?) AND (utenti.idUtente != ?) AND (utenti.idUtente=matched.idUtenteRisposta OR utenti.idUtente=matched.idUtenteDomanda) LEFT JOIN messaggi ON messaggi.destinatario=? AND messaggi.mittente=utenti.idUtente AND messaggi.letto='F' GROUP BY matched.matchedId,matched.idUtenteDomanda,matched.idUtenteRisposta,matched.matched,matched.data, utenti.idUtente, utenti.username, utenti.nome, utenti.cognome, utenti.foto";
     let params= [utente, utente, utente,utente];
     const result = await db.execute(queryString, params, req, res);
 
@@ -62,9 +62,11 @@ const getChats = async  (utente, req, res)=>{
     });*/
 
     for await (let chat of result){
-        let queryLastMex= "SELECT  testoMessaggio,iv,letto,mittente FROM messaggi WHERE messaggi.data=(SELECT MAX(data) FROM messaggi WHERE (messaggi.mittente=? AND destinatario=?) OR (messaggi.mittente=? AND destinatario=?))";
+        let queryLastMex= "SELECT  testoMessaggio,iv,letto,mittente FROM messaggi WHERE (messaggi.mittente=? AND destinatario=?) OR (messaggi.mittente=? AND destinatario=?) ORDER BY data DESC";
         //let queryLastMex= "SELECT testoMessaggio,iv,letto,mittente, COUNT() FROM messaggi WHERE (messaggi.mittente=? AND destinatario=?) OR (messaggi.mittente=? AND destinatario=?) ORDER BY data DESC LIMIT 1";
-        let parLastMex=[chat.idUtenteRisposta, chat.idUtenteDomanda,chat.idUtenteRisposta,chat.idUtenteDomanda];
+        console.log("RISPOSTA ==> "+chat.idUtenteRisposta);
+        console.log("DOMANDA ==> "+chat.idUtenteDomanda);
+        let parLastMex=[chat.idUtenteRisposta, chat.idUtenteDomanda,chat.idUtenteDomanda,chat.idUtenteRisposta];
         let resultLastMex = await db.execute(queryLastMex, parLastMex, req, res);
         //console.log("Last mex========>",resultLastMex);
         
