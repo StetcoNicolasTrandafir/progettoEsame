@@ -120,4 +120,9 @@ export class Tab3Page implements OnInit{
     this.menu.close('first');
     this.router.navigate(['tabs/tab3/profile',this.id]);
   }
+
+  apriArchivioRisposteRicevute() {
+    this.menu.close('first');
+    this.router.navigate(['tabs/tab3/answerarchive']);
+  }
 }

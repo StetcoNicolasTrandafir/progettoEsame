@@ -1,0 +1,22 @@
+<ion-card style="border-radius:15%;background-color:{{risposta.colore}}" color="black">
+  <ion-card-header>
+    <ion-card-subtitle>{{risposta.usernameRisposta}}</ion-card-subtitle>
+  </ion-card-header>
+
+  <ion-card-content>
+    {{risposta.testoDomanda}}
+    <br/>
+    {{risposta.testoRisposta}}
+    <br/>
+    <div class="ion-text-center">
+      <div *ngIf="risposta.stato=='S'">
+        <ion-button slot="start" color="danger"  (click)="nega($event)" >Nega</ion-button>
+        <ion-button slot="start" color="success" (click)="accetta($event)">Accetta</ion-button>
+      </div>
+      <ion-chip *ngIf="risposta.stato!='S'" outline style="background-color: white;color: {{risposta.colore}}">
+        <ion-label *ngIf="risposta.stato=='R'">Rifiutata</ion-label>
+        <ion-label *ngIf="risposta.stato=='A'">Accettata</ion-label>
+      </ion-chip>
+    </div>
+  </ion-card-content>
+</ion-card>

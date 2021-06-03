@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {HttpService} from "../../service/http.service";
 import {Geolocation} from "@capacitor/geolocation";
@@ -23,6 +23,9 @@ export class ProfilePage implements OnInit {
   selectedFile;
   erroreFoto: any;
   id: any;
+  selectedCategories: any;
+  categorie: any;
+
 
   constructor(private router:Router,private http:HttpService,private activeroute:ActivatedRoute, private alertController:AlertController) {
     activeroute.params.subscribe(
@@ -46,7 +49,14 @@ export class ProfilePage implements OnInit {
   }
 
   ngOnInit() {
-
+    this.http.sendPOSTRequest('/question/getCategories',{}).subscribe(
+      (data)=>{
+        console.log(data);
+        this.categorie=data.data;
+      },(err)=>{
+        console.log(err);
+      }
+    )
   }
 
   goBack() {
@@ -55,6 +65,15 @@ export class ProfilePage implements OnInit {
   }
 
   saveInfo() {
+    console.log(this.selectedCategories);
+    this.http.sendPOSTRequest('/question/updateBlacklist',{categorie:this.selectedCategories}).subscribe(
+      (data)=>{
+        console.log(data);
+
+      },(err)=>{
+        console.log(err);
+      }
+    )
     //CONTROLLO VALORI
     if(this.username.length>=30||this.username.length<=5){
       this.errore="Lo username deve essere lungo dai 5 ai 30 caratteri";
@@ -169,4 +188,5 @@ export class ProfilePage implements OnInit {
       this.erroreFoto="Foto non caricata";
     }
   }
+
 }

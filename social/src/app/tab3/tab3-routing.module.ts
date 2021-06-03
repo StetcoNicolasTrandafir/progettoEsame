@@ -26,7 +26,11 @@ const routes: Routes = [
   {
     path: 'profile/:id',
     loadChildren: () => import('./profile/profile.module').then( m => m.ProfilePageModule)
+  },  {
+    path: 'answerarchive',
+    loadChildren: () => import('./answerarchive/answerarchive.module').then( m => m.AnswerarchivePageModule)
   }
+
 
 ];
 

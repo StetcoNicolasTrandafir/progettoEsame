@@ -11,7 +11,7 @@ const TIMEOUT=600;
 
 const updateBlackList = async  (utente,categorie,req, res)=>{
 
-    let queryString = "DELETE * FROM blacklist  WHERE idUtente=?";
+    let queryString = "DELETE FROM blacklist  WHERE idUtente=?";
     const resultDelete = await db.execute(queryString, [utente], req, res);
     console.log(resultDelete);
     let result;
@@ -167,6 +167,23 @@ const getAnswersByQuestion = async  (domanda,stato,req, res)=>{
     });
 }
 
+const getRecivedAnswer = async  (utente, req, res)=>{
+    //let queryString = "SELECT risposte.*, domande.testoDomanda, utenti.username,domande.iv AS ivDomanda, categorie.colore  FROM risposte, domande, utenti,(SELECT utenti.username AS username,utenti.idUtente as idUtente from utenti) AS tmp, categorie WHERE risposte.domanda=domande.idDomanda AND domande.autore=? AND tmp.idUtente=risposte.utente AND utenti.idUtente=domande.autore AND domande.categoria= categorie.idCategoria ";
+    let queryString = "SELECT  tmp.username AS usernameRisposta, risposte.iv, risposte.testoRisposta, risposte.stato, risposte.utente as autoreRisposta,domande.testoDomanda, utenti.username,domande.iv AS ivDomanda, categorie.colore ";
+    queryString+="FROM risposte INNER JOIN domande ON domande.idDomanda= risposte.domanda AND domande.autore=? ";
+    queryString+=" INNER JOIN categorie ON categorie.idCategoria=domande.categoria ";
+    queryString+=" INNER JOIN utenti ON utenti.idUtente=domande.autore";
+    queryString+=" INNER JOIN (SELECT utenti.username AS username,utenti.idUtente as idUtente from utenti) AS tmp ON tmp.idUtente=risposte.utente"
+    //queryString+=" WHERE utenti.idUtente= autoreRisposta";
+    const result = await db.execute(queryString, [utente], req, res);
+    result.forEach(answer=>{
+        answer.testoRisposta= crypto.decrypt({iv: answer.iv, content:answer.testoRisposta });
+        answer.testoDomanda= crypto.decrypt({iv: answer.ivDomanda, content:answer.testoDomanda });
+    });
+    return({
+        data: result,
+    });
+}
 
 const getMyCategories = async  (user,req, res)=>{
 
@@ -191,7 +208,7 @@ const getCategories = async  (req, res)=>{
 
 //FUNZIONI COMUNI
 function createToken(obj) {
-    console.log("====================================================================111")
+    
     let token = jwt.sign({
             '_id': obj._id,
             'user': obj.user,
@@ -200,7 +217,7 @@ function createToken(obj) {
         },
         privateKey
     );
-    console.log("====================================================================2222")
+
     return token;
 }
 
@@ -221,6 +238,7 @@ module.exports = {
     handleRequest,
     getMyCategories,
     updateBlackList,
-    updateQuestionState
+    updateQuestionState,
+    getRecivedAnswer
 }
 

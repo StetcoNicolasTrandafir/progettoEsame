@@ -133,6 +133,21 @@ const getQuestionsByUser = async (req, res, next) => {
     }
 }
 
+const getRecivedAnswer = async (req, res, next) => {
+    let ctrlToken = await controllaToken(req, res);
+    let utente = ctrlToken.payload._id;
+
+    try {
+        const risultato = await questionService.getRecivedAnswer(utente, req, res);
+        res.send(risultato);
+        next();
+    } catch (e) {
+        console.log(e.message)
+        res.sendStatus(500) && next(error)
+    }
+}
+
+
 const getAnswersByUser = async (req, res, next) => {
     let ctrlToken = await controllaToken(req, res);
 
@@ -268,5 +283,6 @@ module.exports = {
     handleRequest,
     getMyCategories,
     updateBlackList,
-    updateQuestionState
+    updateQuestionState,
+    getRecivedAnswer
 }
