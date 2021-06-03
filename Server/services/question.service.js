@@ -117,7 +117,7 @@ const getQuestionsByCategories = async  (categorie,utente,req, res)=>{
     queryString+=" AND domande.idDomanda NOT IN (SELECT domanda FROM risposte WHERE utente=?) "
     queryString+=" GROUP BY domande.idDomanda,domande.testoDomanda,domande.data,domande.categoria,domande.disponibile,domande.autore";
     queryString+=" ORDER BY DISTANZA ASC, domande.data DESC";
-    const result = await db.execute(queryString, [utente,utente,utente,categorie,utente], req, res);
+    const result = await db.execute(queryString, [utente,utente,utente,categorie,utente, utente], req, res);
     result.forEach(question=>{
         question.testoDomanda= crypto.decrypt({iv: question.iv, content:question.testoDomanda });
     });

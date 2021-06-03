@@ -170,6 +170,8 @@ const login = async (mail, password, req, res) => {
         queryString = "SELECT * FROM utenti WHERE username=?";
 
     const result = await db.execute(queryString, [mail], req, res);
+    if(result.length>0){
+   
     const comp = await bcrypt.compare(password, result[0].password);
 
     if (comp) {
@@ -184,9 +186,14 @@ const login = async (mail, password, req, res) => {
         };
     } else {
         return {
-            "errore": "errore"
+            error: "Password errata"
         };
     }
+    }else
+    return({
+        error:"Username o mail errata"
+    });
+    
 }
 
 
