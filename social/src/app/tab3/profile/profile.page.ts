@@ -15,7 +15,7 @@ export class ProfilePage implements OnInit {
   descrizione: any;
   mail: any;
   username: any;
-  infoUtente;
+  infoUtente:any={};
   errorePassword: any;
   confirmPwd: any;
   newPwd: any;
@@ -39,6 +39,7 @@ export class ProfilePage implements OnInit {
             this.username=this.infoUtente.username;
             this.descrizione=this.infoUtente.descrizione;
             this.mail=this.infoUtente.mail;
+
 
           },(err)=>{
             console.log(err);
@@ -194,7 +195,18 @@ export class ProfilePage implements OnInit {
       this.http.sendPOSTRequest("/user/updatePicture", uploadData).subscribe(
         (result) => {
           console.log(result);
-          this.router.navigateByUrl('');
+          this.http.sendToast('Foto modificata!');
+          this.http.sendPOSTRequest('/user/getUser',{}).subscribe(
+            (data)=>{
+              console.log(data);
+              this.infoUtente=data.data[0];
+              this.username=this.infoUtente.username;
+              this.descrizione=this.infoUtente.descrizione;
+              this.mail=this.infoUtente.mail;
+            },(err)=>{
+              console.log(err);
+            }
+          )
         },
         (error) => {
           console.log(error);

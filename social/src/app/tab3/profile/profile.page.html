@@ -10,6 +10,29 @@
 <ion-content>
   <ion-card>
     <ion-card-header>
+      <ion-card-title class="ion-text-center">Foto</ion-card-title>
+    </ion-card-header>
+    <section class="ion-text-center">
+      <!--
+      <ion-input type="file" (change)="onFileChanged($event)" #fileInput id="fileInput"></ion-input><br/>-->
+      <ion-item>
+
+        <!--<ion-icon lazy="true" slot="start" name="image"></ion-icon>
+        <ion-label slot="end">Profile pic</ion-label>-->
+        <ion-avatar style="margin-left: auto;margin-right: auto;display: block;margin-bottom:10%;width: 40%;height: auto" (click)="f.click()">
+          <ion-img src="http://localhost:1337/img/{{infoUtente.idUtente}}.{{infoUtente.foto}}" ></ion-img>
+        </ion-avatar>
+
+        <input class="ion-hide" #f type="file" (change)="onFileChanged($event)" id="file-input" accept="image/png, image/jpeg">
+
+      </ion-item>
+
+      <ion-button color="primary" (click)="changeFoto()" expand="block">Cambia Foto</ion-button>
+    </section>
+    <div class="ion-text-center" style="color: red;padding-top:10px;">{{erroreFoto}}</div>
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
 
       <ion-card-title class="ion-text-center">Profilo</ion-card-title>
     </ion-card-header>
@@ -49,17 +72,7 @@
       <ion-button color="primary" (click)="updatePosition()" expand="block">Aggiorna Posizione</ion-button>
     </section>
   </ion-card>
-  <ion-card>
-      <ion-card-header>
-        <ion-card-title class="ion-text-center">Foto</ion-card-title>
-        <div class="ion-text-center ion-margin-top">Aggiorna la foto</div>
-      </ion-card-header>
-      <section class="ion-text-center">
-        <ion-input type="file" (change)="onFileChanged($event)" #fileInput></ion-input><br/>
-        <ion-button color="primary" (click)="changeFoto()" expand="block">Cambia Foto</ion-button>
-      </section>
-    <div class="ion-text-center" style="color: red;padding-top:10px;">{{erroreFoto}}</div>
-    </ion-card>
+
     <ion-card>
     <ion-card-header>
       <ion-card-title class="ion-text-center">Password</ion-card-title>

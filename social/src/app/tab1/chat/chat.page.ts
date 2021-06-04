@@ -1,5 +1,5 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {ModalController} from "@ionic/angular";
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {IonContent, ModalController} from "@ionic/angular";
 import {HttpService} from "../../service/http.service";
 import {Router} from "@angular/router";
 //import {setInterval} from "timers";
@@ -12,6 +12,8 @@ import {Router} from "@angular/router";
 export class ChatPage implements OnInit {
   @Input() datoChat;
   interval;
+  scroll=true;
+  @ViewChild(IonContent) content: IonContent;
 
   messages=[];
   testoMessaggio: any;
@@ -21,6 +23,7 @@ export class ChatPage implements OnInit {
     //console.log(this.datoChat);
     this.caricaMessaggi();
     this.interval=setInterval(()=>{
+
       this.caricaMessaggi();
     },1000);
     //this.caricaMessaggi();
@@ -38,6 +41,10 @@ export class ChatPage implements OnInit {
       (data)=>{
         console.log(data);
         this.messages=data.data;
+        if(this.scroll){
+          this.content.scrollToBottom(600);
+          this.scroll=false;
+        }
       },(err)=>{
         console.log(err);
         if(err.status==603||err.status==604){

@@ -58,8 +58,8 @@
       <ion-textarea [(ngModel)]="descrizione"></ion-textarea>
     </ion-item>
     <ion-item>
-      <ion-label>Foto</ion-label><br/><hr>
-      <ion-input type="file" (change)="onFileChanged($event)" #fileInput></ion-input>
+      <ion-button color="primary" expand="block" (click)="f.click()">Scegli foto</ion-button>
+      <input class="ion-hide" #f type="file" (change)="onFileChanged($event)" id="file-input" accept="image/png, image/jpeg">
     </ion-item>
     <ion-label position="stacked" style="color: red;">{{errore}}</ion-label>
     <br>

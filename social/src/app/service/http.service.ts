@@ -7,7 +7,7 @@ import {ToastController} from "@ionic/angular";
 })
 export class HttpService {
 
-  //private URL_SERVICE="http://localhost:1337";
+  //private URL_SERVICE="http://192.168.107.112:1337";
   private URL_SERVICE="http://localhost:1337";
   //private URL_SERVICE="http://192.168.219.112:1337";
 
