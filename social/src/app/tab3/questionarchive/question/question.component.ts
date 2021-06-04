@@ -35,6 +35,7 @@ export class QuestionComponent implements OnInit {
               (data)=>{
                 console.log(data);
                 this.nascondiDomanda=true;
+                this.http.sendToast('Domanda pubblicata!');
               },(err)=>{
                 console.log(err);
               }

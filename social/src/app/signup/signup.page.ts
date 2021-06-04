@@ -95,6 +95,7 @@ export class SignupPage implements OnInit {
                 (result) => {
                   console.log(result);
                   this.router.navigateByUrl('');
+                  this.http.sendToast('Registrazione effettuata!');
                 },
                 (error) => {
                   console.log(error);

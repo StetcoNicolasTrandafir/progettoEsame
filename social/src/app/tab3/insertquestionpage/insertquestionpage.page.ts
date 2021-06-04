@@ -35,6 +35,7 @@ export class InsertquestionpagePage implements OnInit {
       this.http.sendPOSTRequest('/question/insertQuestion',{testo:this.testoDomanda,categoria:this.selectedCategory}).subscribe(
         (data)=>{
           console.log(data);
+          this.http.sendToast('Domanda pubblicata!');
           this.modalController.dismiss();
         },(err)=>{
           console.log(err);

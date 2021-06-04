@@ -1,7 +1,8 @@
 {
   "name": "social",
   "integrations": {
-    "capacitor": {}
+    "capacitor": {},
+    "cordova": {}
   },
   "type": "angular"
 }

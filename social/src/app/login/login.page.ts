@@ -32,6 +32,7 @@ export class LoginPage implements OnInit {
         (data)=>{
           if(data.data){
             localStorage.setItem("token",data.token);
+            this.http.sendToast('Login effettuato!');
             this.router.navigateByUrl('');
           }else{
             this.errore="Crenziali errate";

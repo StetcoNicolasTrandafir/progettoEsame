@@ -56,6 +56,7 @@ export class MyquestionComponent implements OnInit {
               (data)=>{
                 console.log(data);
                 this.nascondiDomanda=true;
+                this.http.sendToast('Domanda archiviata!');
               },(err)=>{
                 console.log(err);
 

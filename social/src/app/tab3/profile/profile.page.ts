@@ -101,6 +101,7 @@ export class ProfilePage implements OnInit {
           if(data.token){
             localStorage.setItem('token',data.token);
           }
+          this.http.sendToast('Dati modificati!');
         },(err)=>{
           console.log(err);
           if(err.status==603||err.status==604){
@@ -121,6 +122,7 @@ export class ProfilePage implements OnInit {
         data=>{
           console.log(data);
           this.errorePassword=data.data;
+          this.http.sendToast('Password modificata!');
         },err=>{
           console.log(err);
           if(err.status==603||err.status==604){
@@ -158,6 +160,7 @@ export class ProfilePage implements OnInit {
             this.http.sendPOSTRequest('/user/updatePosition',{posizione:position}).subscribe(
               data=>{
                 console.log(data);
+                this.http.sendToast('Posizione salvata!');
               },err=>{
                 console.log(err);
               }
