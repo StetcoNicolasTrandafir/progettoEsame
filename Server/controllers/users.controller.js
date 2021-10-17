@@ -21,7 +21,79 @@ ERRORS.create({
   defaultMessage: 'Token doesnt exist'
 });
 
+
+// router.post('/signUp/personalData', userController.signUpPersonalData);
+// router.post('/signUp/ID', userController.signUpID);
+// router.post('/signUp/profile', userController.signUpProfile);
+
 //CHIAMATE
+
+//PRIMA FASE REGISTRAZIONE
+const signUpPersonalData = async (req, res, next) => {
+  
+  let mail = req.body.mail;
+  let nome = req.body.nome;
+  let cognome = req.body.cognome;
+  let sesso = req.body.sesso;
+  let dataNascita = req.body.dataNascita;
+  let password = req.body.password;
+
+
+  try {
+    //estraggo ed elaboro i dati tramite il service userService
+    const risultato = await usersService.signUpPersonalData(nome, cognome,  sesso,  dataNascita,mail, password, req, res);
+    console.log("risultato", risultato);
+    res.send(risultato);
+
+    next();
+  } catch (e) {
+    console.log(e.message)
+    res.sendStatus(500) && next(error)
+  }
+}
+
+//SECONDA FASE REGISTRAZIONE
+const signUpProfile = async (req, res, next) => {
+  let ctrlToken = await controllaToken(req, res); //ANCHOR VEDERE SE CREARE UN TOKEN NELLA SIGNUPPERSONALDATA O SE PASSARE DIRETTAMENTE L'ID UTENTE COME PARAMETRO
+  let ID = ctrlToken.payload._id;
+  let user = req.body.user;
+  let foto = req.body.foto;
+  let descrizione = req.body.descrizione;
+  let posizione = req.body.posizione;
+
+
+  try {
+    //estraggo ed elaboro i dati tramite il service userService
+    const risultato = await usersService.signUpProfile(user,foto, descrizione, posizione, ID, req, res);
+    console.log("risultato", risultato);
+    res.send(risultato);
+
+    next();
+  } catch (e) {
+    console.log(e.message)
+    res.sendStatus(500) && next(error)
+  }
+}
+
+const undoSignUp=async(req, res, next)=>{
+  let ctrlToken = await controllaToken(req, res);
+  let ID = ctrlToken.payload._id;
+
+  try {
+   
+    const risultato = await usersService.undoSignUp(ID, req, res);
+    console.log("risultato", risultato);
+    res.send(risultato);
+
+    next();
+  } catch (e) {
+    console.log(e.message)
+    res.sendStatus(500) && next(error)
+  }
+}
+
+
+
 const signUp = async (req, res, next) => {
   
   let user = req.body.user;
@@ -276,11 +348,14 @@ module.exports = {
   getUser,
   controlloToken,
   signUp,
+  signUpPersonalData,
+  signUpProfile,
+  undoSignUp,
   processUpFile,
   prova,
   changePassword,
   updateUser,
   provaCrittografia,
   updatePosition,
-  updatePicture
+  updatePicture,
 }
