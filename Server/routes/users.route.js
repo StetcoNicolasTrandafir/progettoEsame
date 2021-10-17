@@ -9,8 +9,9 @@ const router = express.Router()
 router.post('/prova/1', userController.prova);
 
 
-router.post('/signUp/personalData', userController.signUpPersonalData);
-// router.post('/signUp/ID', userController.signUpID);
+//router.post('/signUp/personalData', userController.signUpPersonalData);
+router.post('/signUp/checkCredentials', userController.signUpCheckCredentials);
+router.post('/signUp/insertUser', userController.signUpInsertUser);
 router.post('/signUp/profile', userController.signUpProfile);
 router.post('/signUp/undo', userController.undoSignUp);
 router.post('/login', userController.login);
