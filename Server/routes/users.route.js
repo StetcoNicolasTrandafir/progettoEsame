@@ -15,6 +15,7 @@ router.post('/signUp/profile', userController.signUpProfile);
 router.post('/signUp/undo', userController.undoSignUp);
 router.post('/login', userController.login);
 router.post('/getUser', userController.getUser);
+router.post('/getPositions', userController.getPositions);
 router.post('/controlloToken', userController.controlloToken);
 router.post('/processUpFile', userController.processUpFile);
 router.post('/changePassword', userController.changePassword);

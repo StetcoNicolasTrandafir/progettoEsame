@@ -163,6 +163,21 @@ const updatePosition= async(req, res, next)=>{
   }
 }
 
+
+const getPositions=async(req, res, next)=>{
+  let ctrlToken = await controllaToken(req, res);
+  let user = ctrlToken.payload._id;
+  try {
+    const risultato = await usersService.getPositions(user, req, res);
+    res.send(risultato);
+    next();
+  } catch (e) {
+    console.log(e.message)
+    res.sendStatus(500) && next(error)
+  }
+}
+
+
 const changePassword = async (req, res, next) => {
   //recupero il parametro id dall'url della chiamata
   let ctrlToken = await controllaToken(req, res);
@@ -358,4 +373,5 @@ module.exports = {
   provaCrittografia,
   updatePosition,
   updatePicture,
+  getPositions
 }
