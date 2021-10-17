@@ -192,6 +192,8 @@ const signUpInsertUser = async (user, mail, nome, cognome, foto, sesso, descrizi
     //             data: "Username non disponibile, scegline un altro"
     //         });
     //     else {
+
+            let hash
             let saltRounds = 10;
             try {
                 hash = await bcrypt.hash(pwd, saltRounds);
@@ -201,6 +203,7 @@ const signUpInsertUser = async (user, mail, nome, cognome, foto, sesso, descrizi
             if (hash) {
                 let insertQuery = "INSERT INTO utenti(username, password, nome, cognome, mail, foto, posizione, sesso, descrizione, dataNascita) VALUES (?,?,?,?,?,?,?,?,?,STR_TO_DATE(?, '%d-%m-%Y'))";
                 let param = [user, hash, nome, cognome, mail, foto, posizione, sesso, descrizione, dataNascita];
+                console.log('param', param)
                 const resultInsert = await db.execute(insertQuery, param, req, res);
                 console.log("Result insert:", resultInsert)
                 let token = createToken({

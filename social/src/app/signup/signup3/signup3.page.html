@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>signup3</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-card-header>
+
+      <ion-card-title class="ion-text-center">Registrazione</ion-card-title>
+    </ion-card-header>
+    <ion-item>
+      <ion-label position="floating">Descrizione</ion-label>
+      <ion-textarea [(ngModel)]="descrizione"></ion-textarea>
+    </ion-item>
+    <ion-item>
+      <ion-button color="primary" expand="block" (click)="f.click()">Scegli foto</ion-button>
+      <input class="ion-hide" #f type="file" (change)="onFileChanged($event)" id="file-input" accept="image/png, image/jpeg">
+    </ion-item>
+    <br/>
+    <section>
+      <ion-button color="primary" (click)="signUp()" expand="block">Registrati</ion-button>
+    </section>
+  </ion-card>
+</ion-content>

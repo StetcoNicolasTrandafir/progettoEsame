@@ -128,7 +128,7 @@ const signUpInsertUser = async (req, res, next) => {
 
   try {
     //estraggo ed elaboro i dati tramite il service userService
-    const risultato = await usersService.signUp(user, mail, nome, cognome, foto, sesso, descrizione, posizione, dataNascita, password, req, res);
+    const risultato = await usersService.signUpInsertUser(user, mail, nome, cognome, foto, sesso, descrizione, posizione, dataNascita, password, req, res);
     console.log("risultato", risultato);
     res.send(risultato);
 
