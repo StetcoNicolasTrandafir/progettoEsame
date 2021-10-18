@@ -60,10 +60,10 @@ const insertQuestion = async (req, res, next) => {
 
 const updateQuestionState = async (req, res, next) => {
 
-    let domanda=req.body.domanda;
-    let stato=req.body.stato;
+    let domanda = req.body.domanda;
+    let stato = req.body.stato;
     try {
-        const risultato = await questionService.updateQuestionState(domanda,stato, req, res);
+        const risultato = await questionService.updateQuestionState(domanda, stato, req, res);
         res.send(risultato);
         next();
     } catch (e) {
@@ -76,10 +76,10 @@ const updateQuestionState = async (req, res, next) => {
 
 const updateBlackList = async (req, res, next) => {
     let ctrlToken = await controllaToken(req, res);
-    let utente=ctrlToken.payload._id;
-    let categorie=req.body.categorie;
+    let utente = ctrlToken.payload._id;
+    let categorie = req.body.categorie;
     try {
-        const risultato = await questionService.updateBlackList(utente,categorie, req, res);
+        const risultato = await questionService.updateBlackList(utente, categorie, req, res);
         res.send(risultato);
         next();
     } catch (e) {
@@ -107,7 +107,7 @@ const getQuestionsByCategories = async (req, res, next) => {
     let categorie = req.body.categorie;
 
     try {
-        const risultato = await questionService.getQuestionsByCategories(categorie,utente, req, res);
+        const risultato = await questionService.getQuestionsByCategories(categorie, utente, req, res);
         res.send(risultato);
         next();
     } catch (e) {
@@ -123,7 +123,7 @@ const getQuestionsByUser = async (req, res, next) => {
     let disponibile = req.body.disponibile;
     try {
         const risultato = await questionService.getQuestionsByUser(utente, disponibile, req, res);
-        
+
         res.send(risultato);
         console.log("GET QUESTION");
         next();
@@ -165,10 +165,10 @@ const getAnswersByUser = async (req, res, next) => {
 const getAnswersByQuestion = async (req, res, next) => {
 
     let domanda = req.body.domanda;
-    let stato= req.body.stato;
+    let stato = req.body.stato;
 
     try {
-        const risultato = await questionService.getAnswersByQuestion(domanda, stato,req, res);
+        const risultato = await questionService.getAnswersByQuestion(domanda, stato, req, res);
         res.send(risultato);
         next();
     } catch (e) {
@@ -181,7 +181,7 @@ const getBlackList = async (req, res, next) => {
     let ctrlToken = await controllaToken(req, res);
     let utente = ctrlToken.payload._id;
     try {
-        const risultato = await questionService.getBlackList(utente,req, res);
+        const risultato = await questionService.getBlackList(utente, req, res);
         res.send(risultato);
         next();
     } catch (e) {
@@ -227,7 +227,7 @@ const removeFavouriteAnswer = async (req, res, next) => {
     let risposta = req.body.risposta;
 
     try {
-        const risultato = await questionService.removeFavouriteAnswer(risposta,utente, req, res);
+        const risultato = await questionService.removeFavouriteAnswer(risposta, utente, req, res);
         res.send(risultato);
         next();
     } catch (e) {
@@ -244,7 +244,7 @@ const addFavouriteAnswer = async (req, res, next) => {
     let risposta = req.body.risposta;
 
     try {
-        const risultato = await questionService.addFavouriteAnswer(risposta,utente, req, res);
+        const risultato = await questionService.addFavouriteAnswer(risposta, utente, req, res);
         res.send(risultato);
         next();
     } catch (e) {
@@ -290,10 +290,9 @@ async function controllaToken(req, res) {
 
 
             let result;
-            try{
+            try {
                 result = await jwt.verify(token, privateKey);
-            }
-            catch (ex){
+            } catch (ex) {
                 console.log(ex);
             }
             console.log(result);

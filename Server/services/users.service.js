@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
 const fs = require('fs');
-//const mySql = require('mysql');
+
 const fileupload = require('express-fileupload');
 const {
     db
@@ -72,7 +72,7 @@ const updatePosition = async (utente, position, req, res) => {
 
 
 
-const signUpCheckCredentials= async(user, mail, req, res)=>{
+const signUpCheckCredentials = async (user, mail, req, res) => {
     let queryMail = "SELECT idUtente FROM utenti WHERE mail=?";
     const ctrMail = await db.execute(queryMail, [mail], req, res);
     if (ctrMail.length != 0)
@@ -80,18 +80,17 @@ const signUpCheckCredentials= async(user, mail, req, res)=>{
             code: 50,
             data: "Ti sei già registrato con questa mail"
         });
-    else 
-    {
-    let queryUser = "SELECT idUtente FROM utenti WHERE username=?";
-    const ctrUser = await db.execute(queryUser, [user], req, res);
-    if (ctrUser.length != 0)
-        return ({
-            code: 50,
-            data: "Username non disponibile, scegline un altro"
-        });
+    else {
+        let queryUser = "SELECT idUtente FROM utenti WHERE username=?";
+        const ctrUser = await db.execute(queryUser, [user], req, res);
+        if (ctrUser.length != 0)
+            return ({
+                code: 50,
+                data: "Username non disponibile, scegline un altro"
+            });
         else
             return ({
-                data:"OK"
+                data: "OK"
             });
     }
 }
@@ -134,7 +133,7 @@ const signUpPersonalData = async (nome, cognome, sesso, dataNascita, mail, pwd, 
 
 
 
-const signUpProfile = async (user, foto, descrizione, posizione,userID, req, res) => {
+const signUpProfile = async (user, foto, descrizione, posizione, userID, req, res) => {
 
 
     let queryUser = "SELECT idUtente FROM utenti WHERE username=?";
@@ -147,9 +146,8 @@ const signUpProfile = async (user, foto, descrizione, posizione,userID, req, res
     else {
 
         let insertQuery = "UPDATE utenti SET username=?, foto=?, descrizione=?, posizione=? WHERE idUtente=?";
-        let param = [user,foto, descrizione, posizione,userID];
+        let param = [user, foto, descrizione, posizione, userID];
         const resultInsert = await db.execute(insertQuery, param, req, res);
-        //console.log("Result insert:", resultInsert)
         let token = createToken({
             "_id": userID,
             "user": user
@@ -163,61 +161,31 @@ const signUpProfile = async (user, foto, descrizione, posizione,userID, req, res
 }
 
 
-// const undoSignUp=async(userId, req, res)=>{
-//     let query="DELETE  FROM utenti WHERE idUtente=?"
-//     const result=await db.execute(query,[userId], req, res);
-//     console.log("RESULT=====>",result);
-//     return ({
-//         data:"Registrazione annullata"
-//     })
-// }
-
-
-
 const signUpInsertUser = async (user, mail, nome, cognome, foto, sesso, descrizione, posizione, dataNascita, pwd, req, res) => {
 
-    // let queryMail = "SELECT idUtente FROM utenti WHERE mail=?";
-    // const ctrMail = await db.execute(queryMail, [mail], req, res);
-    // if (ctrMail.length != 0)
-    //     return ({
-    //         code: 50,
-    //         data: "Ti sei già registrato con questa mail"
-    //     });
-    // else {
-    //     let queryUser = "SELECT idUtente FROM utenti WHERE username=?";
-    //     const ctrUser = await db.execute(queryUser, [user], req, res);
-    //     if (ctrUser.length != 0)
-    //         return ({
-    //             code: 50,
-    //             data: "Username non disponibile, scegline un altro"
-    //         });
-    //     else {
-
-            let hash
-            let saltRounds = 10;
-            try {
-                hash = await bcrypt.hash(pwd, saltRounds);
-            } catch (e) {
-                console.log(e);
-            }
-            if (hash) {
-                let insertQuery = "INSERT INTO utenti(username, password, nome, cognome, mail, foto, posizione, sesso, descrizione, dataNascita) VALUES (?,?,?,?,?,?,?,?,?,STR_TO_DATE(?, '%d-%m-%Y'))";
-                let param = [user, hash, nome, cognome, mail, foto, posizione, sesso, descrizione, dataNascita];
-                console.log('param', param)
-                const resultInsert = await db.execute(insertQuery, param, req, res);
-                console.log("Result insert:", resultInsert)
-                let token = createToken({
-                    "_id": resultInsert.insertId,
-                    "user": user
-                });
-                return ({
-                    "token": token,
-                    "data": resultInsert.insertId
-                });
-            } else
-                error(req, res, new ERRORS.HASH({}));
-    //     }
-    // }
+    let hash
+    let saltRounds = 10;
+    try {
+        hash = await bcrypt.hash(pwd, saltRounds);
+    } catch (e) {
+        console.log(e);
+    }
+    if (hash) {
+        let insertQuery = "INSERT INTO utenti(username, password, nome, cognome, mail, foto, posizione, sesso, descrizione, dataNascita) VALUES (?,?,?,?,?,?,?,?,?,STR_TO_DATE(?, '%d-%m-%Y'))";
+        let param = [user, hash, nome, cognome, mail, foto, posizione, sesso, descrizione, dataNascita];
+        console.log('param', param)
+        const resultInsert = await db.execute(insertQuery, param, req, res);
+        console.log("Result insert:", resultInsert)
+        let token = createToken({
+            "_id": resultInsert.insertId,
+            "user": user
+        });
+        return ({
+            "token": token,
+            "data": resultInsert.insertId
+        });
+    } else
+        error(req, res, new ERRORS.HASH({}));
 }
 
 const processUpFile = async (file, req, res) => {
@@ -355,7 +323,6 @@ module.exports = {
     login,
     getUser,
     signUpInsertUser,
-    //undoSignUp,
     signUpPersonalData,
     signUpProfile,
     processUpFile,

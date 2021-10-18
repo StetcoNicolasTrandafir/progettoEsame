@@ -9,7 +9,6 @@ const router = express.Router()
 router.post('/prova/1', userController.prova);
 
 
-//router.post('/signUp/personalData', userController.signUpPersonalData);
 router.post('/signUp/checkCredentials', userController.signUpCheckCredentials);
 router.post('/signUp/insertUser', userController.signUpInsertUser);
 router.post('/login', userController.login);
