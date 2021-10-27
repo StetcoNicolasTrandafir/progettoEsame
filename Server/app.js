@@ -7,6 +7,17 @@ const cors=require('cors');
 const routes = require('./routes')
 
 
+const server = require('http').createServer(app);
+const io = require('socket.io')(server, {
+  cors: {
+    origin: '*',
+    methods: ["GET", "PUT", "POST", "DELETE", "OPTIONS"]
+  }
+})
+
+
+
+server.listen(3000);
 const port = 1337;
 
 app.use(bodyParser.json());
@@ -25,6 +36,19 @@ app.use("/", function (req, res, next) {
 });
 
 app.listen(port, () => console.log('Server running on port ' + port));
+userIds = [];
+
+io.on('connection', (socket) => {
+  console.log("NEW CONNECTION====>", socket.id);
+  userIds.push(socket.id);
+
+  socket.on('set-message', (data) => {
+    let id = userIds[data.id];
+    console.log(data.message);
+    socket.to(id).emit('message-changed', data.message);
+  })
+})
+
 
 module.exports = {
   app
