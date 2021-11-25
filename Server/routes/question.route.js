@@ -23,6 +23,9 @@ router.post('/updateBlackList', questionController.updateBlackList);
 router.post('/updateQuestionState', questionController.updateQuestionState);
 router.post('/addFavouriteAnswer', questionController.addFavouriteAnswer);
 router.post('/removeFavouriteAnswer', questionController.removeFavouriteAnswer);
+router.post('/getFriendsQuestion', questionController.getFriendsQuestion);
+router.post('/getFriendsQuestionByCategories', questionController.getFriendsQuestionByCategories);
+
 
 
 

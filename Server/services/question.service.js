@@ -132,6 +132,26 @@ const getQuestions = async  (utente,req, res)=>{
     });
 }
 
+const getFriendsQuestion = async  (utente,req, res)=>{
+
+    let queryString="SELECT utenti.username, categorie.nomeCategoria, categorie.colore,domande.iv, domande.idDomanda, domande.testoDomanda, domande.data, domande.categoria, "+
+    +"domande.disponibile, domande.autore,SQRT(POWER(((SELECT SUBSTRING_INDEX(posizione,';',1) FROM utenti WHERE idUtente=?)-SUBSTRING_INDEX(utenti.posizione,';',1)),2)+ "+
+    "POWER(((SELECT SUBSTRING_INDEX(posizione,';',-1) FROM utenti WHERE idUtente=?)-SUBSTRING_INDEX(utenti.posizione,';',-1)),2))AS DISTANZA FROM domande INNER JOIN utenti ON "+
+    +"utenti.idUtente=domande.autore INNER JOIN categorie ON domande.categoria=categorie.idCategoria WHERE domande.autore IN (SELECT seguito FROM follow WHERE utente=?) AND  "+
+    +"domande.autore!=? AND domande.categoria NOT IN (SELECT idCategoria FROM blacklist WHERE idUtente= ?) AND domande.disponibile='T' AND domande.idDomanda NOT IN "+
+    +"(SELECT domanda FROM risposte WHERE utente=?)   GROUP BY domande.idDomanda,domande.testoDomanda,domande.data,domande.categoria,domande.disponibile,domande.autore "+
+    +"ORDER BY DISTANZA ASC, domande.data DESC";
+    
+    const result = await db.execute(queryString, [utente,utente,utente,utente,utente, utente], req, res);
+    result.forEach(question=>{
+        question.testoDomanda= crypto.decrypt({iv: question.iv, content:question.testoDomanda });
+        
+    });
+    return({
+        data: result,
+    });
+}
+
 
 const getQuestionsByCategories = async  (categorie,utente,req, res)=>{
 
@@ -145,6 +165,24 @@ const getQuestionsByCategories = async  (categorie,utente,req, res)=>{
     queryString+=" GROUP BY domande.idDomanda,domande.testoDomanda,domande.data,domande.categoria,domande.disponibile,domande.autore";
     queryString+=" ORDER BY DISTANZA ASC, domande.data DESC";
     const result = await db.execute(queryString, [utente,utente,utente,categorie,utente, utente], req, res);
+    result.forEach(question=>{
+        question.testoDomanda= crypto.decrypt({iv: question.iv, content:question.testoDomanda });
+    });
+    return({
+        data: result,
+    });
+}
+
+const getFriendsQuestionByCategories = async  (categorie,utente,req, res)=>{
+
+    let queryString="SELECT utenti.username, categorie.nomeCategoria, categorie.colore,domande.iv, domande.idDomanda, domande.testoDomanda, domande.data, domande.categoria, "+
+    +"domande.disponibile, domande.autore,SQRT(POWER(((SELECT SUBSTRING_INDEX(posizione,';',1) FROM utenti WHERE idUtente=?)-SUBSTRING_INDEX(utenti.posizione,';',1)),2)+ "+
+    "POWER(((SELECT SUBSTRING_INDEX(posizione,';',-1) FROM utenti WHERE idUtente=?)-SUBSTRING_INDEX(utenti.posizione,';',-1)),2))AS DISTANZA FROM domande INNER JOIN utenti ON "+
+    +"utenti.idUtente=domande.autore INNER JOIN categorie ON domande.categoria=categorie.idCategoria WHERE domande.autore IN (SELECT seguito FROM follow WHERE utente=?) AND  "+
+    +"domande.autore!=? AND domande.categoria NOT IN (SELECT idCategoria FROM blacklist WHERE idUtente= ?) AND domande.disponibile='T' AND domande.idDomanda NOT IN "+
+    +"(SELECT domanda FROM risposte WHERE utente=?)   GROUP BY domande.idDomanda,domande.testoDomanda,domande.data,domande.categoria,domande.disponibile,domande.autore "+
+    +"ORDER BY DISTANZA ASC, domande.data DESC";
+    const result = await db.execute(queryString, [utente,utente,utente,categorie,utente, utente, utente], req, res);
     result.forEach(question=>{
         question.testoDomanda= crypto.decrypt({iv: question.iv, content:question.testoDomanda });
     });
@@ -278,6 +316,8 @@ module.exports = {
     getRecivedAnswer,
     getBlackList,
     removeFavouriteAnswer,
-    addFavouriteAnswer
+    addFavouriteAnswer,
+    getFriendsQuestionByCategories,
+    getFriendsQuestion
 }
 

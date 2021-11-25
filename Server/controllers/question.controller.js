@@ -101,6 +101,35 @@ const getQuestions = async (req, res, next) => {
         res.sendStatus(500) && next(error)
     }
 }
+
+const getFriendsQuestion = async (req, res, next) => {
+    let ctrlToken = await controllaToken(req, res);
+    let utente = ctrlToken.payload._id;
+    try {
+        const risultato = await questionService.getFriendsQuestion(utente, req, res);
+        res.send(risultato);
+        next();
+    } catch (e) {
+        console.log(e.message)
+        res.sendStatus(500) && next(error)
+    }
+}
+
+const getFriendsQuestionByCategories = async (req, res, next) => {
+    let ctrlToken = await controllaToken(req, res);
+    let utente = ctrlToken.payload._id;
+    let categorie = req.body.categorie;
+
+    try {
+        const risultato = await questionService.getFriendsQuestionByCategories(categorie,utente, req, res);
+        res.send(risultato);
+        next();
+    } catch (e) {
+        console.log(e.message)
+        res.sendStatus(500) && next(error)
+    }
+}
+
 const getQuestionsByCategories = async (req, res, next) => {
     let ctrlToken = await controllaToken(req, res);
     let utente = ctrlToken.payload._id;
@@ -336,5 +365,7 @@ module.exports = {
     getRecivedAnswer,
     getBlackList,
     removeFavouriteAnswer,
-    addFavouriteAnswer
+    addFavouriteAnswer,
+    getFriendsQuestion,
+    getFriendsQuestionByCategories
 }
