@@ -31,6 +31,16 @@ const getUser = async (idUtente, req, res) => {
     });
 }
 
+
+const getFriends = async (idUtente, req, res) => {
+    let queryString = "SELECT idUtente, username, nome, cognome, foto FROM  utenti WHERE idUtente IN (SELECT seguito FROM follow WHERE utente=?)";
+    const result = await db.execute(queryString, [idUtente], req, res);
+    return ({
+        data: result,
+    });
+}
+
+
 const changePassword = async (utente, oldPwd, newPwd, req, res) => {
     let quesryString = "SELECT username, password FROM utenti WHERE idUtente=?";
     const result = await db.execute(quesryString, [utente], req, res);
@@ -350,5 +360,6 @@ module.exports = {
     updateUser,
     updatePosition,
     updatePicture,
-    getPositions
+    getPositions,
+    getFriends
 }

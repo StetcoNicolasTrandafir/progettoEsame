@@ -259,6 +259,26 @@ async function updatePicture(req, res, next) {
   }
 }
 
+
+
+const getFriends = async (req, res, next) => {
+
+  let ctrlToken = await controllaToken(req, res);
+
+  let id = ctrlToken.payload._id;
+  try {
+    const risultato = await usersService.getFriends(id, req, res);
+    res.send(risultato);
+
+    next();
+  } catch (e) {
+    console.log("test");
+    console.log(e.message)
+    res.sendStatus(500) && next(error)
+  }
+}
+
+
 const getUser = async (req, res, next) => {
 
   let ctrlToken = await controllaToken(req, res);
@@ -373,5 +393,6 @@ module.exports = {
   provaCrittografia,
   updatePosition,
   updatePicture,
-  getPositions
+  getPositions,
+  getFriends
 }

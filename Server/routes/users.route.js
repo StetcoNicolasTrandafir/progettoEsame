@@ -23,6 +23,7 @@ router.post('/updateUser', userController.updateUser);
 router.post('/updatePosition', userController.updatePosition);
 router.post('/updatePicture', userController.updatePicture);
 router.post('/provaCrittografia', userController.provaCrittografia);
+router.post('/getFriends', userController.getFriends);
 
 
 module.exports = router
