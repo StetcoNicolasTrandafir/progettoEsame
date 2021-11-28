@@ -141,7 +141,7 @@ const signUpProfile = async (user, foto, descrizione, posizione,userID, req, res
 }
 
 const getPositions= async(user, req, res)=>{
-    let queryString="SELECT idUtente, SQRT(POWER(((SELECT SUBSTRING_INDEX(posizione,';',1) FROM utenti WHERE idUtente=?)-SUBSTRING_INDEX(utenti.posizione,';',1)),2)";
+    let queryString="SELECT idUtente, posizione, username, SQRT(POWER(((SELECT SUBSTRING_INDEX(posizione,';',1) FROM utenti WHERE idUtente=?)-SUBSTRING_INDEX(utenti.posizione,';',1)),2)";
     queryString+="+ POWER(((SELECT SUBSTRING_INDEX(posizione,';',-1) FROM utenti WHERE idUtente=?)-SUBSTRING_INDEX(utenti.posizione,';',-1)),2)";
     queryString+=") AS DISTANZA FROM utenti ORDER BY DISTANZA ASC LIMIT 21";
 
