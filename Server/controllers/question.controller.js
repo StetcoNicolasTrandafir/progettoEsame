@@ -11,13 +11,13 @@ const ERRORS = require('errors');
 ERRORS.create({
     code: 603,
     name: 'TOKEN_EXPIRED',
-    defaultMessage: 'Token is expired'
+    defaultMessage: 'Token is expired',
 });
 
 ERRORS.create({
     code: 604,
     name: 'TOKEN_DOESNT_EXIST',
-    defaultMessage: 'Token doesnt exist'
+    defaultMessage: "Token doesn't exist"
 });
 
 const insertAnswer = async (req, res, next) => {
@@ -139,8 +139,8 @@ const getQuestionsByUser = async (req, res, next) => {
     try {
         const risultato = await questionService.getQuestionsByUser(utente, req, res);
         
+        console.log("====>",risultato);
         res.send(risultato);
-        console.log(risultato);
         next();
     } catch (e) {
         console.log(e.message)

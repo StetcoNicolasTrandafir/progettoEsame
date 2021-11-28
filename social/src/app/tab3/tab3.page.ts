@@ -32,7 +32,7 @@ export class Tab3Page implements OnInit{
         }
       )
 
-      this.Http.sendPOSTRequest('/question/getQuestionsByUser',{disponibile:'T'}).subscribe(
+      this.Http.sendPOSTRequest('/question/getMyQuestions',{disponibile:'T'}).subscribe(
         (data)=>{
           console.log(data);
           this.myQuestions=data.data;
