@@ -116,16 +116,31 @@ const getQuestionsByCategories = async (req, res, next) => {
     }
 }
 
-const getQuestionsByUser = async (req, res, next) => {
+const getMyQuestions = async (req, res, next) => {
     let ctrlToken = await controllaToken(req, res);
 
     let utente = ctrlToken.payload._id;
     let disponibile = req.body.disponibile;
     try {
-        const risultato = await questionService.getQuestionsByUser(utente, disponibile, req, res);
+        const risultato = await questionService.getMyQuestions(utente, disponibile, req, res);
         
         res.send(risultato);
         console.log("GET QUESTION");
+        next();
+    } catch (e) {
+        console.log(e.message)
+        res.sendStatus(500) && next(error)
+    }
+}
+
+const getQuestionsByUser = async (req, res, next) => {
+
+    let utente = req.body.utente;
+    try {
+        const risultato = await questionService.getQuestionsByUser(utente, req, res);
+        
+        res.send(risultato);
+        console.log(risultato);
         next();
     } catch (e) {
         console.log(e.message)
@@ -336,5 +351,6 @@ module.exports = {
     getRecivedAnswer,
     getBlackList,
     removeFavouriteAnswer,
-    addFavouriteAnswer
+    addFavouriteAnswer,
+    getMyQuestions
 }

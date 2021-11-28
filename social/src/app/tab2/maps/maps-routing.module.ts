@@ -7,7 +7,11 @@ const routes: Routes = [
   {
     path: '',
     component: MapsPage
+  },  {
+    path: 'user-modal',
+    loadChildren: () => import('./user-modal/user-modal.module').then( m => m.UserModalPageModule)
   }
+
 ];
 
 @NgModule({

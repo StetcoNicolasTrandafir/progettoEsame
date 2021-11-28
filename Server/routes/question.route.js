@@ -11,6 +11,7 @@ router.post('/insertQuestion', questionController.insertQuestion);
 router.post('/insertAnswer', questionController.insertAnswer);
 router.post('/getQuestions', questionController.getQuestions);
 router.post('/getQuestionsByUser', questionController.getQuestionsByUser);
+router.post('/getMyQuestions', questionController.getMyQuestions);
 router.post('/getQuestionsByCategories', questionController.getQuestionsByCategories);
 router.post('/getAnswersByUser', questionController.getAnswersByUser);
 router.post('/getAnswersByQuestion', questionController.getAnswersByQuestion);

@@ -14,6 +14,7 @@ export class QuestionComponent implements OnInit {
   domandaNascosta: boolean=false;
 
   ngOnInit() {
+    console.log(this.domanda);
 
   }
 
