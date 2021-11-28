@@ -19,7 +19,7 @@ router.post('/changePassword', userController.changePassword);
 router.post('/updateUser', userController.updateUser);
 router.post('/updatePosition', userController.updatePosition);
 router.post('/updatePicture', userController.updatePicture);
-router.post('/provaCrittografia', userController.provaCrittografia);
+
 
 
 module.exports = router

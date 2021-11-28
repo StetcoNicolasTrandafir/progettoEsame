@@ -37,7 +37,17 @@ export class Tab2Page implements OnInit{
       (data)=>{
         console.log(data);
         localStorage.setItem('token',data.token);
-        this.caricaHome();
+        this.http.sendPOSTRequest('/question/getMyCategories',{}).subscribe(
+          (data)=>{
+            console.log(data);
+            this.categorie=data.data;
+            this.caricaHome();
+          },
+          (err)=>{
+            console.log(err);
+          }
+        )
+
       },
       (error)=>{
         console.log(error);
