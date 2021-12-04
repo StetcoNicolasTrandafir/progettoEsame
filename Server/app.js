@@ -4,7 +4,8 @@ const fileupload = require('express-fileupload');
 const app = express()
 const cors=require('cors');
 //puntando a ./routes e non a user.routes viene richiamato il file index.js di default che a sua volta delega la risoluzione delle dichiarazione ai vari sottofiles
-const routes = require('./routes')
+const routes = require('./routes');
+const socketFunctions = require('./socket');
 
 
 const server = require('http').createServer(app);
@@ -35,19 +36,69 @@ app.use("/", function (req, res, next) {
   next();
 });
 
-app.listen(port, () => console.log('Server running on port ' + port));
+usersConnections=[{socketId:123, user:1},{socketId:789, user:11},{socketId:453, user:13}];
+app.listen(port, () => {console.log('Server running on port ' + port); });
+
 userIds = [];
+
 
 io.on('connection', (socket) => {
   console.log("NEW CONNECTION====>", socket.id);
   userIds.push(socket.id);
 
-  socket.on('set-message', (data) => {
-    let id = userIds[data.id];
-    console.log(data.message);
-    socket.to(id).emit('message-changed', data.message);
+  socket.on('message-sent',(data)=>{
+    
+    //gestione del messaggio sul DB 
+    socketFunctions.sendMessage(data.text, data.from, data.to, req, res);
+
+    //controllo se c'è una connessione aperta con l'utente destinatario
+    if(getConnectionID(data.to)==-1){ //se non c'è, invio notifica push
+      console.log("utente NON CONNESSO");
+      //TODO invio notifica push
+      //ANCHOR: le notifiche le inviamo anche se l'utente non è connesso?
+    }else   //se l'utente è connesso, emissione evento per gestire la ricezione del messaggio
+    {
+      console.log("utente CONNESSO");
+      io.to(data.to).emit('message-received', {from:data.from, message: data.message})
+    }
+  });
+
+  socket.on('message-seen',(data)=>{
+    
+    //gestione del messaggio sul DB 
+    socketFunctions.view(data.from, data.to, req, res);
+
+    if(getConnectionID(data.to)==1)   
+    {
+      console.log("utente CONNESSO");
+      io.to(data.to).emit('message-viewed', {message: data.message})
+    }
   })
-})
+
+
+  socket.on('answer-sent',(data)=>{
+    socketFunctions.sendAnswer(data.text, data.question, data.from, req, res);
+
+    if(getConnectionID(data.to)==-1){ //se non c'è, invio notifica push
+      console.log("utente NON CONNESSO");
+      //TODO invio notifica push
+    }else   //se l'utente è connesso, emissione evento per gestire la ricezione del messaggio
+    {
+      console.log("utente CONNESSO");
+      io.to(data.to).emit('answer-received', {from:data.from, message: data.message})
+    }
+  })
+
+});
+
+
+
+function getConnectionID(id){
+  for(let i=0; i<usersConnections.length; i++)
+    if(usersConnections[i].user==id)
+        return i;
+  return -1;
+}
 
 
 module.exports = {
