@@ -44,6 +44,8 @@ userIds = [];
 
 io.on('connection', (socket) => {
   console.log("NEW CONNECTION====>", socket.id);
+  console.log("TOKEN =>",socket.handshake.query.token)
+  console.log("SOCKET INTERO=>",socket)
   userIds.push(socket.id);
 
   socket.on('message-sent',(data)=>{

@@ -27,7 +27,7 @@ export class ChatPage implements OnInit {
 
       this.caricaMessaggi();
     },1000);
-    this.socket.ioSocket.io.opts.query = { token: localStorage.getItem("token") }
+    this.socket.ioSocket.io.opts.query = { token: "CIAO" }
     this.socket.connect();
     //this.caricaMessaggi();
   }
