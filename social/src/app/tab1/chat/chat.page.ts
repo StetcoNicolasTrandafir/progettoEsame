@@ -2,6 +2,7 @@ import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {IonContent, ModalController} from "@ionic/angular";
 import {HttpService} from "../../service/http.service";
 import {Router} from "@angular/router";
+import { Socket } from 'ngx-socket-io';
 //import {setInterval} from "timers";
 
 @Component({
@@ -17,7 +18,7 @@ export class ChatPage implements OnInit {
 
   messages=[];
   testoMessaggio: any;
-  constructor(private modalController:ModalController,private Http:HttpService,private router:Router) { }
+  constructor(private modalController:ModalController,private Http:HttpService,private router:Router,private socket: Socket) { }
 
   ngOnInit() {
     //console.log(this.datoChat);
@@ -26,6 +27,8 @@ export class ChatPage implements OnInit {
 
       this.caricaMessaggi();
     },1000);
+    this.socket.ioSocket.io.opts.query = { token: localStorage.getItem("token") }
+    this.socket.connect();
     //this.caricaMessaggi();
   }
   dismiss() {
@@ -68,6 +71,7 @@ export class ChatPage implements OnInit {
           }
         }
       );
+      this.socket.emit('message-sent', { to:this.datoChat.idUtente, text: this.testoMessaggio, from:localStorage.getItem("token")});
     }
 
   }
