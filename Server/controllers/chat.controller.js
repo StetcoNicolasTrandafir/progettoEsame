@@ -115,10 +115,7 @@ async function controllaToken(req, res) {
     } else {
       let token = req.headers["token"].split(' ')[1];
       //console.log("TOKEN => "+token);
-
-
-      
-      console.log(token + " - " + typeof (token));
+      //console.log(token + " - " + typeof (token));
       if (token != "undefined"&&token!="null") {
 
 

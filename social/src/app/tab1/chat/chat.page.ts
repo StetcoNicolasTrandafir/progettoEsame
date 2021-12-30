@@ -23,18 +23,20 @@ export class ChatPage implements OnInit {
   ngOnInit() {
     //console.log(this.datoChat);
     this.caricaMessaggi();
-    this.interval=setInterval(()=>{
+    /*this.interval=setInterval(()=>{
 
       this.caricaMessaggi();
-    },1000);
-    this.socket.ioSocket.io.opts.query = { token: "CIAO" }
+    },1000);*/
+
+    //this.socket.ioSocket.io.opts.query = { token:localStorage.getItem('token') }
     this.socket.connect();
+
     //this.caricaMessaggi();
   }
   dismiss() {
     // using the injected ModalController this page
     // can "dismiss" itself and optionally pass back data
-    clearInterval(this.interval);
+    //clearInterval(this.interval);
     this.modalController.dismiss({
       'dismissed': true
     });

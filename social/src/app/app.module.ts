@@ -9,7 +9,7 @@ import { AppComponent } from './app.component';
 import {HttpClientModule} from "@angular/common/http";
 import {DatePipe} from "@angular/common";
 
-const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
+const config: SocketIoConfig = { url: 'http://localhost:3000', options: {query:{token: localStorage.getItem('token')}} };
 
 @NgModule({
   declarations: [AppComponent],

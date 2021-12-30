@@ -43,10 +43,14 @@ userIds = [];
 
 
 io.on('connection', (socket) => {
-  console.log("NEW CONNECTION====>", socket.id);
-  console.log("TOKEN =>",socket.handshake.query.token)
-  console.log("SOCKET INTERO=>",socket)
-  userIds.push(socket.id);
+  
+  //console.log("SOCKET INTERO ====>",socket);
+  //console.log("SOCKET.HANDSHAKE ====>",socket.handshake);
+  //console.log("TOKEN.HANDSHAKE.QUERY ====>",socket.handshake.query);
+  console.log("TOKEN ====>",socket.handshake.query.token);
+  console.log("SOCKET ID ====>", socket.id);
+  
+  userIds.push({id:socket.id, token:socket.handshake.query.token});
 
   socket.on('message-sent',(data)=>{
     
@@ -57,7 +61,7 @@ io.on('connection', (socket) => {
     if(getConnectionID(data.to)==-1){ //se non c'è, invio notifica push
       console.log("utente NON CONNESSO");
       //TODO invio notifica push
-      //ANCHOR: le notifiche le inviamo anche se l'utente non è connesso?
+      //ANCHOR: le notifiche le inviamo anche se l'utente non è connesso 
     }else   //se l'utente è connesso, emissione evento per gestire la ricezione del messaggio
     {
       console.log("utente CONNESSO");

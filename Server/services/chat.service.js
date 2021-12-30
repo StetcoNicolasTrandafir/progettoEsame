@@ -64,14 +64,14 @@ const getChats = async  (utente, req, res)=>{
     for await (let chat of result){
         let queryLastMex= "SELECT  testoMessaggio,iv,letto,mittente FROM messaggi WHERE (messaggi.mittente=? AND destinatario=?) OR (messaggi.mittente=? AND destinatario=?) ORDER BY data DESC";
         //let queryLastMex= "SELECT testoMessaggio,iv,letto,mittente, COUNT() FROM messaggi WHERE (messaggi.mittente=? AND destinatario=?) OR (messaggi.mittente=? AND destinatario=?) ORDER BY data DESC LIMIT 1";
-        console.log("RISPOSTA ==> "+chat.idUtenteRisposta);
-        console.log("DOMANDA ==> "+chat.idUtenteDomanda);
+        //console.log("RISPOSTA ==> "+chat.idUtenteRisposta);
+        //console.log("DOMANDA ==> "+chat.idUtenteDomanda);
         let parLastMex=[chat.idUtenteRisposta, chat.idUtenteDomanda,chat.idUtenteDomanda,chat.idUtenteRisposta];
         let resultLastMex = await db.execute(queryLastMex, parLastMex, req, res);
         //console.log("Last mex========>",resultLastMex);
         
         let decriptato=crypto.decrypt({iv:resultLastMex[0].iv,content:resultLastMex[0].testoMessaggio});
-        console.log("DECPRITATO=========>", decriptato);
+        //console.log("DECPRITATO=========>", decriptato);
         chat.lastMex=decriptato;
         chat.letto=resultLastMex[0].letto;
         chat.mittenteMessaggio=resultLastMex[0].mittente;
@@ -93,7 +93,7 @@ const makeMatch = async  (utente, utenteRisposta, username, req, res)=>{
 
     let queryCtrl= "SELECT matchedId FROM matched WHERE (idUtenteDomanda=? AND idUtenteRisposta=?) OR (idUtenteDomanda=? AND idUtenteRisposta=?)";
     const ctrl=await db.execute(queryCtrl, [utente, utenteRisposta,utenteRisposta,utente]);
-    console.log(ctrl);
+    //console.log(ctrl);
     if(ctrl.length==0){
     let queryString = "INSERT INTO matched (idUtenteDomanda, idUtenteRisposta, matched , data) VALUES (?,?, 'T', NOW())";
     let params= [utente, utenteRisposta];
@@ -115,8 +115,8 @@ const makeMatch = async  (utente, utenteRisposta, username, req, res)=>{
 
 const startChat = async  (utenteDomanda, utenteRisposta,domanda, risposta, username, req, res)=>{
     let domandaCriptata= crypto.encrypt(domanda);
-    console.log("DOMANDA====>",domanda);
-    console.log("RISPOSTA====>",risposta);
+    //console.log("DOMANDA====>",domanda);
+    //console.log("RISPOSTA====>",risposta);
     let rispostaCriptata= crypto.encrypt(risposta);
 
     let queryString = "INSERT INTO messaggi(testoMessaggio, data,mittente,destinatario, iv) VALUES (?, NOW(), ?,?,?),(?, (NOW() + INTERVAL 1 SECOND), ?,?,?)";
