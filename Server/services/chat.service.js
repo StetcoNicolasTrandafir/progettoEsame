@@ -119,7 +119,7 @@ const startChat = async  (utenteDomanda, utenteRisposta,domanda, risposta, usern
     //console.log("RISPOSTA====>",risposta);
     let rispostaCriptata= crypto.encrypt(risposta);
 
-    let queryString = "INSERT INTO messaggi(testoMessaggio, data,mittente,destinatario, iv) VALUES (?, NOW(), ?,?,?),(?, (NOW() + INTERVAL 1 SECOND), ?,?,?)";
+    let queryString = "INSERT INTO messaggi(testoMessaggio, data, mittente, destinatario, iv) VALUES (?, NOW(), ?,?,?),(?, (NOW() + INTERVAL 1 SECOND), ?,?,?)";
     let params= [domandaCriptata.content, utenteDomanda, utenteRisposta,domandaCriptata.iv, rispostaCriptata.content, utenteRisposta, utenteDomanda,rispostaCriptata.iv];
     const result = await db.execute(queryString, params, req, res);
 

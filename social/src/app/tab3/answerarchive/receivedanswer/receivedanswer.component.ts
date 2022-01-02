@@ -46,15 +46,17 @@ export class ReceivedanswerComponent implements OnInit {
   inviaMessaggi(){
     this.http.sendPOSTRequest('/chat/startChat',{utenteRisposta:this.risposta.utente,risposta:this.risposta.testoRisposta,domanda:this.risposta.testoDomanda}).subscribe(
       (data)=>{
-        console.log(data);
+        console.log("CHIAMATAAAAAAAAAAAAAAAAA",data);
       },(err)=>{
-        console.log(err);
+        console.log("ERROREEEEE",err);
       }
     )
   }
 
   inserisciMatch(){
-    this.http.sendPOSTRequest('/chat/makeMatch',{utenteRisposta:this.risposta.utente}).subscribe(
+    console.log("UTENTE RISPOSTA======>",this.risposta);
+
+    this.http.sendPOSTRequest('/chat/makeMatch',{utenteRisposta:this.risposta.autoreRisposta}).subscribe(
       (data)=>{
         console.log(data);
       },(err)=>{
