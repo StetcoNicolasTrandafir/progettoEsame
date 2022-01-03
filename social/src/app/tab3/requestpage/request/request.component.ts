@@ -1,5 +1,6 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {HttpService} from "../../../service/http.service";
+import { Component, Input, OnInit } from '@angular/core';
+import { NotificationsService } from 'src/app/service/notifications.service';
+import { HttpService } from "../../../service/http.service";
 
 @Component({
   selector: 'app-request',
@@ -8,57 +9,57 @@ import {HttpService} from "../../../service/http.service";
 })
 export class RequestComponent implements OnInit {
   @Input() richiesta;
-  nascondiDomanda: boolean=false;
+  nascondiDomanda: boolean = false;
 
 
-  constructor(private http:HttpService) { }
+  constructor(private http: HttpService, private notificationService: NotificationsService) { }
 
   ngOnInit() {
 
   }
 
   nega($event: MouseEvent) {
-    this.http.sendPOSTRequest('/question/handleRequest',{risposta:this.richiesta.idRisposta,stato:'R'}).subscribe(
-      (data)=>{
+    this.http.sendPOSTRequest('/question/handleRequest', { risposta: this.richiesta.idRisposta, stato: 'R' }).subscribe(
+      (data) => {
         console.log(data);
         //TODO CANCELLARE RICHIESTA
-        this.http.sendToast('Richiesta rifiutata!');
-        this.nascondiDomanda=true;
-      },(err)=>{
+        this.notificationService.sendToast('Richiesta rifiutata!');
+        this.nascondiDomanda = true;
+      }, (err) => {
         console.log(err);
       }
     )
   }
 
   accetta($event: MouseEvent) {
-    this.http.sendPOSTRequest('/question/handleRequest',{risposta:this.richiesta.idRisposta,stato:'A'}).subscribe(
-      (data)=>{
+    this.http.sendPOSTRequest('/question/handleRequest', { risposta: this.richiesta.idRisposta, stato: 'A' }).subscribe(
+      (data) => {
         console.log(data);
         this.inserisciMatch();
         this.inviaMessaggi();
-        this.nascondiDomanda=true;
-        this.http.sendToast('Richiesta accettata!');
-      },(err)=>{
+        this.nascondiDomanda = true;
+        this.notificationService.sendToast('Richiesta accettata!');
+      }, (err) => {
         console.log(err);
       }
     )
   }
 
-  inviaMessaggi(){
-    this.http.sendPOSTRequest('/chat/startChat',{utenteRisposta:this.richiesta.utente,risposta:this.richiesta.testoRisposta,domanda:this.richiesta.testoDomanda}).subscribe(
-      (data)=>{
+  inviaMessaggi() {
+    this.http.sendPOSTRequest('/chat/startChat', { utenteRisposta: this.richiesta.utente, risposta: this.richiesta.testoRisposta, domanda: this.richiesta.testoDomanda }).subscribe(
+      (data) => {
         console.log(data);
-      },(err)=>{
+      }, (err) => {
         console.log(err);
       }
     )
   }
 
-  inserisciMatch(){
-    this.http.sendPOSTRequest('/chat/makeMatch',{utenteRisposta:this.richiesta.utente}).subscribe(
-      (data)=>{
+  inserisciMatch() {
+    this.http.sendPOSTRequest('/chat/makeMatch', { utenteRisposta: this.richiesta.utente }).subscribe(
+      (data) => {
         console.log(data);
-      },(err)=>{
+      }, (err) => {
         console.log(err);
       }
     )
