@@ -18,5 +18,11 @@ export class AppComponent implements OnInit {
     this.socketService.socketListener("message-received").subscribe((dataSocket) => {
       this.notificationService.sendToast("Hai ricevuto un nuovo messaggio!")
     })
+    this.socketService.socketListener("answer-received").subscribe((dataSocket) => {
+      this.notificationService.sendToast("Hai ricevuto una nuova risposta ad una domanda!")
+    })
+    this.socketService.socketListener("answer-accepted").subscribe((dataSocket) => {
+      this.notificationService.sendToast("Una tua risposta è stata accettata!")
+    })
   }
 }
