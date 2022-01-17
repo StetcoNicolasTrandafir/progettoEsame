@@ -1,7 +1,9 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button color="dark" (click)="goBack()"><ion-icon name="arrow-back-outline"></ion-icon></ion-button>
+      <ion-button color="dark" (click)="goBack()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-button>
     </ion-buttons>
     <ion-title>Profilo</ion-title>
   </ion-toolbar>
@@ -19,11 +21,14 @@
 
         <!--<ion-icon lazy="true" slot="start" name="image"></ion-icon>
         <ion-label slot="end">Profile pic</ion-label>-->
-        <ion-avatar style="margin-left: auto;margin-right: auto;display: block;margin-bottom:10%;width: 40%;height: auto" (click)="f.click()">
-          <ion-img src="http://localhost:1337/img/{{infoUtente.idUtente}}.{{infoUtente.foto}}" ></ion-img>
+        <ion-avatar
+          style="margin-left: auto;margin-right: auto;display: block;margin-bottom:10%;width: 40%;height: auto"
+          (click)="f.click()">
+          <ion-img src="http://localhost:1337/img/{{infoUtente.idUtente}}.{{infoUtente.foto}}"></ion-img>
         </ion-avatar>
 
-        <input class="ion-hide" #f type="file" (change)="onFileChanged($event)" id="file-input" accept="image/png, image/jpeg">
+        <input class="ion-hide" #f type="file" (change)="onFileChanged($event)" id="file-input"
+          accept="image/png, image/jpeg">
 
       </ion-item>
 
@@ -37,7 +42,7 @@
       <ion-card-title class="ion-text-center">Profilo</ion-card-title>
     </ion-card-header>
     <ion-item>
-      <ion-label position="floating" >Username</ion-label>
+      <ion-label position="floating">Username</ion-label>
       <ion-input [(ngModel)]="username"></ion-input>
     </ion-item>
 
@@ -52,7 +57,8 @@
     <ion-item>
       <ion-label>Modifica Blacklist</ion-label>
       <ion-select ok-text="Seleziona" cancel-text="Annulla" multiple [(ngModel)]="selectedCategories">
-        <ion-select-option *ngFor="let item of categorie" value="{{item.idCategoria}}">{{item.nomeCategoria}}</ion-select-option>
+        <ion-select-option *ngFor="let item of categorie" value="{{item.idCategoria}}">{{item.nomeCategoria}}
+        </ion-select-option>
       </ion-select>
     </ion-item>
 
@@ -62,7 +68,7 @@
     <section>
       <ion-button color="primary" (click)="saveInfo()" expand="block">Modifica informazioni</ion-button>
     </section>
-    </ion-card>
+  </ion-card>
   <ion-card>
     <ion-card-header>
       <ion-card-title class="ion-text-center">Posizione</ion-card-title>
@@ -73,7 +79,7 @@
     </section>
   </ion-card>
 
-    <ion-card>
+  <ion-card>
     <ion-card-header>
       <ion-card-title class="ion-text-center">Password</ion-card-title>
     </ion-card-header>
@@ -87,7 +93,7 @@
     </ion-item>
     <ion-item>
       <ion-label position="floating">Conferma Password</ion-label>
-      <ion-input [(ngModel)]="confirmPwd" type= "password"></ion-input>
+      <ion-input [(ngModel)]="confirmPwd" type="password"></ion-input>
     </ion-item>
     <div class="ion-text-center" style="color: red;padding-top:10px;">{{errorePassword}}</div>
     <br>

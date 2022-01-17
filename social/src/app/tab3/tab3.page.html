@@ -32,12 +32,19 @@
 
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-button color="dark" (click)="openMenu()"><ion-icon name="menu-outline"></ion-icon></ion-button>
-    </ion-buttons>
-    <ion-title>
-      {{user.username}}
-    </ion-title>
+    <div style="width: 100%;display: flex;flex-direction: row;">
+      <ion-buttons slot="start" style="width: 33%;">
+        <ion-button color="dark" (click)="openMenu()">
+          <ion-icon name="menu-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+
+      <div style="width: 33%;">
+        <ion-img src="../../assets/images/png/logo.png" style="width:50px; height:50px;margin: auto;"></ion-img>
+      </div>
+
+    </div>
+
   </ion-toolbar>
 </ion-header>
 
@@ -45,9 +52,9 @@
   <div style="padding-top: 10%;padding-right: 10%;padding-left: 10%">
     <ion-router-outlet id="main"></ion-router-outlet>
     <div style="width: 100%">
-    <ion-avatar style="margin-left: auto;margin-right: auto;display: block">
-      <ion-img src="http://localhost:1337/img/{{user.idUtente}}.{{user.foto}}"></ion-img>
-    </ion-avatar>
+      <ion-avatar style="margin-left: auto;margin-right: auto;display: block">
+        <ion-img src="http://localhost:1337/img/{{user.idUtente}}.{{user.foto}}"></ion-img>
+      </ion-avatar>
     </div>
 
     <ion-item lines="full">
@@ -55,10 +62,10 @@
         {{user.nome}} {{user.cognome}}
       </ion-label>
     </ion-item>
-    <div class="ion-text-center ion-margin-top" >
-    <ion-label style="width: 100%" class="ion-text-center">
-      {{user.descrizione}}
-    </ion-label>
+    <div class="ion-text-center ion-margin-top">
+      <ion-label style="width: 100%" class="ion-text-center">
+        {{user.descrizione}}
+      </ion-label>
     </div>
 
   </div>
