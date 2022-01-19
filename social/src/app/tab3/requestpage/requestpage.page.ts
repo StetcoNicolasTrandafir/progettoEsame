@@ -1,7 +1,8 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
-import {HttpService} from "../../service/http.service";
-import {ModalController} from "@ionic/angular";
+import { Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from "@angular/router";
+import { HttpService } from "../../service/http.service";
+import { ModalController } from "@ionic/angular";
+import { SocketService } from 'src/app/service/socket.service';
 
 @Component({
   selector: 'app-requestpage',
@@ -10,28 +11,37 @@ import {ModalController} from "@ionic/angular";
 })
 export class RequestpagePage implements OnInit {
   @Input() domanda;
-  richieste=[];
-  nessunaRisposta: boolean=false;
+  richieste = [];
+  nessunaRisposta: boolean = false;
 
-  constructor(private router:Router,private http:HttpService,private modalController:ModalController) {
+  constructor(private socketService: SocketService, private router: Router, private http: HttpService, private modalController: ModalController) {
   }
 
   ngOnInit() {
-    console.log(this.domanda);
-    this.http.sendPOSTRequest('/question/getAnswersByQuestion',{stato:'S',domanda:this.domanda.myquestion}).subscribe(
-      (data)=>{
+
+    this.caricaRisposte();
+
+    this.socketService.socketListener("answer-received").subscribe((dataSocket) => {
+      console.log("dataSocket => ", dataSocket)
+      this.caricaRisposte();
+    })
+  }
+
+  caricaRisposte(): void {
+    this.http.sendPOSTRequest('/question/getAnswersByQuestion', { stato: 'S', domanda: this.domanda.myquestion }).subscribe(
+      (data) => {
         console.log(data);
-        this.richieste=data.data;
-        if(this.richieste.length==0){
+        this.richieste = data.data;
+        if (this.richieste.length == 0) {
           //this.label="Non hai nessuna risposta per questa domanda!";
-          this.nessunaRisposta=true;
-        }else{
-          this.nessunaRisposta=false;
+          this.nessunaRisposta = true;
+        } else {
+          this.nessunaRisposta = false;
         }
       },
-      (err)=>{
+      (err) => {
         console.log(err);
-        if(err.status==603||err.status==604){
+        if (err.status == 603 || err.status == 604) {
           this.router.navigateByUrl('login');
         }
       }
