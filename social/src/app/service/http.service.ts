@@ -8,8 +8,8 @@ import {ToastController} from "@ionic/angular";
 export class HttpService {
 
   //private URL_SERVICE="http://192.168.107.112:1337";
-  private URL_SERVICE="http://localhost:1337";
-  //private URL_SERVICE="http://192.168.219.112:1337";
+  // private URL_SERVICE = "http://localhost:1337";
+  private URL_SERVICE = "http://192.168.1.36:1337";
 
   constructor(private http: HttpClient,private toastController:ToastController) { }
   public sendPOSTRequest(endPoint: string,datiBody):any{
