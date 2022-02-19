@@ -1,34 +1,48 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
+
+  <ion-toolbar style="padding-top: 3%;">
+    <!-- <ion-buttons slot="start">
       <ion-button color="dark" (click)="goBack()">
         <ion-icon name="arrow-back-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title>Login</ion-title>
+    <ion-title>Login</ion-title> -->
+    <div style="width: 100%;display: flex;flex-direction: row;">
+      <ion-buttons slot="start" style="width: 33%;">
+        <ion-button color="dark" (click)="goBack()">
+          <ion-icon name="arrow-back-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+
+      <div style="width: 33%;">
+        <ion-img src="../../assets/images/png/logo.png" style="width:50px; height:50px;margin: auto;"></ion-img>
+      </div>
+
+    </div>
   </ion-toolbar>
-</ion-header>
 
-<ion-content>
-  <ion-card>
-    <ion-card-header>
 
-      <ion-card-title class="ion-text-center">Login</ion-card-title>
-    </ion-card-header>
-    <ion-item>
-      <ion-label position="floating" >Username/E-mail</ion-label>
-      <ion-input [(ngModel)]="user"></ion-input>
+<ion-content >
+<div style="height: 95%; padding: 7%;padding-top: 15%; " >
+  <h1 style="text-align: center; color:#4D7493;font-family: 'couture-bld'">LOGIN</h1>
+    <ion-item style="margin-top: 5%;">
+      <ion-label position="floating" style="color:#4D7493; font-weight: bold;" >Username/E-mail</ion-label>
+      <ion-input color="warning" [(ngModel)]="user"></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label position="floating">Password</ion-label>
-      <ion-input type="password" [(ngModel)]="password"></ion-input>
+      <ion-label style="color:#4D7493; font-weight: bold;" position="floating">Password</ion-label>
+      <ion-input color="warning"  type="password" [(ngModel)]="password"></ion-input>
     </ion-item>
     <div class="ion-text-center" style="color: red;padding-top:10px;">{{errore}}</div>
     <br>
 
-    <section>
-      <ion-button color="primary" (click)="login()" expand="block">Login</ion-button>
-      <ion-button color="primary" (click)="signup()" fill="outline" expand="block">Signup</ion-button>
-    </section>
-  </ion-card>
+      <div style="text-align: center; height: 7%;">
+        <button color="primary" (click)="login()" class="myBtn">ACCEDI</button>
+      </div>
+      <div style="text-align: center;position: absolute; bottom: 3%; width: 100%;">
+        <h5 style="font-family: 'couture-bld'; text-align: center; color:#4D7493; font-weight: bold; ">ULTRALOOK</h5>
+      </div>
+</div>
 </ion-content>
+
+
+
