@@ -116,6 +116,11 @@ export class SignupPage implements OnInit {
     this.router.navigateByUrl('login');
   }
 
+  goBack(){
+    this.router.navigateByUrl('intro');
+  }
+
+
   async getPosition(){
     const coordinates = await Geolocation.getCurrentPosition();
     console.log(coordinates);

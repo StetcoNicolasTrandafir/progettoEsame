@@ -46,6 +46,11 @@ export class LoginPage implements OnInit {
     }
   }
 
+
+  goBack(){
+    this.router.navigateByUrl('intro');
+  }
+
   signup() {
     this.router.navigateByUrl('signup');
   }

@@ -1,0 +1,32 @@
+.box:hover{
+  // background:lightcoral;
+  // box-shadow:
+  //   0 -5px 0 lightcoral inset,
+  //   0 -7px 0 black inset;
+  // text-shadow: 2px 2px red;
+}
+// .box:after {
+//   content: '';
+//   background: transparent;
+//   border: 1px solid red;
+//   top: 7px;
+//   right: 7px;
+//   z-index: -1;
+//   width: 100%;
+//   height: 100%;
+// }
+
+.border{
+  border: solid 3px black;
+  position: absolute;
+  top: -5px;
+  right:-5px;
+  height: 100%;
+  width: 100%;
+}
+
+.container{
+  position: relative;
+}
+
+

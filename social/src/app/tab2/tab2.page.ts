@@ -43,7 +43,7 @@ export class Tab2Page implements OnInit{
         console.log(error);
         //alert(error.status);
         if(error.status==604||error.status==603){
-          this.router.navigateByUrl('login');
+          this.router.navigateByUrl('intro');
         }
       }
     )
