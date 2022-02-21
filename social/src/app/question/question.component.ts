@@ -29,6 +29,7 @@ export class QuestionComponent implements OnInit {
         'colore':this.domanda.colore
       }
     });
+
     modal.onDidDismiss().then((data:any)=>{
       //alert(data.data.d);
       this.domandaNascosta=data.data.d;
