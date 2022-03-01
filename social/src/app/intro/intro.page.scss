@@ -16,12 +16,30 @@
 //   height: 100%;
 // }
 
+@font-face {
+  font-family: 'couture-bld';
+  src: url('../FONT/FONT_TITOLI/couture-bld.ttf') format('truetype');;
+}
+
+@font-face {
+  font-family: 'DINPro-Black';
+  src: url('../FONT/FONT_TESTI/DINPro-Black.ttf') format('truetype');;
+}
+
+.titolo{
+  font-family:'couture-bld';
+  text-align: center;
+  color:#4D7493;
+}
+
 .myBtn{
   background-color: #4D7493;
   width: 50%;
   border-radius: 25px;
   color: white;
   height: 100%;
+  font-family: 'DINPro-Black';
+  font-size: large;
 }
 
 .border{
