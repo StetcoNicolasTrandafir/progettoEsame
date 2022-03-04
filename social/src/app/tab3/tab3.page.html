@@ -39,10 +39,11 @@
         </ion-button>
       </ion-buttons>
 
+
+      <!-- foto profilo -->
       <div style="width: 33%;">
         <ion-img src="../../assets/images/png/logo.png" style="width:50px; height:50px;margin: auto;"></ion-img>
       </div>
-
     </div>
 
   </ion-toolbar>
@@ -51,12 +52,16 @@
 <ion-content>
   <div style="padding-top: 10%;padding-right: 10%;padding-left: 10%">
     <ion-router-outlet id="main"></ion-router-outlet>
+
+    <!-- foto profilo -->
     <div style="width: 100%">
       <ion-avatar style="margin-left: auto;margin-right: auto;display: block">
         <ion-img src="http://localhost:1337/img/{{user.idUtente}}.{{user.foto}}"></ion-img>
       </ion-avatar>
     </div>
 
+
+    <!-- bio -->
     <ion-item lines="full">
       <ion-label class="ion-text-center">
         {{user.nome}} {{user.cognome}}
@@ -67,9 +72,9 @@
         {{user.descrizione}}
       </ion-label>
     </div>
-
   </div>
 
+  <!-- inserimento domanda  -->
   <div>
     <ion-card style="background-color:lightgray;color: white">
       <ion-card-content>
@@ -77,6 +82,7 @@
       </ion-card-content>
     </ion-card>
 
+    <!-- le mie domanda -->
     <app-myquestion *ngFor="let item of myQuestions" [myQuestion]="item"></app-myquestion>
   </div>
 
