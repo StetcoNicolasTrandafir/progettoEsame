@@ -6,10 +6,10 @@
       <ion-card style="position: relative; border-radius:15%; background-color:{{domanda.colore}}" color="black"
         [hidden]="domandaNascosta">
         <ion-card-header>
-          <ion-card-subtitle>{{domanda.username}}</ion-card-subtitle>
+          <ion-card-subtitle class="lblUsername">{{domanda.username}}</ion-card-subtitle>
         </ion-card-header>
 
-        <ion-card-content>
+        <ion-card-content class="questionContent">
           {{domanda.testoDomanda}}
           <br />
         </ion-card-content>
@@ -24,7 +24,6 @@
   <div style=" height: 25%;  width: 50%; position: absolute; bottom: -10%;margin-left: 25%;">
     <button  class="myBtn"  (click)="rispondi($event)" >RISPONDI</button>
   </div>
-
 
   <!-- <div class="divBottone">
     <ion-button style="width: 50%;--border-radius	: 30px;" color="light" size="small" (click)="rispondi($event)"

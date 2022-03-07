@@ -9,17 +9,23 @@
           <ion-icon (click)="arhiviaDomanda()" style="float: right" name="trash-bin-outline"></ion-icon>
         </ion-card-header>
 
-        <ion-card-content>
+        <ion-card-content class="questionContent">
           {{myQuestion.testoDomanda}}
           <br />
         </ion-card-content>
       </ion-card>
     </div>
   </div>
-  <div class="divBottone">
-    <ion-button style="width: 50%;--border-radius	: 30px;" color="light" size="small" (click)="visualizzaRisposte(myQuestion.id)"
-      expand="block"><span style="color: {{myQuestion.colore}}">Rispondi</span></ion-button>
+
+  <div style=" height: 25%;  width: 50%; position: absolute; bottom: -10%;margin-left: 25%;">
+    <button  class="myBtn"  (click)="visualizzaRisposte(myQuestion.id)" >RISPOSTE</button>
   </div>
+
+
+  <!-- <div class="divBottone">
+    <ion-button style="width: 50%;--border-radius	: 30px;" color="light" size="small" (click)="visualizzaRisposte(myQuestion.id)"
+      expand="block"><span style="color: white">VISUALIZZA RISPOSTE</span></ion-button>
+  </div> -->
 </div>
 
 

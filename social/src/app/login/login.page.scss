@@ -3,13 +3,22 @@
   src: url('../FONT/FONT_TESTI/DINPro-Black.ttf') format('truetype');;
 }
 
+@font-face {
+  font-family: 'DINPro-Medium';
+  src: url('../FONT/FONT_TESTI/DINPro-Medium.ttf') format('truetype');;
+}
+
+
+.lblInput{
+  color:#4D7493; font-weight: bold; font-family: "DINPro-Medium";
+}
 .myBtn{
   background-color: #4D7493;
   width:100%;
   border-radius: 25px;
   color: white;
   height: 100%;
-  font-family: 'DINPro-Black';
+  font-family: 'couture-bld';
   font-size: large;
 }
 
@@ -17,9 +26,6 @@
   font-family: 'couture-bld';
   src: url('../FONT/FONT_TITOLI/couture-bld.ttf') format('truetype');;
 }
-
-
-
 
 
 ion-input{

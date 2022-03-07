@@ -1,3 +1,10 @@
+<div style="position: relative;">
+  <div style="position: relative;margin-bottom: 30px;">
+    <div class="bordo">
+    </div>
+    <div>
+
+
 <ion-card style="border-radius:15%;background-color:{{risposta.colore}}" color="black">
   <ion-card-header>
     <ion-card-subtitle >{{risposta.usernameRisposta}}</ion-card-subtitle>
@@ -15,10 +22,14 @@
         <ion-button slot="start" color="danger"  (click)="nega($event)" >Nega</ion-button>
         <ion-button slot="start" color="success" (click)="accetta($event)">Accetta</ion-button>
       </div>
-      <ion-chip *ngIf="risposta.stato!='S'" outline style="background-color: white;color: {{risposta.colore}}">
-        <ion-label *ngIf="risposta.stato=='R'">Rifiutata</ion-label>
-        <ion-label *ngIf="risposta.stato=='A'">Accettata</ion-label>
+      <ion-chip *ngIf="risposta.stato!='S'" outline class="myBtn">
+        <ion-label *ngIf="risposta.stato=='R'" style="color: red;">Rifiutata</ion-label>
+        <ion-label *ngIf="risposta.stato=='A'" style="color: green;">Accettata</ion-label>
       </ion-chip>
     </div>
   </ion-card-content>
 </ion-card>
+
+    </div>
+  </div>
+

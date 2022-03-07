@@ -14,7 +14,7 @@ export class QuestionComponent implements OnInit {
 
   ngOnInit() {}
 
-  async arhiviaDomanda() {
+  async riprisintaDomanda() {
     const alert = await this.alertController.create({
       cssClass: '',
       header: 'Pubblica Domanda',

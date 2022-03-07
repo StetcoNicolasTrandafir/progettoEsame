@@ -6,11 +6,26 @@
   position: absolute;z-index: 20; bottom:-20px; width: 100%;display: flex;align-items: center;justify-content: center;
  }
 
- .myBtn{
+
+ .questionContent{
+  font-family: 'DINPro-Regular';
+}
+
+.myBtn{
   background-color: #4D7493;
-  width: 50%;
+  width: 100%;
   border-radius: 25px;
   color: white;
   height: 100%;
+  font-family: 'couture-bld';
+  font-size: small;
 }
+
+//  .myBtn{
+//   background-color: #4D7493;
+//   width: 50%;
+//   border-radius: 25px;
+//   color: white;
+//   height: 100%;
+// }
 

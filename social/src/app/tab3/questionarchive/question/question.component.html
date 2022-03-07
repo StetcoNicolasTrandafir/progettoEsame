@@ -1,9 +1,28 @@
-<ion-card style="border-radius:10%;background-color:{{domanda.colore}}" color="black" [hidden]="nascondiDomanda">
+<div style="position: relative;">
+  <div style="position: relative;margin-bottom: 30px;">
+    <div class="bordo">
+    </div>
+    <div>
+      <ion-card style="border-radius:10%;background-color:{{domanda.colore}}"  color="black" [hidden]="nascondiDomanda">
+        <ion-card-header>
+          <ion-icon (click)="riprisintaDomanda()" style="float: right" name="push-outline"></ion-icon>
+        </ion-card-header>
+
+        <ion-card-content class="questionContent">
+          {{domanda.testoDomanda}}
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+
+
+
+<!-- <ion-card style="border-radius:10%;background-color:{{domanda.colore}}"  color="black" [hidden]="nascondiDomanda">
   <ion-card-header>
     <ion-icon (click)="arhiviaDomanda()" style="float: right" name="push-outline"></ion-icon>
   </ion-card-header>
 
-  <ion-card-content>
+  <ion-card-content class="questionContent">
     {{domanda.testoDomanda}}
   </ion-card-content>
-</ion-card>
+</ion-card> -->
