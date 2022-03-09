@@ -12,15 +12,17 @@ import {Router} from "@angular/router";
 export class ChatPage implements OnInit {
   @Input() datoChat;
   interval;
+  mostraAvatar: boolean=false;
   scroll=true;
   @ViewChild(IonContent) content: IonContent;
+
 
   messages=[];
   testoMessaggio: any;
   constructor(private modalController:ModalController,private Http:HttpService,private router:Router) { }
 
   ngOnInit() {
-    //console.log(this.datoChat);
+    // console.log("DAT CHAT==============>",this.datoChat);
     this.caricaMessaggi();
     this.interval=setInterval(()=>{
 

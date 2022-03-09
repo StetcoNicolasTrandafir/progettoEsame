@@ -5,8 +5,8 @@
   </ion-avatar>
   <ion-label>
     <ion-badge *ngIf="singleChat.numeroMessaggi!=0" style="float: right;" color="primary">{{singleChat.numeroMessaggi}}</ion-badge>
-    <h3 [ngStyle]="(singleChat.letto=='F'&&singleChat.mittenteMessaggio==singleChat.idUtente)?{'font-weight':'bold','color':'#0275d8'}:{}">{{singleChat.username}}</h3>
-    <p [ngStyle]="(singleChat.letto=='F'&&singleChat.mittenteMessaggio==singleChat.idUtente)?{'font-weight':'bold','color':'#0275d8'}:{'color': 'black'}">{{singleChat.lastMex}}</p>
+    <h3 [ngStyle]="(singleChat.letto=='F'&&singleChat.mittenteMessaggio==singleChat.idUtente)?{'font-weight':'bold','color':'#0275d8','font-family': 'couture-bldit'}:{'font-family': 'couture-bld'}">{{singleChat.username}}</h3>
+    <p [ngStyle]="(singleChat.letto=='F'&&singleChat.mittenteMessaggio==singleChat.idUtente)?{'font-weight':'bold','color':'#0275d8','font-family': 'DINPro-BoldItalic'}:{'color': 'black', 'font-family': 'DINPro-Regular'}">{{singleChat.lastMex}}</p>
 
   </ion-label>
 </ion-item>
