@@ -24,10 +24,10 @@ export class ChatPage implements OnInit {
   ngOnInit() {
     // console.log("DAT CHAT==============>",this.datoChat);
     this.caricaMessaggi();
-    this.interval=setInterval(()=>{
+    // this.interval=setInterval(()=>{
 
-      this.caricaMessaggi();
-    },1000);
+    //   this.caricaMessaggi();
+    // },1000);
     //this.caricaMessaggi();
   }
   dismiss() {

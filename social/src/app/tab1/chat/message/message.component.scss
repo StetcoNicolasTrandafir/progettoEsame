@@ -1,72 +1,98 @@
 @font-face {
   font-family: 'DINPro-Regular';
-  src: url('../../../FONT/FONT_TESTI/DINPro-Regular.ttf') format('truetype');;
+  src: url('../../../FONT/FONT_TESTI/DINPro-Regular.ttf') format('truetype');
 }
 
-      //   .bubble {
-      //     font-size: 16px;
-      //     position: relative;
-      //     display: inline-block;
-      //     clear: both;
-      //     margin-bottom: 4px;
-      //     margin-top: 3px;
-      //     padding: 13px 14px;
-      //     vertical-align: top;
-      //     border-radius: 5px;
-      //     &:before {
-      //         position: absolute;
-      //         top: 19px;
-      //         display: block;
-      //         width: 8px;
-      //         height: 6px;
-      //         content: '\00a0';
-      //         transform: rotate(29deg) skew(-35deg);
-      //     }
-      //     &.altro {
-      //         float: left;
-      //         color: var(--white);
-      //         background-color: #F2DC42;
-      //         align-self: flex-start;
-      //         animation-name: slideFromLeft;
-      //         &:before {
-      //             left: -3px;
-      //             background-color: #F2DC42;
-      //         }
-      //     }
-      //     &.me {
-      //         float: right;
-      //         color: var(--dark);
-      //         background-color: #4D7493;
-      //         align-self: flex-end;
-      //         animation-name: slideFromRight;
-      //         &:before {
-      //             right: -3px;
-      //             background-color: #4D7493;;
-      //         }
-      //     }
-      // }
+@font-face {
+  font-family: 'DINPro-Light';
+  src: url('../../../FONT/FONT_TESTI/DINPro-Light.ttf') format('truetype');
+}
+
+.container{
+  display: block;
+}
+
+.container::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.messaggio {
+  font-family: 'DINPro-Regular';
+  width: fit-content;
+  padding: 10px 13px;
+  margin: 3px 4px;
+  position: relative;
+}
+
+.hour{
+  position: absolute;
+  right: 7px;
+  bottom: 2px;
+  font-size: xx-small;
+  font-family: 'DINPro-Light';
+}
+
+.me {
+  text-align: right;
+  background-color: #4D7493;
+  border-radius: 16px 0px 16px 16px;
+  float: right;
+}
 
 
-      .messaggio{
-        font-family: 'DINPro-Regular';
-        width:fit-content;
-        padding: 10px 13px;
-        margin: 3px 4px;
-      }
 
-      .me {
-        text-align: right;
-        background-color: #4D7493;
-        border-radius: 16px 16px 0 16px;
+.altro {
+  font-family: 'DINPro-Regular';
+  width: fit-content;
+  background-color: #F2DC42;
+  border-radius:0px 16px 16px 16px ;
+  float: left;
+}
 
-      }
-
-      .altro {
-        font-family: 'DINPro-Regular';
-        width:fit-content;
-        background-color: #F2DC42;
-        border-radius: 16px 16px 16px 0;
-      }
+//   .bubble {
+//     font-size: 16px;
+//     position: relative;
+//     display: inline-block;
+//     clear: both;
+//     margin-bottom: 4px;
+//     margin-top: 3px;
+//     padding: 13px 14px;
+//     vertical-align: top;
+//     border-radius: 5px;
+//     &:before {
+//         position: absolute;
+//         top: 19px;
+//         display: block;
+//         width: 8px;
+//         height: 6px;
+//         content: '\00a0';
+//         transform: rotate(29deg) skew(-35deg);
+//     }
+//     &.altro {
+//         float: left;
+//         color: var(--white);
+//         background-color: #F2DC42;
+//         align-self: flex-start;
+//         animation-name: slideFromLeft;
+//         &:before {
+//             left: -3px;
+//             background-color: #F2DC42;
+//         }
+//     }
+//     &.me {
+//         float: right;
+//         color: var(--dark);
+//         background-color: #4D7493;
+//         align-self: flex-end;
+//         animation-name: slideFromRight;
+//         &:before {
+//             right: -3px;
+//             background-color: #4D7493;;
+//         }
+//     }
+// }
 
 
 // .me{
@@ -96,4 +122,3 @@
 //   border-bottom-left-radius: 10px;
 //   border-top-right-radius: 10px;
 // }
-

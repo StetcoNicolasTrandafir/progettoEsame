@@ -13,8 +13,8 @@
 
 <ion-content style="position: relative;">
   <div  style="height: 100%" >
-  <div style="height: 85%; " >
-  <app-message style="display: flex;" *ngFor="let item of messages" [messaggio]="item" [idChat]="this.datoChat.idUtente"></app-message>
+  <div style="height: 85%; display: block;" >
+  <app-message  *ngFor="let item of messages" [messaggio]="item" [idChat]="this.datoChat.idUtente"></app-message>
     <div style="height: 17%"></div>
   </div>
 
