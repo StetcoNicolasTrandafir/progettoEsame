@@ -10,24 +10,26 @@ export class CategoryComponent implements OnInit {
 
   @Input() category;
   constructor() { }
-  selected:boolean;
-  bubble:string="BALOON_VUOTO";
-  visible:boolean=false;
+  bubble: string = "BALOON_VUOTO";
+  visible: boolean = false;
 
-  toggleSelection(){
-    this.selected=!this.selected
-    if(this.selected)
-      this.bubble="BALOON_PIENO";
-      else
-        this.bubble="BALOON_VUOTO";
+  toggleSelection() {
+    this.category.isSelected = !this.category.isSelected
+    if (this.category.isSelected)
+      this.bubble = "BALOON_PIENO";
+    else
+      this.bubble = "BALOON_VUOTO";
   }
 
-  toggleCollapse(){
+  toggleCollapse() {
     console.log(this.visible)
-    this.visible=!this.visible;
+    this.visible = !this.visible;
   }
   ngOnInit() {
-    console.log("CATEGORIA====>",this.category);
+    if (this.category.isSelected)
+      this.bubble = "BALOON_PIENO";
+    else
+      this.bubble = "BALOON_VUOTO";
   }
 
 }

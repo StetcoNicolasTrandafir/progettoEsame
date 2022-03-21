@@ -2,7 +2,9 @@
   <ion-toolbar>
     <ion-title class="title">Filter categories</ion-title>
     <ion-buttons slot="start">
-      <ion-button color="dark" (click)="dismiss()"><ion-icon name="arrow-back-outline"></ion-icon></ion-button>
+      <ion-button color="dark" (click)="dismiss()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-button>
     </ion-buttons>
 
 
@@ -10,5 +12,5 @@
 </ion-header>
 
 <ion-content>
-  <app-category *ngFor="let categoria of categorie" [category]="categoria"></app-category>
+  <app-category *ngFor="let categoria of categorie;let i = index" [(category)]="categorie[i]"> </app-category>
 </ion-content>

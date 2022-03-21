@@ -1,6 +1,6 @@
-import { Component, OnInit,Input } from '@angular/core';
-import {ModalController} from "@ionic/angular";
-import {HttpService} from "../../service/http.service";
+import { Component, OnInit, Input } from '@angular/core';
+import { ModalController } from "@ionic/angular";
+import { HttpService } from "../../service/http.service";
 
 
 
@@ -11,33 +11,20 @@ import {HttpService} from "../../service/http.service";
 })
 export class ModalFilterCategoriesPage implements OnInit {
 
-  @Input() selectedCategories;
-  categoryArray:any=[];
-  categorie:any=[];
+  @Input() categorie;
 
-  constructor(private modalController: ModalController, private http:HttpService) { }
+
+  constructor(private modalController: ModalController, private http: HttpService) { }
+
   dismiss() {
 
     //this.selectedCategories=this.selectedCategories.split(',');
     //console.log(this.selectedCategories);
 
-    this.modalController.dismiss({
-      'categories': this.selectedCategories
-    });
+    this.modalController.dismiss({ categorie: this.categorie });
   }
-  ngOnInit() {
-    // console.log("MY CATEGORIES",this.selectedCategories);
-    // this.categoryArray=this.selectedCategories.split(",");
-    // console.log(this.categoryArray);
 
-    this.http.sendPOSTRequest('/question/getMyCategories',{}).subscribe(
-      (data)=>{
-        console.log(data);
-        this.categorie=data.data;
-      },
-      (err)=>{
-        console.log(err);
-      }
-    )
+  ngOnInit() {
+
   }
 }
