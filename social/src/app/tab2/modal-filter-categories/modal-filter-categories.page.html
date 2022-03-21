@@ -1,0 +1,14 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title class="title">Filter categories</ion-title>
+    <ion-buttons slot="start">
+      <ion-button color="dark" (click)="dismiss()"><ion-icon name="arrow-back-outline"></ion-icon></ion-button>
+    </ion-buttons>
+
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <app-category *ngFor="let categoria of categorie" [category]="categoria"></app-category>
+</ion-content>

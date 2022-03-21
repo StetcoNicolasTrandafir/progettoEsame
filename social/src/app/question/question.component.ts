@@ -32,7 +32,7 @@ export class QuestionComponent implements OnInit {
 
     modal.onDidDismiss().then((data:any)=>{
       //alert(data.data.d);
-      this.domandaNascosta=data.data.d;
+      this.domandaNascosta=data.data.categories;
     })
     return await modal.present();
   }

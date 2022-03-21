@@ -10,7 +10,11 @@ const routes: Routes = [
   {
     path: 'modal-answer',
     loadChildren: () => import('./modal-answer/modal-answer.module').then( m => m.ModalAnswerPageModule)
+  },  {
+    path: 'modal-filter-categories',
+    loadChildren: () => import('./modal-filter-categories/modal-filter-categories.module').then( m => m.ModalFilterCategoriesPageModule)
   }
+
 ];
 
 @NgModule({

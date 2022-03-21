@@ -1,0 +1,27 @@
+.categoryClass{
+  width: 80%;
+  display: inline;
+  text-align:center;
+  border-radius: 30px;
+  font-family: 'couture-bld';
+  font-size: large;
+  padding-top: 13px;
+}
+
+.info{
+  font-family: 'DINPro-Medium';
+  color: black;
+  font-size: smaller;
+  display: flex;
+}
+
+
+@font-face {
+  font-family: 'DINPro-Medium';
+  src: url('../../../FONT/FONT_TESTI/DINPro-Medium.ttf') format('truetype');;
+}
+
+@font-face {
+  font-family: 'couture-bld';
+  src: url('../../../FONT/FONT_TITOLI/couture-bld.ttf') format('truetype');;
+}

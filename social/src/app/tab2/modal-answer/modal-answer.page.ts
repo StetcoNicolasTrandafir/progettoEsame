@@ -16,6 +16,7 @@ export class ModalAnswerPage implements OnInit {
   @Input() idDomanda;
   @Input() colore;
   testoRisposta: any;
+
   d=false;
 
   constructor(private modalController:ModalController,private http:HttpService,private toastController:ToastController,private router:Router) { }

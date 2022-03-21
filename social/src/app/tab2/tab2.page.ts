@@ -1,4 +1,6 @@
 import {Component, OnInit} from '@angular/core';
+import { ModalFilterCategoriesPage } from './modal-filter-categories/modal-filter-categories.page';
+import {ModalController} from "@ionic/angular";
 import {HttpService} from "../service/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
 
@@ -11,8 +13,9 @@ export class Tab2Page implements OnInit{
   domande: any=[];
   categorie: any=[];
   selectedCategories: any;
+  categoryString:string="";
 
-  constructor(private http:HttpService,private router:Router,private route:ActivatedRoute) {
+  constructor(private http:HttpService,private router:Router,private route:ActivatedRoute, private modalController: ModalController) {
     route.params.subscribe(val => {
       console.log("TOKEN => "+localStorage.getItem('token'));
       this.controlloToken();
@@ -20,10 +23,11 @@ export class Tab2Page implements OnInit{
   }
 
   ngOnInit(): void {
+    this.selectedCategories="";
     //this.controlloToken();
     this.http.sendPOSTRequest('/question/getMyCategories',{}).subscribe(
       (data)=>{
-        console.log(data);
+        //console.log(data);
         this.categorie=data.data;
       },
       (err)=>{
@@ -32,10 +36,30 @@ export class Tab2Page implements OnInit{
     )
   }
 
+
+  async openFilter() {
+
+    // this.selectedCategories.forEach(category => {
+    //   this.categoryString+=","+category;
+    // });
+    const modal = await this.modalController.create({
+      component: ModalFilterCategoriesPage,
+      cssClass: '',
+      componentProps: {
+          myCategories: this.categoryString
+      }
+    });
+
+    modal.onDidDismiss().then((data:any)=>{
+      this.selectedCategories=data.data.categories;
+    })
+    return await modal.present();
+  }
+
   private controlloToken(){
     this.http.sendPOSTRequest("/user/controlloToken",{}).subscribe(
       (data)=>{
-        console.log(data);
+        //console.log(data);
         localStorage.setItem('token',data.token);
         this.caricaHome();
       },
@@ -52,7 +76,7 @@ export class Tab2Page implements OnInit{
   private caricaHome(){
     this.http.sendPOSTRequest("/question/getQuestions",{}).subscribe(
       (data)=>{
-        console.log(data.data);
+        //console.log(data.data);
         this.domande=data.data;
       },(error)=>{
         console.log(error);
@@ -65,10 +89,11 @@ export class Tab2Page implements OnInit{
 
   caricaDomandePerCategorie() {
     if(this.selectedCategories.length>0){
-      console.log(this.selectedCategories);
+      //console.log(this.selectedCategories);
+
       this.http.sendPOSTRequest("/question/getQuestionsByCategories",{categorie:this.selectedCategories}).subscribe(
         (data)=>{
-          console.log(data.data);
+          //console.log(data.data);
           this.domande=data.data;
         },(error)=>{
           console.log(error);

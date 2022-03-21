@@ -1,0 +1,25 @@
+<div style="display: flex; margin-top:5% ;">
+
+  <ion-img src="../../assets/images/png/{{bubble}}.png" (click)="toggleSelection()"
+    style="width: 15%; height: 50px; display: inline; margin-left: 5px;"></ion-img>
+
+  <div class="categoryClass" (click)="toggleCollapse()" style="background-color: {{category.colore}};">
+
+    <!-- <ion-img src="../../assets/images/png/{{category.icona}}.png" style="height: 35px; width: 35px; margin-left: 10px; margin-top: 5px;"></ion-img> -->
+    <p style="width: 85%; display: inline; color: white ;">{{category.nomeCategoria}}</p>
+
+    <div *ngIf="visible" class="info">
+
+      <!-- <div style="display: inline; width: 30%;">
+        <ion-img style="width: 20px;display: inline;z-index: 5;" src="../../assets/images/png/{{category.icona}}.png">
+        </ion-img>
+      </div> -->
+
+      <div style="display: inline;width: 100%; padding: 15px;">
+        {{category.descrizione}}
+      </div>
+
+    </div>
+
+  </div>
+</div>

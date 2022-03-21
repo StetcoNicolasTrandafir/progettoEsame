@@ -291,11 +291,13 @@ const login = async (mail, password, req, res) => {
     else
         queryString = "SELECT * FROM utenti WHERE username=?";
 
+    
+
     const result = await db.execute(queryString, [mail], req, res);
     if (result.length > 0) {
 
         const comp = await bcrypt.compare(password, result[0].password);
-
+        
         if (comp) {
             let token = createToken({
                 "_id": result[0].idUtente,
