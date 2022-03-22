@@ -21,8 +21,8 @@
     <button class="myBtn" (click)="visualizzaRisposte(myQuestion.id)">
       <div style="display:flex;align-items:center;justify-content:center;width:100%;height: 20;">
         RISPOSTE
-        <ion-badge style="margin-left:5px;background-color: {{myQuestion.colore}}">
-          {{myQuestion.numeroRisposte||3}}
+        <ion-badge style="margin-left:5px;background-color: {{myQuestion.colore}}" *ngIf="myQuestion.numeroRisposte!=0">
+          {{myQuestion.numeroRisposte}}
         </ion-badge>
       </div>
 

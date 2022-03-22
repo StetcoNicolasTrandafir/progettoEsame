@@ -19,12 +19,12 @@
     <br/>
     <div class="ion-text-center">
       <div *ngIf="risposta.stato=='S'">
-        <ion-button slot="start" color="danger"  (click)="nega($event)" >Nega</ion-button>
-        <ion-button slot="start" color="success" (click)="accetta($event)">Accetta</ion-button>
+        <ion-button slot="start" color="danger"  (click)="nega($event)" >Refuse</ion-button>
+        <ion-button slot="start" color="success" (click)="accetta($event)">Accept</ion-button>
       </div>
       <ion-chip *ngIf="risposta.stato!='S'" outline class="myBtn">
-        <ion-label *ngIf="risposta.stato=='R'" style="color: red;">Rifiutata</ion-label>
-        <ion-label *ngIf="risposta.stato=='A'" style="color: green;">Accettata</ion-label>
+        <ion-label *ngIf="risposta.stato=='R'" style="color: red;">Refused</ion-label>
+        <ion-label *ngIf="risposta.stato=='A'" style="color: green;">Accepted</ion-label>
       </ion-chip>
     </div>
   </ion-card-content>

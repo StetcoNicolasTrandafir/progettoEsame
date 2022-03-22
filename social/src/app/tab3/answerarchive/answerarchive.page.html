@@ -3,12 +3,12 @@
     <ion-buttons slot="start">
       <ion-button color="dark" (click)="goBack()"><ion-icon name="arrow-back-outline"></ion-icon></ion-button>
     </ion-buttons>
-    <ion-title>Risposte</ion-title>
+    <ion-title class="title">Received answers</ion-title>
 
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-item>Visualizza risposte preferite<ion-toggle color="primary" [(ngModel)]="preferiti" name="Preferiti" (click)="toggleView()" slot="end">Visualizza preferite</ion-toggle></ion-item>
+  <ion-item>View favourite answers<ion-toggle color="primary" [(ngModel)]="preferiti" name="Preferiti" (click)="toggleView()" slot="end"></ion-toggle></ion-item>
   <app-receivedanswer [risposta]="item" *ngFor="let item of risposteCaricate"></app-receivedanswer>
 </ion-content>
