@@ -8,19 +8,19 @@
     <ion-list>
       <ion-item (click)="apriProfilo()">
         <ion-icon name="settings" slot="start"></ion-icon>
-        <ion-label>Profilo</ion-label>
+        <ion-label>Profile</ion-label>
       </ion-item>
       <ion-item (click)="apriRisposte()">
         <ion-icon name="paper-plane" slot="start"></ion-icon>
-        <ion-label>Risposte Inviate</ion-label>
+        <ion-label>Answers sent</ion-label>
       </ion-item>
       <ion-item (click)="apriArchivioDomande()">
         <ion-icon name="archive" slot="start"></ion-icon>
-        <ion-label>Archivio Domande</ion-label>
+        <ion-label>Question archive</ion-label>
       </ion-item>
       <ion-item (click)="apriArchivioRisposteRicevute()">
         <ion-icon name="mail" slot="start"></ion-icon>
-        <ion-label>Risposte ricevute</ion-label>
+        <ion-label>Received answers</ion-label>
       </ion-item>
       <ion-item (click)="logout()">
         <ion-icon name="log-out" slot="start"></ion-icon>
@@ -76,9 +76,9 @@
 
   <!-- inserimento domanda  -->
   <div>
-    <ion-card style="background-color:lightgray;color: white">
+    <ion-card style="background-color:lightgray;color: white; margin-bottom: 20px;">
       <ion-card-content>
-        <ion-button expand="block" color="light" (click)="inserisciDomanda()">Inserisci Domanda</ion-button>
+        <ion-button expand="block" color="light" (click)="inserisciDomanda()">Add a new question</ion-button>
       </ion-card-content>
     </ion-card>
 

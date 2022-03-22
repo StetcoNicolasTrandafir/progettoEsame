@@ -10,9 +10,9 @@
     <br/>
     <div class="ion-text-center">
       <ion-chip outline style="background-color: white;color: {{risposta.colore}}">
-        <ion-label *ngIf="risposta.stato=='S'">In attesa di risposta</ion-label>
-        <ion-label *ngIf="risposta.stato=='R'">Rifiutata</ion-label>
-        <ion-label *ngIf="risposta.stato=='A'">Accettata</ion-label>
+        <ion-label *ngIf="risposta.stato=='S'" style="color:black" class="myChip">PENDING</ion-label>
+        <ion-label *ngIf="risposta.stato=='R'" style="color:red" class="myChip">REFUSED</ion-label>
+        <ion-label *ngIf="risposta.stato=='A'" style="color:green"  class="myChip">ACCEPTED</ion-label>
       </ion-chip>
     </div>
   </ion-card-content>
