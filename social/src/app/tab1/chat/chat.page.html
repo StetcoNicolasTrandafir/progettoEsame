@@ -19,7 +19,7 @@
 
 <ion-content style="position: relative; ">
   <div style="height: 100% ; ">
-    <div style="height: 84%; display: block; overflow-y: hidden;">
+    <div style="height: 84%; display: block; overflow-y: scroll;">
       <app-message *ngFor="let item of messages" [messaggio]="item" [idChat]="this.datoChat.idUtente"></app-message>
 
     </div>

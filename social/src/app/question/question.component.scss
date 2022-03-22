@@ -5,21 +5,6 @@
   position: absolute;z-index: 20; bottom:-20px; width: 100%;display: flex;align-items: center;justify-content: center;
  }
 
- @font-face {
-  font-family: 'DINPro-Medium';
-  src: url('../FONT/FONT_TESTI/DINPro-Medium.ttf') format('truetype');;
-}
-
-@font-face {
-  font-family: 'couture-bld';
-  src: url('../FONT/FONT_TITOLI/couture-bld.ttf') format('truetype');;
-}
-
-@font-face {
-  font-family: 'DINPro-Regular';
-  src: url('../FONT/FONT_TESTI/DINPro-Regular.ttf') format('truetype');;
-}
-
 
 .lblUsername{
   font-family: 'DINPro-Medium';

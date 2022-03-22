@@ -17,8 +17,16 @@
     </div>
   </div>
 
-  <div style=" height: 25%;  width: 50%; position: absolute; bottom: -10%;margin-left: 25%;">
-    <button  class="myBtn"  (click)="visualizzaRisposte(myQuestion.id)" >RISPOSTE</button>
+  <div style=" height: 50;  width: 50%; position: absolute; bottom: -10%;margin-left: 25%;">
+    <button class="myBtn" (click)="visualizzaRisposte(myQuestion.id)">
+      <div style="display:flex;align-items:center;justify-content:center;width:100%;height: 20;">
+        RISPOSTE
+        <ion-badge style="margin-left:5px;background-color: {{myQuestion.colore}}">
+          {{myQuestion.numeroRisposte||3}}
+        </ion-badge>
+      </div>
+
+    </button>
   </div>
 
 

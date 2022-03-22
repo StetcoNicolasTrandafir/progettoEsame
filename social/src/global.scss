@@ -24,3 +24,54 @@
 @import "~@ionic/angular/css/text-alignment.css";
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
+
+
+body {
+  font-family: 'Open Sans', sans-serif;
+}
+
+@font-face {
+  font-family: 'couture-bldit';
+  src: url('./App/FONT/FONT_TITOLI/couture-bldit.ttf') format('truetype');;
+}
+
+@font-face {
+  font-family: 'DINPro-BoldItalic';
+  src: url('./App/FONT/FONT_TESTI/DINPro-BoldItalic.ttf') format('truetype');;
+}
+
+@font-face {
+  font-family: 'DINPro-Regular';
+  src: url('./App/FONT/FONT_TESTI/DINPro-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'DINPro-Light';
+  src: url('./App/FONT/FONT_TESTI/DINPro-Light.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'couture-bld';
+  src: url('./App/FONT/FONT_TITOLI/couture-bld.ttf') format('truetype');;
+}
+
+@font-face {
+  font-family: 'DINPro-Medium';
+  src: url('./App/FONT/FONT_TESTI/DINPro-Medium.ttf') format('truetype');;
+}
+
+@font-face {
+  font-family: 'couture-bld';
+  src: url('./App/FONT/FONT_TITOLI/couture-bld.ttf') format('truetype');;
+}
+
+
+@font-face {
+  font-family: 'DINPro-Light';
+  src: url('./App/FONT/FONT_TESTI/DINPro-Light.ttf') format('truetype');
+}
+
+
+:root {
+  --ion-font-family: 'DINPro-Regular';
+}
