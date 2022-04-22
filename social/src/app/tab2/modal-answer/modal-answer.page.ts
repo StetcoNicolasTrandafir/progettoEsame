@@ -53,7 +53,7 @@ export class ModalAnswerPage implements OnInit {
   async presentToast() {
     const toast = await this.toastController.create({
       color: 'dark',
-      message: 'Risposta inviata!',
+      message: 'answer sent!',
       duration: 3000
     });
     toast.present();

@@ -22,7 +22,7 @@ export class RequestComponent implements OnInit {
       (data)=>{
         console.log(data);
         //TODO CANCELLARE RICHIESTA
-        this.http.sendToast('Richiesta rifiutata!');
+        this.http.sendToast('Request refused!');
         this.nascondiDomanda=true;
       },(err)=>{
         console.log(err);
@@ -37,7 +37,7 @@ export class RequestComponent implements OnInit {
         this.inserisciMatch();
         this.inviaMessaggi();
         this.nascondiDomanda=true;
-        this.http.sendToast('Richiesta accettata!');
+        this.http.sendToast('Request accepted!');
       },(err)=>{
         console.log(err);
       }

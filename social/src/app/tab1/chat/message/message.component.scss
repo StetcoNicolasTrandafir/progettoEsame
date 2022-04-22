@@ -14,6 +14,7 @@ ainer{
   padding: 10px 13px;
   margin: 3px 4px;
   position: relative;
+  max-width: 90%;
 }
 
 .hour{
@@ -25,7 +26,7 @@ ainer{
 }
 
 .me {
-  text-align: right;
+  text-align: left;
   background-color: #4D7493;
   border-radius: 16px 0px 16px 16px;
   float: right;

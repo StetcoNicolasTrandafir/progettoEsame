@@ -23,7 +23,7 @@ export class ReceivedanswerComponent implements OnInit {
         console.log(data);
         //TODO CANCELLARE RICHIESTA
         this.risposta.stato='R';
-        this.http.sendToast('Richiesta rifiutata!');
+        this.http.sendToast('Request refused!');
       },(err)=>{
         console.log(err);
       }
@@ -37,7 +37,7 @@ export class ReceivedanswerComponent implements OnInit {
         this.inserisciMatch();
         this.inviaMessaggi();
         this.risposta.stato='A';
-        this.http.sendToast('Richiesta accettata!');
+        this.http.sendToast('Request accepted!');
       },(err)=>{
         console.log(err);
       }

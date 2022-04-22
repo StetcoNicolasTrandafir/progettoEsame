@@ -17,18 +17,18 @@ export class QuestionComponent implements OnInit {
   async riprisintaDomanda() {
     const alert = await this.alertController.create({
       cssClass: '',
-      header: 'Pubblica Domanda',
-      message: 'Sei sicuro di voler pubblicare questa domanda?',
+      header: 'Restore question',
+      message: 'Do You really want to public this question?',
       buttons: [
         {
-          text: 'Annulla',
+          text: 'Undo',
           role: 'cancel',
           cssClass: 'secondary',
           handler: (blah) => {
             //console.log('Confirm Cancel: blah');
           }
         }, {
-          text: 'Conferma',
+          text: 'Confirm',
           handler: () => {
             //console.log('Confirm Okay');
             this.http.sendPOSTRequest('/question/updateQuestionState',{domanda:this.domanda.idDomanda,stato:'T'}).subscribe(

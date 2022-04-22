@@ -10,8 +10,8 @@ import {Router} from "@angular/router";
 export class LoginPage implements OnInit {
   latitudine:number;
   longitudine:number;
-  user: any="pinguino";
-  password: any="ciaociao";
+  user: any="";
+  password: any="";
   errore: any;
 
   constructor(private http:HttpService,private router:Router) { }
@@ -32,7 +32,7 @@ export class LoginPage implements OnInit {
         (data)=>{
           if(data.data){
             localStorage.setItem("token",data.token);
-            this.http.sendToast('Login effettuato!');
+            this.http.sendToast('Login done!');
             this.router.navigateByUrl('');
           }else{
             this.errore="Crenziali errate";

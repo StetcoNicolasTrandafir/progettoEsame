@@ -22,7 +22,7 @@ export class MyquestionComponent implements OnInit {
   async visualizzaRisposte(idDomanda: number) {
     //alert(idDomanda);
     let oggettoDomanda = {
-      myquestion: idDomanda,
+      myquestion: this.myQuestion.idDomanda,
       stato: 'S'
     };
     const modal = await this.modalController.create({
@@ -38,25 +38,25 @@ export class MyquestionComponent implements OnInit {
   async arhiviaDomanda() {
     const alert = await this.alertController.create({
       cssClass: '',
-      header: 'Archivia Domanda',
-      message: 'Sei sicuro di voler archiviare questa domanda?',
+      header: 'Archive question',
+      message: 'Are you sure you want to archive this question?',
       buttons: [
         {
-          text: 'Annulla',
+          text: 'Undo',
           role: 'cancel',
           cssClass: 'secondary',
           handler: (blah) => {
             //console.log('Confirm Cancel: blah');
           }
         }, {
-          text: 'Conferma',
+          text: 'Confirm',
           handler: () => {
             //console.log('Confirm Okay');
             this.http.sendPOSTRequest('/question/updateQuestionState',{domanda:this.myQuestion.idDomanda,stato:'F'}).subscribe(
               (data)=>{
                 console.log(data);
                 this.nascondiDomanda=true;
-                this.http.sendToast('Domanda archiviata!');
+                this.http.sendToast('Question archived!');
               },(err)=>{
                 console.log(err);
 
