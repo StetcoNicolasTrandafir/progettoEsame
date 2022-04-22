@@ -107,6 +107,10 @@ const insertQuestion = async  (autore,testo,categoria,username,req, res)=>{
         token:token
     });
 }
+
+
+
+
 const getQuestions = async  (utente,req, res)=>{
 
     let queryString = "SELECT utenti.username, categorie.nomeCategoria, categorie.colore,domande.iv, domande.idDomanda, domande.testoDomanda, domande.data, domande.categoria, domande.disponibile, domande.autore,SQRT(POWER(((SELECT SUBSTRING_INDEX(posizione,';',1) FROM utenti WHERE idUtente=?)-SUBSTRING_INDEX(utenti.posizione,';',1)),2)";

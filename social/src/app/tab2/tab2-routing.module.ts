@@ -10,6 +10,10 @@ const routes: Routes = [
   {
     path: 'modal-answer',
     loadChildren: () => import('./modal-answer/modal-answer.module').then( m => m.ModalAnswerPageModule)
+  },
+  {
+    path: 'maps',
+    loadChildren: () => import('./maps/maps.module').then( m => m.MapsPageModule)
   }
 ];
 

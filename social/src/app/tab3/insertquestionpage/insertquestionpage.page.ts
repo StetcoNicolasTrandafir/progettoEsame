@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {HttpService} from "../../service/http.service";
-import {ModalController} from "@ionic/angular";
-import {Router} from "@angular/router";
+import { HttpService } from "../../service/http.service";
+import { ModalController } from "@ionic/angular";
+import { Router } from "@angular/router";
+import { NotificationsService } from 'src/app/service/notifications.service';
 
 @Component({
   selector: 'app-insertquestionpage',
@@ -9,21 +10,21 @@ import {Router} from "@angular/router";
   styleUrls: ['./insertquestionpage.page.scss'],
 })
 export class InsertquestionpagePage implements OnInit {
-  testoDomanda: any="";
-  categorie: any=[];
+  testoDomanda: any = "";
+  categorie: any = [];
   selectedCategory: any;
-  txtError="";
-  constructor(private http:HttpService,private modalController:ModalController,private router:Router) { }
+  txtError = "";
+  constructor(private http: HttpService, private modalController: ModalController, private router: Router, private notificationService: NotificationsService) { }
 
   ngOnInit() {
-    this.http.sendPOSTRequest('/question/getCategories',{}).subscribe(
-      (data)=>{
+    this.http.sendPOSTRequest('/question/getCategories', {}).subscribe(
+      (data) => {
         console.log(data);
-        this.categorie=data.data;
+        this.categorie = data.data;
       },
-      (err)=>{
+      (err) => {
         console.log(err);
-        if(err.status==603||err.status==604){
+        if (err.status == 603 || err.status == 604) {
           this.router.navigateByUrl('login');
         }
       }
@@ -32,18 +33,18 @@ export class InsertquestionpagePage implements OnInit {
 
   insertQuestion() {
 
-      this.http.sendPOSTRequest('/question/insertQuestion',{testo:this.testoDomanda,categoria:this.selectedCategory}).subscribe(
-        (data)=>{
-          console.log(data);
-          this.http.sendToast('Domanda pubblicata!');
-          this.modalController.dismiss();
-        },(err)=>{
-          console.log(err);
-          if(err.status==603||err.status==604){
-            this.router.navigateByUrl('login');
-          }
+    this.http.sendPOSTRequest('/question/insertQuestion', { testo: this.testoDomanda, categoria: this.selectedCategory }).subscribe(
+      (data) => {
+        console.log(data);
+        this.notificationService.sendToast('Domanda pubblicata!');
+        this.modalController.dismiss();
+      }, (err) => {
+        console.log(err);
+        if (err.status == 603 || err.status == 604) {
+          this.router.navigateByUrl('login');
         }
-      )
+      }
+    )
 
 
   }

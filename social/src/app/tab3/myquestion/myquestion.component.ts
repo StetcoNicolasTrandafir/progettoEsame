@@ -1,8 +1,9 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {ChatPage} from "../../tab1/chat/chat.page";
-import {AlertController, ModalController} from "@ionic/angular";
-import {RequestpagePage} from "../requestpage/requestpage.page";
-import {HttpService} from "../../service/http.service";
+import { Component, Input, OnInit } from '@angular/core';
+import { ChatPage } from "../../tab1/chat/chat.page";
+import { AlertController, ModalController } from "@ionic/angular";
+import { RequestpagePage } from "../requestpage/requestpage.page";
+import { HttpService } from "../../service/http.service";
+import { NotificationsService } from 'src/app/service/notifications.service';
 
 @Component({
   selector: 'app-myquestion',
@@ -11,9 +12,9 @@ import {HttpService} from "../../service/http.service";
 })
 export class MyquestionComponent implements OnInit {
   @Input() myQuestion;
-  nascondiDomanda: boolean=false;
+  nascondiDomanda: boolean = false;
 
-  constructor(private modalController:ModalController,private alertController:AlertController,private http:HttpService) { }
+  constructor(private modalController: ModalController, private alertController: AlertController, private http: HttpService, private notificationService: NotificationsService) { }
 
   ngOnInit() {
 
@@ -29,7 +30,7 @@ export class MyquestionComponent implements OnInit {
       component: RequestpagePage,
       cssClass: '',
       componentProps: {
-        domanda:oggettoDomanda
+        domanda: oggettoDomanda
       }
     });
     return await modal.present();
@@ -52,12 +53,12 @@ export class MyquestionComponent implements OnInit {
           text: 'Conferma',
           handler: () => {
             //console.log('Confirm Okay');
-            this.http.sendPOSTRequest('/question/updateQuestionState',{domanda:this.myQuestion.idDomanda,stato:'F'}).subscribe(
-              (data)=>{
+            this.http.sendPOSTRequest('/question/updateQuestionState', { domanda: this.myQuestion.idDomanda, stato: 'F' }).subscribe(
+              (data) => {
                 console.log(data);
-                this.nascondiDomanda=true;
-                this.http.sendToast('Domanda archiviata!');
-              },(err)=>{
+                this.nascondiDomanda = true;
+                this.notificationService.sendToast('Domanda archiviata!');
+              }, (err) => {
                 console.log(err);
 
               }

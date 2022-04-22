@@ -160,6 +160,18 @@ const signUpProfile = async (user, foto, descrizione, posizione, userID, req, re
     }
 }
 
+const getPositions= async(user, req, res)=>{
+    let queryString="SELECT idUtente, SQRT(POWER(((SELECT SUBSTRING_INDEX(posizione,';',1) FROM utenti WHERE idUtente=?)-SUBSTRING_INDEX(utenti.posizione,';',1)),2)";
+    queryString+="+ POWER(((SELECT SUBSTRING_INDEX(posizione,';',-1) FROM utenti WHERE idUtente=?)-SUBSTRING_INDEX(utenti.posizione,';',-1)),2)";
+    queryString+=") AS DISTANZA FROM utenti ORDER BY DISTANZA ASC LIMIT 21";
+
+    const result= await db.execute(queryString, [user, user]);
+    console.log("RESULT=================>", result);
+    return({data:result});
+    
+}
+
+
 
 const signUpInsertUser = async (user, mail, nome, cognome, foto, sesso, descrizione, posizione, dataNascita, pwd, req, res) => {
 
@@ -330,5 +342,6 @@ module.exports = {
     updateUser,
     updatePosition,
     updatePicture,
+    getPositions,
     signUpCheckCredentials
 }

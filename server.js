@@ -682,7 +682,7 @@ app.post("/api/getChats", function (req, res) {
 
             //let queryString = "SELECT DISTINCT matched.*, utenti.* FROM matched, utenti WHERE (matched.idUtenteDomanda=? OR matched.idUtenteRisposta=?) AND (utenti.idUtente != ?) ";
             let queryString = "SELECT DISTINCT matched.*, utenti.idUtente, utenti.username, utenti.nome, utenti.cognome, utenti.foto FROM matched, utenti WHERE (matched.idUtenteDomanda=? OR matched.idUtenteRisposta=?) AND (utenti.idUtente != ?) AND (utenti.idUtente=matched.idUtenteRisposta OR utenti.idUtente=matched.idUtenteDomanda)";
-            console.log(queryString);
+            //console.log(queryString);
 
             con.query(queryString, [utente, utente, utente], function (errQuery, result) {
                 if (errQuery) {

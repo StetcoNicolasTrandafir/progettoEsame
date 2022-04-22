@@ -13,6 +13,7 @@ router.post('/signUp/checkCredentials', userController.signUpCheckCredentials);
 router.post('/signUp/insertUser', userController.signUpInsertUser);
 router.post('/login', userController.login);
 router.post('/getUser', userController.getUser);
+router.post('/getPositions', userController.getPositions);
 router.post('/controlloToken', userController.controlloToken);
 router.post('/processUpFile', userController.processUpFile);
 router.post('/changePassword', userController.changePassword);

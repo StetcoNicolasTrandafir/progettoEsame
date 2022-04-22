@@ -14,7 +14,7 @@ export class Tab1Page implements OnInit{
     this.activatedRoute.params.subscribe(params => {
         this.caricaChats();
       //Controllo CHAT
-        setInterval(()=>{this.caricaChats()},3000);
+        //setInterval(()=>{this.caricaChats()},3000);
     }
     )
   }

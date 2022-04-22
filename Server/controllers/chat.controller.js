@@ -74,6 +74,7 @@ const startChat = async (req, res, next) => {
     let utenteRisposta = req.body.utenteRisposta;
     let domanda = req.body.domanda;
     let risposta = req.body.risposta;
+    console.log("================>",utenteRisposta);
 
     try {
         const risultato = await chatService.startChat(utente, utenteRisposta, domanda, risposta, ctrlToken.payload.user, req, res);

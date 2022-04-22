@@ -109,6 +109,21 @@ const updatePosition = async (req, res, next) => {
   }
 }
 
+
+const getPositions=async(req, res, next)=>{
+  let ctrlToken = await controllaToken(req, res);
+  let user = ctrlToken.payload._id;
+  try {
+    const risultato = await usersService.getPositions(user, req, res);
+    res.send(risultato);
+    next();
+  } catch (e) {
+    console.log(e.message)
+    res.sendStatus(500) && next(error)
+  }
+}
+
+
 const changePassword = async (req, res, next) => {
 
   let ctrlToken = await controllaToken(req, res);
@@ -225,9 +240,9 @@ async function controllaToken(req, res) {
     error(req, res, new ERRORS.TOKEN_DOESNT_EXIST({}));
   } else {
     let token = req.headers["token"].split(' ')[1];
-    //console.log("TOKEN => "+token);
-    console.log(token + " - " + typeof (token));
-    console.log(token + " - " + typeof (token));
+    
+    //console.log(token + " - " + typeof (token));
+
     if (token != "undefined" && token != "null") {
 
       let result;

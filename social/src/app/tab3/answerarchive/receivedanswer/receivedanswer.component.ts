@@ -1,5 +1,6 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {HttpService} from "../../../service/http.service";
+import { Component, Input, OnInit } from '@angular/core';
+import { NotificationsService } from 'src/app/service/notifications.service';
+import { HttpService } from "../../../service/http.service";
 
 @Component({
   selector: 'app-receivedanswer',
@@ -8,56 +9,58 @@ import {HttpService} from "../../../service/http.service";
 })
 export class ReceivedanswerComponent implements OnInit {
   @Input() risposta;
-  constructor(private http:HttpService) { }
+  constructor(private http: HttpService, private notificationService: NotificationsService) { }
 
-  icona:string="star-outline";
+  icona: string = "star-outline";
   ngOnInit() {
     //console.log("RISPOSTA==>",this.risposta)
-    if(this.risposta.idPreferenza)
-      this.icona="star-sharp";
+    if (this.risposta.idPreferenza)
+      this.icona = "star-sharp";
   }
 
   nega($event: MouseEvent) {
-    this.http.sendPOSTRequest('/question/handleRequest',{risposta:this.risposta.idRisposta,stato:'R'}).subscribe(
-      (data)=>{
+    this.http.sendPOSTRequest('/question/handleRequest', { risposta: this.risposta.idRisposta, stato: 'R' }).subscribe(
+      (data) => {
         console.log(data);
         //TODO CANCELLARE RICHIESTA
-        this.risposta.stato='R';
-        this.http.sendToast('Richiesta rifiutata!');
-      },(err)=>{
+        this.risposta.stato = 'R';
+        this.notificationService.sendToast('Richiesta rifiutata!');
+      }, (err) => {
         console.log(err);
       }
     )
   }
 
   accetta($event: MouseEvent) {
-    this.http.sendPOSTRequest('/question/handleRequest',{risposta:this.risposta.idRisposta,stato:'A'}).subscribe(
-      (data)=>{
+    this.http.sendPOSTRequest('/question/handleRequest', { risposta: this.risposta.idRisposta, stato: 'A' }).subscribe(
+      (data) => {
         console.log(data);
         this.inserisciMatch();
         this.inviaMessaggi();
-        this.risposta.stato='A';
-        this.http.sendToast('Richiesta accettata!');
-      },(err)=>{
+        this.risposta.stato = 'A';
+        this.notificationService.sendToast('Richiesta accettata!');
+      }, (err) => {
         console.log(err);
       }
     )
   }
-  inviaMessaggi(){
-    this.http.sendPOSTRequest('/chat/startChat',{utenteRisposta:this.risposta.utente,risposta:this.risposta.testoRisposta,domanda:this.risposta.testoDomanda}).subscribe(
-      (data)=>{
-        console.log(data);
-      },(err)=>{
-        console.log(err);
+  inviaMessaggi() {
+    this.http.sendPOSTRequest('/chat/startChat', { utenteRisposta: this.risposta.utente, risposta: this.risposta.testoRisposta, domanda: this.risposta.testoDomanda }).subscribe(
+      (data) => {
+        console.log("CHIAMATAAAAAAAAAAAAAAAAA", data);
+      }, (err) => {
+        console.log("ERROREEEEE", err);
       }
     )
   }
 
-  inserisciMatch(){
-    this.http.sendPOSTRequest('/chat/makeMatch',{utenteRisposta:this.risposta.utente}).subscribe(
-      (data)=>{
+  inserisciMatch() {
+    console.log("UTENTE RISPOSTA======>", this.risposta);
+
+    this.http.sendPOSTRequest('/chat/makeMatch', { utenteRisposta: this.risposta.autoreRisposta }).subscribe(
+      (data) => {
         console.log(data);
-      },(err)=>{
+      }, (err) => {
         console.log(err);
       }
     )
@@ -67,29 +70,29 @@ export class ReceivedanswerComponent implements OnInit {
 
     console.log(sender.risposta)
     //alert(sender.risposta.idRisposta)
-    if(this.icona=="star-outline"){
+    if (this.icona == "star-outline") {
       //inserisci nei preferiti
 
-      this.http.sendPOSTRequest('/question/addFavouriteAnswer',{risposta:sender.risposta.idRisposta}).subscribe(
-        (data)=>{
+      this.http.sendPOSTRequest('/question/addFavouriteAnswer', { risposta: sender.risposta.idRisposta }).subscribe(
+        (data) => {
           console.log(data);
-          this.icona="star-sharp";
-          this.risposta.idPreferenza=7;
+          this.icona = "star-sharp";
+          this.risposta.idPreferenza = 7;
         },
-        (err)=>{
+        (err) => {
           console.log(err);
         }
       );
     }
-    else{
+    else {
       //rimuovi dai preferiti
-      this.http.sendPOSTRequest('/question/removeFavouriteAnswer',{risposta:sender.risposta.idRisposta}).subscribe(
-        (data)=>{
+      this.http.sendPOSTRequest('/question/removeFavouriteAnswer', { risposta: sender.risposta.idRisposta }).subscribe(
+        (data) => {
           console.log(data);
-          this.icona="star-outline";
-          this.risposta.idPreferenza=null;
+          this.icona = "star-outline";
+          this.risposta.idPreferenza = null;
         },
-        (err)=>{
+        (err) => {
           console.log(err);
         }
       );

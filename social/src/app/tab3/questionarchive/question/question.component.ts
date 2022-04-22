@@ -1,6 +1,7 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {AlertController} from "@ionic/angular";
-import {HttpService} from "../../../service/http.service";
+import { Component, Input, OnInit } from '@angular/core';
+import { AlertController } from "@ionic/angular";
+import { NotificationsService } from 'src/app/service/notifications.service';
+import { HttpService } from "../../../service/http.service";
 
 @Component({
   selector: 'app-question',
@@ -9,10 +10,10 @@ import {HttpService} from "../../../service/http.service";
 })
 export class QuestionComponent implements OnInit {
   @Input() domanda;
-  nascondiDomanda: boolean=false;
-  constructor(private alertController:AlertController,private http:HttpService) { }
+  nascondiDomanda: boolean = false;
+  constructor(private alertController: AlertController, private http: HttpService, private notificationService: NotificationsService) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   async arhiviaDomanda() {
     const alert = await this.alertController.create({
@@ -31,12 +32,12 @@ export class QuestionComponent implements OnInit {
           text: 'Conferma',
           handler: () => {
             //console.log('Confirm Okay');
-            this.http.sendPOSTRequest('/question/updateQuestionState',{domanda:this.domanda.idDomanda,stato:'T'}).subscribe(
-              (data)=>{
+            this.http.sendPOSTRequest('/question/updateQuestionState', { domanda: this.domanda.idDomanda, stato: 'T' }).subscribe(
+              (data) => {
                 console.log(data);
-                this.nascondiDomanda=true;
-                this.http.sendToast('Domanda pubblicata!');
-              },(err)=>{
+                this.nascondiDomanda = true;
+                this.notificationService.sendToast('Domanda pubblicata!');
+              }, (err) => {
                 console.log(err);
               }
             )
