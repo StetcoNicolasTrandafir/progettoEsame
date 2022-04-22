@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Registrazione</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-card-header>
+
+      <ion-card-title class="ion-text-center">Registrazione</ion-card-title>
+    </ion-card-header>
+    <ion-item>
+      <ion-label position="floating">Mail</ion-label>
+      <ion-input [(ngModel)]="mail"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating" >Username</ion-label>
+      <ion-input [(ngModel)]="username"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Password</ion-label>
+      <ion-input type="password" [(ngModel)]="password"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Conferma Password</ion-label>
+      <ion-input type="password" [(ngModel)]="confermaPassword"></ion-input>
+    </ion-item>
+    <br/>
+    <section>
+      <ion-button color="primary" (click)="nextPage()" expand="block">Prosegui</ion-button>
+    </section>
+  </ion-card>
+</ion-content>

@@ -5,7 +5,9 @@ const jwt = require("jsonwebtoken");
 const fs = require("fs");
 const privateKey = fs.readFileSync("keys/private.key", "utf8");
 const ERRORS = require('errors');
-const { crypto } = require("../crypto");
+const {
+  crypto
+} = require("../crypto");
 
 
 //Gestione errori del TOKEN
@@ -22,69 +24,20 @@ ERRORS.create({
 });
 
 
-// router.post('/signUp/personalData', userController.signUpPersonalData);
-// router.post('/signUp/ID', userController.signUpID);
-// router.post('/signUp/profile', userController.signUpProfile);
 
 //CHIAMATE
 
 //PRIMA FASE REGISTRAZIONE
-const signUpPersonalData = async (req, res, next) => {
-  
-  let mail = req.body.mail;
-  let nome = req.body.nome;
-  let cognome = req.body.cognome;
-  let sesso = req.body.sesso;
-  let dataNascita = req.body.dataNascita;
-  let password = req.body.password;
-
-
-  try {
-    //estraggo ed elaboro i dati tramite il service userService
-    const risultato = await usersService.signUpPersonalData(nome, cognome,  sesso,  dataNascita,mail, password, req, res);
-    console.log("risultato", risultato);
-    res.send(risultato);
-
-    next();
-  } catch (e) {
-    console.log(e.message)
-    res.sendStatus(500) && next(error)
-  }
-}
-
-//SECONDA FASE REGISTRAZIONE
-const signUpProfile = async (req, res, next) => {
-  let ctrlToken = await controllaToken(req, res); //ANCHOR VEDERE SE CREARE UN TOKEN NELLA SIGNUPPERSONALDATA O SE PASSARE DIRETTAMENTE L'ID UTENTE COME PARAMETRO
-  let ID = ctrlToken.payload._id;
+//controllo le credenziali (username e mail) non siano già presenti nel DB
+const signUpCheckCredentials = async (req, res, next) => {
   let user = req.body.user;
-  let foto = req.body.foto;
-  let descrizione = req.body.descrizione;
-  let posizione = req.body.posizione;
-
+  let mail = req.body.mail;
 
   try {
-    //estraggo ed elaboro i dati tramite il service userService
-    const risultato = await usersService.signUpProfile(user,foto, descrizione, posizione, ID, req, res);
+
+    const risultato = await usersService.signUpCheckCredentials(user, mail, req, res);
     console.log("risultato", risultato);
     res.send(risultato);
-
-    next();
-  } catch (e) {
-    console.log(e.message)
-    res.sendStatus(500) && next(error)
-  }
-}
-
-const undoSignUp=async(req, res, next)=>{
-  let ctrlToken = await controllaToken(req, res);
-  let ID = ctrlToken.payload._id;
-
-  try {
-   
-    const risultato = await usersService.undoSignUp(ID, req, res);
-    console.log("risultato", risultato);
-    res.send(risultato);
-
     next();
   } catch (e) {
     console.log(e.message)
@@ -93,9 +46,8 @@ const undoSignUp=async(req, res, next)=>{
 }
 
 
+const signUpInsertUser = async (req, res, next) => {
 
-const signUp = async (req, res, next) => {
-  
   let user = req.body.user;
   let mail = req.body.mail;
   let nome = req.body.nome;
@@ -111,7 +63,7 @@ const signUp = async (req, res, next) => {
 
   try {
     //estraggo ed elaboro i dati tramite il service userService
-    const risultato = await usersService.signUp(user, mail, nome, cognome, foto, sesso, descrizione, posizione, dataNascita, password, req, res);
+    const risultato = await usersService.signUpInsertUser(user, mail, nome, cognome, foto, sesso, descrizione, posizione, dataNascita, password, req, res);
     console.log("risultato", risultato);
     res.send(risultato);
 
@@ -124,21 +76,15 @@ const signUp = async (req, res, next) => {
 
 
 const updateUser = async (req, res, next) => {
-  //recupero il parametro id dall'url della chiamata
+
   let ctrlToken = await controllaToken(req, res);
   let utente = ctrlToken.payload._id;
   let user = req.body.user;
   let mail = req.body.mail;
-  // let nome = req.body.nome;
-  // let cognome = req.body.cognome;
-  //let foto = req.body.foto;
-  // let sesso = req.body.sesso;
   let descrizione = req.body.descrizione;
-  //let posizione = req.body.posizione;
-  // let dataNascita = req.body.dataNascita;
-  // let password = req.body.password;
+
   try {
-    const risultato = await usersService.updateUser(utente,user, mail,descrizione, req, res);
+    const risultato = await usersService.updateUser(utente, user, mail, descrizione, req, res);
     res.send(risultato);
     next();
   } catch (e) {
@@ -147,14 +93,14 @@ const updateUser = async (req, res, next) => {
   }
 }
 
-const updatePosition= async(req, res, next)=>{
+const updatePosition = async (req, res, next) => {
 
   let ctrlToken = await controllaToken(req, res);
   let utente = ctrlToken.payload._id;
   let posizione = req.body.posizione;
   console.log(req.body)
   try {
-    const risultato = await usersService.updatePosition(utente,posizione, req, res);
+    const risultato = await usersService.updatePosition(utente, posizione, req, res);
     res.send(risultato);
     next();
   } catch (e) {
@@ -179,7 +125,7 @@ const getPositions=async(req, res, next)=>{
 
 
 const changePassword = async (req, res, next) => {
-  //recupero il parametro id dall'url della chiamata
+
   let ctrlToken = await controllaToken(req, res);
   let utente = ctrlToken.payload._id;
   const oldPwd = req.body["oldPassword"];
@@ -194,24 +140,12 @@ const changePassword = async (req, res, next) => {
   }
 }
 
-const provaCrittografia= async (req, res)=>{
-  let text= req.body.text;
-  let hash= crypto.encrypt(text);
-  let decrypted=crypto.decrypt(hash);
-  res.send({
-    testo: text,
-    criptata:hash,
-    decriptata: decrypted
-  })
-}
 
 const login = async (req, res, next) => {
-  //recupero il parametro id dall'url della chiamata
- 
+
   const id = req.body["mail"];
   const pwd = req.body["password"];
   try {
-    //estraggo ed elaboro i dati tramite il service userService
     const risultato = await usersService.login(id, pwd, req, res);
     console.log("risultato", risultato);
     res.send(risultato);
@@ -230,10 +164,9 @@ const prova = async (req, res, next) => {
 }
 
 const processUpFile = async (req, res, next) => {
-  //recupero il parametro id dall'url della chiamata
+
   let f = req.files.myFile;
   try {
-    //estraggo ed elaboro i dati tramite il service userService
     const risultato = await usersService.processUpFile(f, req, res);
     res.send(risultato);
 
@@ -249,7 +182,7 @@ async function updatePicture(req, res, next) {
   let ctrlToken = await controllaToken(req, res);
   let id = ctrlToken.payload._id;
   try {
-    const risultato = await usersService.updatePicture(f, id,req, res);
+    const risultato = await usersService.updatePicture(f, id, req, res);
     res.send(risultato);
 
     next();
@@ -276,6 +209,8 @@ const getUser = async (req, res, next) => {
   }
 }
 
+
+//FUNZIONI COMUNI
 const controlloToken = async (req, res, next) => {
   let ctrlToken = await controllaToken(req, res);
   //console.log(ctrlToken);
@@ -294,9 +229,6 @@ const controlloToken = async (req, res, next) => {
 }
 
 
-
-
-//FUNZIONI COMUNI
 async function controllaToken(req, res) {
   let ctrlToken = {
     allow: false,
@@ -314,16 +246,11 @@ async function controllaToken(req, res) {
     if (token != "undefined" && token != "null") {
 
       let result;
-      try{
-         result = await jwt.verify(token, privateKey);
-      }
-      catch (ex){
+      try {
+        result = await jwt.verify(token, privateKey);
+      } catch (ex) {
         console.log(ex);
       }
-      //console.log(jwt.verify(token, privateKey));
-
-      //console.log(result);
-            
 
       ctrlToken.allow = true;
       if (result) {
@@ -360,18 +287,14 @@ function error(req, res, err) {
 
 module.exports = {
   login,
+  signUpInsertUser,
+  signUpCheckCredentials,
   getUser,
-  controlloToken,
-  signUp,
-  signUpPersonalData,
-  signUpProfile,
-  undoSignUp,
   processUpFile,
-  prova,
   changePassword,
   updateUser,
-  provaCrittografia,
   updatePosition,
   updatePicture,
-  getPositions
+  controlloToken,
+  prova,
 }
